@@ -16,8 +16,8 @@ else
 
 $request = array();
 $request['type'] = "validate";
-$request['username'] = "sean";
-$request['password'] = "testpass";;
+$request['username'] = "jack";
+$request['password'] = "henry";
 $request['message'] = $msg;
 $response = $client->send_request($request);
 //$response = $client->publish($request);

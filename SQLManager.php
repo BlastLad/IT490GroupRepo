@@ -45,8 +45,9 @@ function registerUser($request)
 		echo "Here as well".PHP_EOL;
                 if (mysqli_num_rows($response) > 0) //already present
                 {
-                    $password = $request['password'];
-                    $query = "SELECT * FROM users WHERE username = '$username' AND password = '$password';";
+	       	$password = $request['password'];
+		$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                    $query = "SELECT * FROM users WHERE username = '$username' AND password = '$hashed_password';";
                     if (mysqli_num_rows($response) > 0)
 		    {
 			echo "We correctly worked".PHP_EOL;
@@ -63,7 +64,9 @@ function registerUser($request)
 		}
 		else {			
 			$password = $request['password'];
-			$query = "INSERT INTO users VALUES(username, password) VALUES ('$username', '$password');";
+			$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+			$query = "INSERT INTO users (username, password) VALUES('$username', '$hashed_password');";
+			$response = $mydb->query($query);
 		return array("returnCode" => '0', 'message'=> "User Registered");
 		}
      }
