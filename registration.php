@@ -19,7 +19,7 @@ $request = array();
 $request['type'] = "register";
 $request['username'] = $username;
 $request['password'] = $password;
-$request['message'] = "HI";
+$request['message'] = "HI_registration";
 $response = $client->send_request($request);
 //print_r($response);
 if ($response['message'] == "User Registered")
