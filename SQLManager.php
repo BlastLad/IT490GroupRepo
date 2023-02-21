@@ -46,13 +46,22 @@ function registerUser($request)
                 if (mysqli_num_rows($response) > 0) //already present
                 {
 	       	$password = $request['password'];
-		$hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                    $query = "SELECT * FROM users WHERE username = '$username' AND password = '$hashed_password';";
+		
+		$query = "SELECT password FROM users WHERE username = '$username';";
+		$response = $mydb->query($query);
+
                     if (mysqli_num_rows($response) > 0)
 		    {
-			echo "We correctly worked".PHP_EOL;
-                        return array("returnCode" => '0', 'message'=>"Valid Login");			
-                    }
+		    echo "We correctly worked".PHP_EOL;
+		    while ($row = mysqli_fetch_assoc($response))
+		    {				   
+		     if(password_verify($password, $row['password']))
+		     {
+		       return array ("returnCode" => '0', 'message'=>"Valid Login");
+		    }
+		    }		
+			 }
+                    
                 }
 		return array("returnCode" => '0', 'message'=>"Invalid Login");
 	case 'register':
