@@ -21,7 +21,7 @@ $request['username'] = $username;
 $request['password'] = $password;
 $request['message'] = "HI";
 $response = $client->send_request($request);
-//print_r($response);
+print_r($response);
 if ($response['message'] == "Valid Login")
 {
 	$msg = "Login Successful";

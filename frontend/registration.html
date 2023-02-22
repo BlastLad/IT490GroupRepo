@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+</head>
+<nav>
+	<ul>
+		<li><a href="index.html">Login</a></li>
+		<li><a href="registration.html">Registration</a></li>
+
+	</ul>
+</nav>
+<h1>registration page</h1>
+<body>
+<!--
+<div id="textResponse">
+awaiting response
+</div>
+-->
+<form method="POST" action="registration.php">
+	<label for"username">Username</label>
+	<input type="text" placeholder="Enter Username" name="username" id="username" required>
+	<br>
+	<label for"password">Password</label>
+	<input type="password" placeholder="Enter Password" name="password" id="password" required>
+	<br>
+	<label for="confirm_password">Confirm Password:</label>
+	<input type="password" id="confirm_password" name="confirm_password">
+	<br>
+	<button type="submit">Registration</button>
+</form>
+
+<p id="message"></p>
+
+<script>
+function checkPassword() {
+	var password = document.getElementById("password").value;
+	var confirm_password = document.getElementById("confirm_password").value;
+	if (password != confirm_password) {
+		document.getElementById("message").innerHTML = "Passwords do not match";
+	} else {
+		document.getElementById("message").innerHTML = "Passwords match!";
+		window.location.href ="registration.php"
+	}
+}
+</script> 
+
+</body>
+</html>
