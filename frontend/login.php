@@ -17,18 +17,24 @@ $password = $storePost["password"];
 $client = new rabbitMQClient("testRabbitMQ.ini","testServer");
 $request = array();
 $request['type'] = "validate";
-$request['username'] = $username;
-$request['password'] = $password;
+$request['username'] = "john";
+$request['password'] = "henry";
 $request['message'] = "HI";
 $response = $client->send_request($request);
 print_r($response);
 if ($response['message'] == "Valid Login")
 {
 	$msg = "Login Successful";
+	//flash("Welcome");
+	//header("Location: home.html");
+
 } else {
 	$msg = "Invalid Login";
+	
 }
 echo json_encode($msg);
+
+header("Location: home.html");
 exit(0);
 
 ?>
