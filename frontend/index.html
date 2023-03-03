@@ -3,45 +3,10 @@
 
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="style.css">
+
 </head>
-<style>   
-    ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
 
-}
-
-li {
-  float: left;
-}
-
-li a {
-  display: block;
-  color: #000000;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  letter-spacing: 2px;
-}
-
-li a:hover:not(.active) {
-  background-color: #FFCC00;
-}
-
-.active {
-  background-color:#0075BE;
-}
-</style>
-<style>
-@import url('https://fonts.cdnfonts.com/css/pokemon-solid');
-nav {
-        font-family: 'Pokemon Solid', sans-serif;
-        word-spacing: 5px;
-    }
-h1 {text-align: center;}
-    </style> 
 <nav>
 	<ul>
     <!--
@@ -50,7 +15,7 @@ h1 {text-align: center;}
         <li><a href="battles.html">Battles</a></li>
         <li><a href="tournament.html">Tournament</a></li>
         -->
-
+    <li style="float: left"><img src="https://www.freepnglogos.com/uploads/pokeball-png/pokeball-alexa-style-blog-pokemon-inspired-charmander-daily-8.png" alt="pokeball" width="50px" height="50px"/> </li>
 		<li style="float:right" class="active"><a href="index.html">Login/Sign-Up</a></li>
 
 	</ul>
@@ -66,9 +31,11 @@ awaiting response
 <form method="POST" action="login.php">
 	<label for"username">Username</label>
 	<input type="text" placeholder="Enter Username" name="username" id="username" required>
-	<label for"password">Password</label>
+	<p></p>
+  <label for"password">Password</label>
 	<input type="text" placeholder="Enter Password" name="password" id="password" required>
-	<button type="submit">Log In</button>
+	<p></p>
+  <button type="submit">Log In</button>
 </form>
 <p></p>
 <h3>Don't have an account? <a href="registration.html">Sign-up now!</a></h3>
