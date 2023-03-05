@@ -25,10 +25,16 @@ print_r($response);
 if ($response['message'] == "Valid Login")
 {
 	$msg = "Login Successful";
+	//flash("Welcome");
+	//header("Location: home.html");
+
 } else {
 	$msg = "Invalid Login";
+	
 }
 echo json_encode($msg);
+
+header("Location: home.html");
 exit(0);
 
 ?>

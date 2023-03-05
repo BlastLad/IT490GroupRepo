@@ -3,15 +3,24 @@
 
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="style.css">
+
 </head>
+
 <nav>
 	<ul>
-		<li><a href="index.html">Login</a></li>
-		<li><a href="registration.html">Registration</a></li>
+    <!--
+		<li><a href="home.html">Home</a></li>
+        <li><a href="teams.html">Teams</a></li>
+        <li><a href="battles.html">Battles</a></li>
+        <li><a href="tournament.html">Tournament</a></li>
+        -->
+    <li style="float: left"><img src="https://www.freepnglogos.com/uploads/pokeball-png/pokeball-alexa-style-blog-pokemon-inspired-charmander-daily-8.png" alt="pokeball" width="50px" height="50px"/> </li>
+		<li style="float:right" class="active"><a href="index.html">Login/Sign-Up</a></li>
 
 	</ul>
 </nav>
-<h1>login page</h1>
+<h1>Login page</h1>
 <body>
 
 <!--
@@ -22,9 +31,13 @@ awaiting response
 <form method="POST" action="login.php">
 	<label for"username">Username</label>
 	<input type="text" placeholder="Enter Username" name="username" id="username" required>
-	<label for"password">Password</label>
+	<p></p>
+  <label for"password">Password</label>
 	<input type="text" placeholder="Enter Password" name="password" id="password" required>
-	<button type="submit">Log In</button>
+	<p></p>
+  <button type="submit">Log In</button>
 </form>
+<p></p>
+<h3>Don't have an account? <a href="registration.html">Sign-up now!</a></h3>
 </body>
 </html>

@@ -3,15 +3,17 @@
 
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="style.css">
 </head>
 <nav>
 	<ul>
-		<li><a href="index.html">Login</a></li>
-		<li><a href="registration.html">Registration</a></li>
+		<li style="float: left"><img src="https://www.freepnglogos.com/uploads/pokeball-png/pokeball-alexa-style-blog-pokemon-inspired-charmander-daily-8.png" alt="pokeball" width="50px" height="50px"/> </li>
+
+		<li style="float:right" class="active"><a href="index.html">Login/Sign-Up</a></li>
 
 	</ul>
 </nav>
-<h1>registration page</h1>
+<h1>Registration page</h1>
 <body>
 <!--
 <div id="textResponse">
@@ -21,13 +23,18 @@ awaiting response
 <form method="POST" action="registration.php">
 	<label for"username">Username</label>
 	<input type="text" placeholder="Enter Username" name="username" id="username" required>
-	<br>
+	
+	<p></p>
 	<label for"password">Password</label>
 	<input type="password" placeholder="Enter Password" name="password" id="password" required>
-	<br>
+	
+	<!--
 	<label for="confirm_password">Confirm Password:</label>
 	<input type="password" id="confirm_password" name="confirm_password">
 	<br>
+	-->
+	<p>
+	</p>
 	<button type="submit">Registration</button>
 </form>
 
