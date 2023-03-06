@@ -84,13 +84,17 @@ function registerUser($request)
 		$query = "SELECT * FROM PokemonInfo WHERE TeamID = $TeamID AND UserID = $UserID;";
 
 		$response = $mydb->query($query);
-
+		$rows = array();
 		if (mysqli_num_rows($response) > 0) {
 			echo "We correctly worked".PHP_EOL;
-
+			while ($row = mysqli_fetch_assoc($response)) {
+				echo 'n'.$row['PokemonName'].'n';
+				$rows[] = $row;
+			}
 		}
+		print json_encode($rows);
 
-		return array("returnCode"=>0, 'message'=>$response);
+		return array("returnCode"=>0, 'message'=>json_encode($rows));
 		
      }
 }
