@@ -5,9 +5,7 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" href="style.css">
 </head>
-<style>   
 
-</style>
 
 <nav>
 	<ul>
@@ -25,6 +23,63 @@
 -->
 <body>
 
-    
+  <button class="collapsible">Team 1</button>
+  
+  <div class="content">
+    <div class="card-container">
+      <div class="card">
+        <h3>Card 1</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ac enim quis augue vestibulum aliquam. In vel augue eu mauris eleifend consequat.</p>
+      </div>
+      <div class="card">
+        <h3>Card 2</h3>
+        <p>Aliquam fringilla tellus ac justo consectetur malesuada. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Quisque nec pharetra quam.</p>
+      </div>
+      <div class="card">
+        <h3>Card 3</h3>
+        <p>Mauris in suscipit mi. Suspendisse sit amet elit quis tellus tristique scelerisque. Donec aliquam libero et quam rutrum, vel facilisis sapien congue.</p>
+      </div>
+    </div>
+    <div class="card-container">
+      <div class="card">
+        <h3>Card 4</h3>
+        <p>Nulla facilisi. Phasellus ullamcorper augue vel sapien ornare, at dapibus velit molestie. Maecenas tristique lorem vel ligula congue, id pretium purus sagittis.</p>
+      </div>
+      <div class="card">
+        <h3>Card 5</h3>
+        <p>Ut sed justo at nisi fringilla rhoncus. In ac diam bibendum, eleifend felis eget, dignissim tellus. Nunc dignissim mauris eget convallis malesuada.</p>
+      </div>
+      <div class="card">
+        <h3>Card 6</h3>
+        <p>Nam bibendum mi ac diam elementum, sed varius dolor facilisis. Donec auctor nunc eget metus euismod, quis gravida mauris maximus.</p>
+      </div>
+    </div>
+  </div>
+
+  
+<script>
+ // Get the button that toggles the menu
+var button = document.querySelector(".collapsible");
+
+// Get the content of the menu
+var content = document.querySelector(".content");
+
+// Add a click event listener to the button
+button.addEventListener("click", function() {
+
+  // Toggle the "active" class on the button
+  button.classList.toggle("active");
+
+  // Toggle the "show" class on the content
+  if (content.style.display === "block") {
+    content.style.display = "none";
+  } else {
+    content.style.display = "block";
+  }
+
+});
+
+
+</script>    
 </body>
 </html>
