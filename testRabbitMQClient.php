@@ -16,8 +16,16 @@ else
 
 $request = array();
 $request['type'] = "getteam";
-$request['UserID'] = "1";
-$request['TeamID'] = "1";
+$request['UserID'] = 1;
+$request['TeamID'] = 1;
+$request['PokemonID'] = 2;
+$request['PokemonName'] = "Venasaur";
+$request['AbilityID'] = 1;
+$request['NatureID'] = 1;
+$request['Move_One'] = 1;
+$request['Move_Two'] = 2;
+$request['Move_Three'] = 3;
+$request['Move_Four'] = 4;
 $request['message'] = $msg;
 $response = $client->send_request($request);
 //$response = $client->publish($request);
@@ -25,6 +33,7 @@ $response = $client->send_request($request);
 echo "client received response: ".PHP_EOL;
 print_r($response);
 $pokemonname;
+if ($response["returncode"] == 0) {
 $arry =  json_decode($response['message'], true);
 print_r($arry);
 foreach($arry as $row) {
@@ -32,6 +41,7 @@ foreach($arry as $row) {
 //	echo 'n'.$row['PokemonName'].'n';
 }
 echo $pokemonname;
+}
 echo "\n\n";
 
 echo $argv[0]." END".PHP_EOL;

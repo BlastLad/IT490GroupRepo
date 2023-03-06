@@ -93,8 +93,38 @@ function registerUser($request)
 			}
 		}
 		print json_encode($rows);
-
 		return array("returnCode"=>0, 'message'=>json_encode($rows));
+	case 'addpokemon':
+		$TeamID = $request['TeamID'];
+		$UserID = $request['UserID'];
+		$PokemonID = $request['PokemonID'];
+		$PokemonName = $request['PokemonName'];
+		$Move_One = $request['Move_One'];
+		$Move_Two = $request['Move_Two'];
+		$Move_Three = $request['Move_Three'];
+		$Move_Four = $request['Move_Four'];
+		$AbilityID = $request['AbilityID'];
+		$NatureID = $request['NatureID'];
+
+		$query = "SELECT * FROM TeamInfo WHERE TeamID = $TeamID and UserID = $UserID";
+		$response = $mydb->query($query);
+		if (mysqli_num_rows($response) > 0 && mysqli_num_rows($response) < 6) 
+		{
+			$queryN = "INSERT INTO PokemonInfo VALUES ($UserID, $TeamID, $PokemonID, '$PokemonName', $Move_One, $Move_Two, $Move_Three, $Move_Four, $AbilityID, $NatureID);";
+			echo "ugh".PHP_EOL;
+			$responseN = $mydb->query($queryN);
+			if ($responseN) {
+				echo "We correctly worked add".PHP_EOL;
+			}
+			return array("returncode"=>2, "message"=>"added pokemon ok");
+
+		}
+		else 
+		{
+			return array("returncode"=>2, "message"=>"failed to add");
+		}
+
+			
 		
      }
 }
