@@ -28,57 +28,96 @@
   <div class="content">
     <div class="card-container">
       <div class="card">
-        <h3>Card 1</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ac enim quis augue vestibulum aliquam. In vel augue eu mauris eleifend consequat.</p>
+        <img src="https://via.placeholder.com/150" alt="Card 1 Image">
+        <h3>John Doe</h3>
+        <div class="card-details">
+          <p>Email: john.doe@example.com</p>
+          <p>Phone: (123) 456-7890</p>
+        </div>
       </div>
       <div class="card">
-        <h3>Card 2</h3>
-        <p>Aliquam fringilla tellus ac justo consectetur malesuada. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Quisque nec pharetra quam.</p>
+        <img src="https://via.placeholder.com/150" alt="Card 2 Image">
+        <h3>Jane Smith</h3>
+        <div class="card-details">
+          <p>Email: jane.smith@example.com</p>
+          <p>Phone: (234) 567-8901</p>
+        </div>
       </div>
       <div class="card">
-        <h3>Card 3</h3>
-        <p>Mauris in suscipit mi. Suspendisse sit amet elit quis tellus tristique scelerisque. Donec aliquam libero et quam rutrum, vel facilisis sapien congue.</p>
+        <img src="https://via.placeholder.com/150" alt="Card 3 Image">
+        <h3>Bob Johnson</h3>
+        <div class="card-details">
+          <p>Email: bob.johnson@example.com</p>
+          <p>Phone: (345) 678-9012</p>
+        </div>
       </div>
     </div>
     <div class="card-container">
       <div class="card">
-        <h3>Card 4</h3>
-        <p>Nulla facilisi. Phasellus ullamcorper augue vel sapien ornare, at dapibus velit molestie. Maecenas tristique lorem vel ligula congue, id pretium purus sagittis.</p>
+        <img src="https://via.placeholder.com/150" alt="Card 4 Image">
+        <h3>Alice Lee</h3>
+        <div class="card-details">
+          <p>Email: alice.lee@example.com</p>
+          <p>Phone: (456) 789-0123</p>
+        </div>
       </div>
       <div class="card">
-        <h3>Card 5</h3>
-        <p>Ut sed justo at nisi fringilla rhoncus. In ac diam bibendum, eleifend felis eget, dignissim tellus. Nunc dignissim mauris eget convallis malesuada.</p>
+        <img src="https://via.placeholder.com/150" alt="Card 5 Image">
+        <h3>Tom Wilson</h3>
+        <div class="card-details">
+          <p>Email: tom.wilson@example.com</p>
+          <p>Phone: (567) 890-1234</p>
+        </div>
       </div>
       <div class="card">
-        <h3>Card 6</h3>
-        <p>Nam bibendum mi ac diam elementum, sed varius dolor facilisis. Donec auctor nunc eget metus euismod, quis gravida mauris maximus.</p>
+        <img src="https://via.placeholder.com/150" alt="Card 6 Image">
+        <h3>Emily Chen</h3>
+        <div class="card-details">
+          <p>Email: emily.chen@example.com</p>
+          <p>Phone: (678) 901-2345</p>
+        </div>
       </div>
     </div>
   </div>
-
   
 <script>
- // Get the button that toggles the menu
-var button = document.querySelector(".collapsible");
+// Get all the collapsible buttons
+var coll = document.getElementsByClassName("collapsible");
 
-// Get the content of the menu
-var content = document.querySelector(".content");
+// Loop through each collapsible button
+for (var i = 0; i < coll.length; i++) {
 
-// Add a click event listener to the button
-button.addEventListener("click", function() {
+  // Add a click event listener to toggle the active class and show/hide the content
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
 
-  // Toggle the "active" class on the button
-  button.classList.toggle("active");
+}
 
-  // Toggle the "show" class on the content
-  if (content.style.display === "block") {
-    content.style.display = "none";
-  } else {
-    content.style.display = "block";
-  }
+// Get all the cards
+var cards = document.getElementsByClassName("card");
 
-});
+// Loop through each card
+for (var i = 0; i < cards.length; i++) {
 
+  // Add a click event listener to toggle the active class and show/hide the card details
+  cards[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var details = this.querySelector(".card-details");
+    if (details.classList.contains("expanded")) {
+      details.classList.remove("expanded");
+    } else {
+      details.classList.add("expanded");
+    }
+  });
+
+}
 
 </script>    
 </body>
