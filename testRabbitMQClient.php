@@ -15,7 +15,7 @@ else
 }
 
 $request = array();
-$request['type'] = "getteam";
+$request['type'] = "getteaminfo";
 $request['UserID'] = 1;
 $request['TeamID'] = 1;
 $request['PokemonID'] = 2;
@@ -26,6 +26,8 @@ $request['Move_One'] = 1;
 $request['Move_Two'] = 2;
 $request['Move_Three'] = 3;
 $request['Move_Four'] = 4;
+$request['VersionID'] = 1;
+$request['TeamName'] = "TheStarts";
 $request['message'] = $msg;
 $response = $client->send_request($request);
 //$response = $client->publish($request);
@@ -33,11 +35,11 @@ $response = $client->send_request($request);
 echo "client received response: ".PHP_EOL;
 print_r($response);
 $pokemonname;
-if ($response["returncode"] == 0) {
+if ($response["returncode"] == 3) {
 $arry =  json_decode($response['message'], true);
 print_r($arry);
 foreach($arry as $row) {
-	$pokemonname = $row['PokemonName'];
+	$pokemonname = $row['TeamName'];
 //	echo 'n'.$row['PokemonName'].'n';
 }
 echo $pokemonname;

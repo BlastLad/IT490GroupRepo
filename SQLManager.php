@@ -123,6 +123,41 @@ function registerUser($request)
 		{
 			return array("returncode"=>2, "message"=>"failed to add");
 		}
+	case "createteam":
+                $UserID = $request['UserID'];
+                $TeamName = $request['TeamName'];
+                $VersionID = $request['VersionID'];
+		
+		$query = "INSERT INTO TeamInfo (UserID, TeamName, VersionID, Wins, Loses) VALUES ($UserID, '$TeamName', $VersionID, 0, 0);";
+
+		$response = $mydb->query($query);
+
+		if ($response) 
+		{
+			return array("returncode"=>2,"message"=> "New Team Created"); 
+		}
+		else
+		{
+			return array("returncode"=>2, "message"=>"failed to create new team");
+		}
+		case "getteaminfo":
+			$UserID = $request['UserID'];
+			$TeamID = $request['TeamID'];
+		$query = "SELECT * FROM TeamInfo WHERE UserID = $UserID ORDER BY TeamID;";
+			$response = $mydb->query($query);
+			if (mysqli_num_rows($response) > 0)
+			{
+				$rows = array();
+                        	echo "We correctly worked".PHP_EOL;
+                        	while ($row = mysqli_fetch_assoc($response)) 
+				{
+                                	$rows[] = $row;
+                        	}
+                
+		                print json_encode($rows);
+                		return array("returnCode"=>3, 'message'=>json_encode($rows));
+			}
+
 
 			
 		
