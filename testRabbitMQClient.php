@@ -1,8 +1,8 @@
 #!/usr/bin/php
 <?php
-require_once('path.inc');
-require_once('get_host_info.inc');
-require_once('rabbitMQLib.inc');
+require_once('frontend/path.inc');
+require_once('frontend/get_host_info.inc');
+require_once('frontend/rabbitMQLib.inc');
 
 $client = new rabbitMQClient("testRabbitMQ.ini","testServer");
 if (isset($argv[1]))
@@ -15,9 +15,9 @@ else
 }
 
 $request = array();
-$request['type'] = "validate";
-$request['username'] = "jack";
-$request['password'] = "henry";
+$request['type'] = "getteam";
+$request['UserID'] = "1";
+$request['TeamID'] = "2";
 $request['message'] = $msg;
 $response = $client->send_request($request);
 //$response = $client->publish($request);
