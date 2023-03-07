@@ -157,7 +157,21 @@ function registerUser($request)
 		                print json_encode($rows);
                 		return array("returnCode"=>3, 'message'=>json_encode($rows));
 			}
+case "createbattleroom":
+                        $UserID = $request['UserID'];
+                        $RoomName = $request['RoomName'];
+                        $VersionID = $request['VersionID'];
+                $query = "INSERT INTO BattleRooms (Player_One, VersionID, RoomName) VALUES ($UserID, $VersionID,'$RoomName');";
+                        $response = $mydb->query($query);
+                        return array("returnCode"=>2, 'message'=>"Room created");
+                case "finishbattle":
+                        $query = "SELECT * FROM BattleRooms WHERE Player_One = $UserID AND Player_Two = $Player_Two;";
+                        $response = $mydb->query($query);
+                        if (mysqli_num_rows($response) > 0)
+                        {
+                        $query = "DELETE FROM BattleRooms WHERE Player_One = $UserID AND Player_Two = $Player_Two;";
 
+                        }
 
 			
 		
