@@ -35,3 +35,105 @@ ul {
     background-color:#0075BE;
   }
 
+/* STYLE FOR TEAM PAGE */
+.collapsible {
+  background-color: #f54d4d;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 18px;
+}
+
+.collapsible:hover {
+  background-color: #ccc;
+}
+
+.content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+/* Float three columns side by side */
+.column {
+  float: left;
+  width: 30%;
+  padding: 10px 10px;
+}
+
+/* Remove extra left and right margins, due to padding */
+.row {margin: 0 -5px;}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive columns */
+@media screen and (max-width: 1000px) {
+  .column {
+    width: 50%;
+    display: block;
+    margin-bottom: 20px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+  }
+}
+
+
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  text-align: center;
+  background-color: #f1f1f1;
+  transition: 0.3s;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.card img {
+  border-radius: 10px 10px 10px 10px;
+
+  /*
+  border-radius: 100%;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin-bottom: 20px;
+  */
+}
+
+.card-name {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.card-details {
+  display: none;
+  font-size: 16px;
+  text-align: left;
+}
+
+.card-details p {
+  margin: 10px 0;
+}
+
+
