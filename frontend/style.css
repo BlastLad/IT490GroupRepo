@@ -43,14 +43,12 @@ ul {
     cursor: pointer;
     border: 2px solid #095776;
   
-    /* Mittig */
-    top: 50%;
-    left: 50%;
+  
   }
   
   .addTeam:after {
     content: '';
-    position: fixed;
+    position: absolute;
     transform: translate(-50%, -50%);
     height: 4px;
     width: 2%;
@@ -60,8 +58,7 @@ ul {
   
   .addTeam:before {
     content: '';
-    position: fixed;
-   
+    position: absolute;
     transform: translate(-50%, -50%);
     background: #095776;
     height: 4%;
