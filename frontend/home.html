@@ -4,43 +4,7 @@
 <head>
 <meta charset="UTF-8">
 </head>
-<style>   
-    ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
 
-}
-
-li {
-  float: left;
-}
-
-li a {
-  display: block;
-  color: #000000;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  letter-spacing: 2px;
-}
-
-li a:hover:not(.active) {
-  background-color: #FFCC00;
-}
-
-.active {
-  background-color:#0075BE;
-}
-</style>
-<style>
-@import url('https://fonts.cdnfonts.com/css/pokemon-solid');
-nav {
-        font-family: 'Pokemon Solid', sans-serif;
-        word-spacing: 5px;
-    }
-    </style> 
 <nav>
 	<ul>
 		<li style class="active"><a href="home.html">Home</a></li>
@@ -53,8 +17,39 @@ nav {
 	</ul>
 </nav>
 <h1>Home page</h1>
+<h2>PokeAPI Search</h2>
 <body>
-
+  <head>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <form>
+    <label for="pokemon">Enter a Pokemon:</label>
+    <input type="text" id="pokemon" name="pokemon">
+    <p></p>
+    <label for="generation">Select a Generation:</label>
+    <select id="generation">
+      <option value="1">Generation 1</option>
+      <option value="2">Generation 2</option>
+      <option value="3">Generation 3</option>
+      <option value="4">Generation 4</option>
+      <option value="5">Generation 5</option>
+      <option value="6">Generation 6</option>
+      <option value="7">Generation 7</option>
+      <option value="8">Generation 8</option>
+    </select>
     
+    <button type="submit">Search</button>
+  </form>
+  
+  <div id="results">
+    <!-- Search results will appear here -->
+  </div>
+
+    <div>
+      <button id="addTeam" class="addTeam"></button>
+    </div>
+    <script src="pokeapi.js"></script>
+
+
 </body>
 </html>

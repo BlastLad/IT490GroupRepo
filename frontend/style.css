@@ -3,7 +3,7 @@ nav {
         font-family: 'Pokemon Solid', sans-serif;
         word-spacing: 5px;
     }
-h1, h3{text-align: center;}
+h1, h3{text-align: left;}
 form{text-align:center;}
 
 ul {
@@ -34,6 +34,48 @@ ul {
   .active {
     background-color:#0075BE;
   }
+
+  .addTeam {
+    
+    width: 35px;
+    height: 35px;
+    background: #fff;
+    cursor: pointer;
+    border: 2px solid #095776;
+  
+  
+  }
+  
+  .addTeam:after {
+    content: '';
+    position: absolute;
+    transform: translate(-50%, -50%);
+    height: 4px;
+    width: 2%;
+    background: #095776;
+  
+  }
+  
+  .addTeam:before {
+    content: '';
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background: #095776;
+    height: 4%;
+    width: 4px;
+  }
+  
+  .addTeam:hover:before,
+  .addTeam:hover:after {
+    background: #fff;
+    transition: 0.2s;
+  }
+  
+  .addTeam:hover {
+    background-color: #095776;
+    transition: 0.2s;
+  }
+  
 
 /* STYLE FOR TEAM PAGE */
 .collapsible {
