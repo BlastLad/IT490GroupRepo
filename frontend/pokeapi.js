@@ -1,6 +1,5 @@
 const form = document.querySelector('form');
 const resultsDiv = document.querySelector('#results');
-const resultsDiv2 = document.querySelector('#moves');
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -17,50 +16,38 @@ form.addEventListener('submit', async (event) => {
   }
   
   const pokemon = await response.json();
-  //json to array ^^
   
-  resultsDiv2.innerHTML = "";
-
-  var result = [];
+  const movesByGeneration = pokemon.moves.reduce((acc, move) => {
+    move.version_group_details.forEach((versionGroupDetail) => {
+      const versionGroupUrl = versionGroupDetail.version_group.url;
+      const versionGroupIndex = parseInt(versionGroupUrl.split('/').slice(-2, -1)[0]) - 1;
+      if (versionGroupIndex == generation - 1) {
+        if (!acc[versionGroupIndex]) {
+          acc[versionGroupIndex] = [];
+        }
+        if (!acc[versionGroupIndex].includes(move.move.name)) {
+          acc[versionGroupIndex].push(move.move.name);
+        }
+      }
+    });
+    return acc;
+  }, new Array(4).fill(null).map(() => []));
   
+  const moveSelects = movesByGeneration[generation-1].map((move) => {
+    return `
+      <option value="${move}">${move}</option>
+    `;
+  }).join('');
   
-  for (var i in pokemon.moves) {
-
- //   result.push([i, pokemon.moves[i]]);
-      move = i.move.name;
-      resultsDiv2.innerHTML += '<option value="1">'+move+'</option>';
-      //i.move.name;
-  }
+  const selectTemplate = `
+      <select>
+        <option value="">-- Select Move --</option>
+        ${moveSelects}
+      </select>
+  `;
   
-  //resultsDiv2.innerHTML = "";
-  /*
-  for (var i in result){
-    
-    resultsDiv2.innerHTML += '<option value="1">Generation 1</option>';
-
-  }
-  */
-
-   
-  const generationIndex = generation - 1;
-  const moveSet = pokemon.moves.filter((move) => {
-    return move.version_group_details.some((versionGroupDetail) => {
-      return versionGroupDetail.version_group.url.includes(`/${generationIndex + 1}/`);
-      });
-    }).map((move) => {
-      return move.move.name;
-  });
+  const resultsTemplate = new Array(4).fill(selectTemplate).join('');
   
- /* 
-  if (moveSet.length === 0 && pokemon.moves.length > 0) {
-    resultsDiv.innerHTML = `<p>Move set not available for ${pokemonName} in Generation ${generation}.</p>`;
-    return;
-  } else if (pokemon.moves.length === 0) {
-    resultsDiv.innerHTML = `<p>No move data available for ${pokemonName}.</p>`;
-    return;
-  }
-*/
-
   const stats = pokemon.stats.map((stat) => {
     return `${stat.stat.name}: ${stat.base_stat}`;
   }).join('<br>');
@@ -78,7 +65,7 @@ form.addEventListener('submit', async (event) => {
     <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
     <p><strong>Type:</strong> ${types}</p>
     <p><strong>Abilities:</strong> ${abilities}</p>
-    <p><strong>Move Set for Generation ${generation}:</strong> ${moveSet.join(', ')}</p>
+    <p>${resultsTemplate}</p>
     <p><strong>Stats:</strong><br>${stats}</p>
   `;
 
