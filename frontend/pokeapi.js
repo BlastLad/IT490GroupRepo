@@ -23,29 +23,40 @@ form.addEventListener('submit', async (event) => {
       const versionGroupIndex = parseInt(versionGroupUrl.split('/').slice(-2, -1)[0]) - 1;
       if (versionGroupIndex == generation - 1) {
         if (!acc[versionGroupIndex]) {
-          acc[versionGroupIndex] = [];
+          acc[versionGroupIndex] = new Set();
         }
-        if (!acc[versionGroupIndex].includes(move.move.name)) {
-          acc[versionGroupIndex].push(move.move.name);
-        }
+        acc[versionGroupIndex].add(move.move.name);
       }
     });
     return acc;
-  }, new Array(4).fill(null).map(() => []));
-  
-  const moveSelects = movesByGeneration[generation-1].map((move) => {
+  }, new Array(4).fill(null).map(() => new Set()));
+
+  const moveSelects = Array.from(movesByGeneration[generation-1]).map((move) => {
     return `
       <option value="${move}">${move}</option>
     `;
   }).join('');
-  
+
+  const abilitiesSelect = pokemon.abilities.map((ability) => {
+    return `
+      <option value="${ability.ability.name}">${ability.ability.name}</option>
+    `;
+  }).join('');
+
   const selectTemplate = `
       <select>
         <option value="">-- Select Move --</option>
         ${moveSelects}
       </select>
   `;
-  
+
+  const abilitiesTemplate = `
+      <select>
+        <option value="">-- Select Ability --</option>
+        ${abilitiesSelect}
+      </select>
+  `;
+
   const resultsTemplate = new Array(4).fill(selectTemplate).join('');
   
   const stats = pokemon.stats.map((stat) => {
@@ -56,17 +67,13 @@ form.addEventListener('submit', async (event) => {
     return type.type.name;
   }).join(', ');
   
-  const abilities = pokemon.abilities.map((ability) => {
-    return ability.ability.name;
-  }).join(', ');
-  
   resultsDiv.innerHTML = `
     <h2>${pokemon.name.toUpperCase()}</h2>
     <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
     <p><strong>Type:</strong> ${types}</p>
-    <p><strong>Abilities:</strong> ${abilities}</p>
+    <p><strong>Abilities:</strong> ${abilitiesTemplate}</p>
     <p>${resultsTemplate}</p>
     <p><strong>Stats:</strong><br>${stats}</p>
   `;
-
+  
 });

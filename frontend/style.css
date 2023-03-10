@@ -177,5 +177,8 @@ ul {
 .card-details p {
   margin: 10px 0;
 }
+.body {
+  position: center;
+}
 
 
