@@ -34,7 +34,7 @@ if ($response['message'] == "Valid Login")
 }
 echo json_encode($msg);
 
-header("Location: home.html");
+header("Location: home.php");
 exit(0);
 
 ?>

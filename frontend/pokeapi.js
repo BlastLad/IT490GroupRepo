@@ -1,5 +1,32 @@
 const form = document.querySelector('form');
 const resultsDiv = document.querySelector('#results');
+const addButton = document.querySelector('#addTeamForm');
+var pokemonNum = 0;
+var pokemonName2 ='';
+addButton.addEventListener('submit', async (event) => {
+       
+	
+	let moveNum = 5;
+	let abNum = document.getElementById("ability").value;
+	let move1Nam = document.getElementById("move_one").value;
+	let teamNum = document.getElementById("teamSelection").value;
+	const body = {
+	AbilityID: abNum,
+        Move_One: move1Nam,
+        Move_Two: 1,
+        Move_Three: 1,
+        Move_Four: moveNum,
+        PokemonID: pokemonNum,
+        PokemonName: pokemonName2,
+        TeamID: 0,
+        UserID: 1
+	};
+	const jsonBody = JSON.stringify(body);
+	const xhr = new XMLHttpRequest();
+	xhr.open("POST", "addPokemon.php");
+	xhr.setRequestHeader("Content-Type", "application/json");	
+	xhr.send(jsonBody);	
+});
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -17,6 +44,9 @@ form.addEventListener('submit', async (event) => {
   
   const pokemon = await response.json();
   
+  pokemonNum = pokemon.id;
+  pokemonName2 = pokemonName;
+
   const movesByGeneration = pokemon.moves.reduce((acc, move) => {
     move.version_group_details.forEach((versionGroupDetail) => {
       const versionGroupUrl = versionGroupDetail.version_group.url;
@@ -44,14 +74,14 @@ form.addEventListener('submit', async (event) => {
   }).join('');
 
   const selectTemplate = `
-      <select>
+      <select id="move_one">
         <option value="">-- Select Move --</option>
         ${moveSelects}
       </select>
   `;
 
   const abilitiesTemplate = `
-      <select>
+      <select id="ability">
         <option value="">-- Select Ability --</option>
         ${abilitiesSelect}
       </select>

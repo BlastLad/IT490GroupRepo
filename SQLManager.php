@@ -84,13 +84,114 @@ function registerUser($request)
 		$query = "SELECT * FROM PokemonInfo WHERE TeamID = $TeamID AND UserID = $UserID;";
 
 		$response = $mydb->query($query);
-
+		$rows = array();
 		if (mysqli_num_rows($response) > 0) {
 			echo "We correctly worked".PHP_EOL;
+			while ($row = mysqli_fetch_assoc($response)) {
+				echo 'n'.$row['PokemonName'].'n';
+				$rows[] = $row;
+			}
+		}
+		print json_encode($rows);
+		return array("returnCode"=>0, 'message'=>json_encode($rows));
+	case 'addpokemon':
+		$TeamID = $request['TeamID'];
+		$UserID = $request['UserID'];
+		$PokemonID = $request['PokemonID'];
+		$PokemonName = $request['PokemonName'];
+		$Move_One = $request['Move_One'];
+		$Move_Two = $request['Move_Two'];
+		$Move_Three = $request['Move_Three'];
+		$Move_Four = $request['Move_Four'];
+		$AbilityID = $request['AbilityID'];
+		
+		if ($TeamID == 0) {
+			echo "creating new team".PHP_EOL;
+			$query = "INSERT INTO TeamInfo (UserID, TeamName, VersionID, Wins, Loses) VALUES ($UserID, '$TeamID', 1, 0, 0);";
+
+                $response = $mydb->query($query);
+
+                if ($response)
+		{
+			echo"new team successful".PHP_EOL;			
+                $query = "SELECT TeamID FROM TeamInfo WHERE UserID = $UserID ORDER BY TeamID DESC Limit 1;";
+                        $response = $mydb->query($query);
+			if (mysqli_num_rows($response) > 0) {
+				$row = $response->fetch_row();
+				$TeamID  = $row[0] ?? false;				
+			}
+			echo"$TeamID teamID ".PHP_EOL;
+		}
 
 		}
 
-		return array("returnCode"=>0, 'message'=>$response);
+		$query = "SELECT * FROM TeamInfo WHERE TeamID = $TeamID and UserID = $UserID";
+		$response = $mydb->query($query);
+		if (mysqli_num_rows($response) > 0 && mysqli_num_rows($response) < 6) 
+		{
+			$queryN = "INSERT INTO PokemonInfo VALUES ($UserID, $TeamID, $PokemonID, '$PokemonName', '$Move_One', '$Move_Two', '$Move_Three',  '$Move_Four', '$AbilityID');";
+			echo "ugh".PHP_EOL;
+			$responseN = $mydb->query($queryN);
+			if ($responseN) {
+				echo "We correctly worked add".PHP_EOL;
+			}
+			return array("returncode"=>2, "message"=>"added pokemon ok");
+
+		}
+		else 
+		{
+			return array("returncode"=>2, "message"=>"failed to add");
+		}
+	case "createteam":
+                $UserID = $request['UserID'];
+                $TeamName = $request['TeamName'];
+                $VersionID = $request['VersionID'];
+		
+		$query = "INSERT INTO TeamInfo (UserID, TeamName, VersionID, Wins, Loses) VALUES ($UserID, '$TeamName', $VersionID, 0, 0);";
+
+		$response = $mydb->query($query);
+
+		if ($response) 
+		{
+			return array("returncode"=>2,"message"=> "New Team Created"); 
+		}
+		else
+		{
+			return array("returncode"=>2, "message"=>"failed to create new team");
+		}
+		case "getteaminfo":
+			$UserID = $request['UserID'];			
+		$query = "SELECT * FROM TeamInfo WHERE UserID = $UserID ORDER BY TeamID;";
+			$response = $mydb->query($query);
+			if (mysqli_num_rows($response) > 0)
+			{
+				$rows = array();
+                        	echo "We correctly worked".PHP_EOL;
+                        	while ($row = mysqli_fetch_assoc($response)) 
+				{
+                                	$rows[] = $row;
+                        	}
+                
+		                print json_encode($rows);
+                		return array("returnCode"=>3, 'message'=>json_encode($rows));
+			}
+case "createbattleroom":
+                        $UserID = $request['UserID'];
+                        $RoomName = $request['RoomName'];
+                        $VersionID = $request['VersionID'];
+                $query = "INSERT INTO BattleRooms (Player_One, VersionID, RoomName) VALUES ($UserID, $VersionID,'$RoomName');";
+                        $response = $mydb->query($query);
+                        return array("returnCode"=>2, 'message'=>"Room created");
+                case "finishbattle":
+                        $query = "SELECT * FROM BattleRooms WHERE Player_One = $UserID AND Player_Two = $Player_Two;";
+                        $response = $mydb->query($query);
+                        if (mysqli_num_rows($response) > 0)
+                        {
+                        $query = "DELETE FROM BattleRooms WHERE Player_One = $UserID AND Player_Two = $Player_Two;";
+
+                        }
+
+			
 		
      }
 }

@@ -45,7 +45,40 @@
   </div>
   <div>
     <div>
-      <button id="addTeam" class="addTeam"></button>
+     <form id="addTeamForm">     
+	<label for="teamSelection">Select a Team:</label>
+	 <select id="teamSelection">
+         <option value="0">New Team</option>
+
+<?php
+
+	require_once('path.inc');
+	require_once('get_host_info.inc');
+	require_once('rabbitMQLib.inc');	
+	$client = new rabbitMQClient("testRabbitMQ.ini","testServer");
+	$request = array();
+	$request['type'] = "getteaminfo";
+	$request['UserID'] = 1;
+	$request['message'] = "hi";
+	$response = $client->send_request($request);	
+	if (true) 
+	{			        
+	    $arry = json_decode($response['message'], true);
+	    foreach($arry as $row)
+	    {
+		 //   echo "<option value='1'>New Opt</option>";
+
+	      echo "<option value='{$row['TeamID']}'>{$row['TeamName']}</option>";
+	    }	  
+	}
+	else {
+	echo "<option value='1'>{$response['returncode']} Opt</option>";
+	}
+
+	?>
+	</select>
+	 <button id="addTeam" class="addTeam" ></button>
+     </form>
     </div>
   
   <script src="pokeapi.js"></script>
