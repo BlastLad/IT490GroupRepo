@@ -1,26 +1,11 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-<meta charset="UTF-8">
-<link rel="stylesheet" href="style.css">
-</head>
 
+<?php require(__DIR__ . "/nav.php"); ?>
 
-<nav>
-	<ul>
-		<li><a href="home.html">Home</a></li>
-        <li style class="active"><a href="teams.html">Teams</a></li>
-        <li><a href="battles.html">Battles</a></li>
-        <li><a href="tournament.html">Tournament</a></li>
-
-		<li style="float:right"><a href="index.html">Login/Sign-Up</a></li>
-
-	</ul>
-</nav>
-<!-- COMMENTED OUT BECAUSE ITS CENTERED WITH THE CSS FILE
 <h1>Teams page</h1>
--->
+
 <body>
 
   <button class="collapsible">Team 1</button>

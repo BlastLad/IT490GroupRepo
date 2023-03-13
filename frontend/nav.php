@@ -1,15 +1,20 @@
 <html>
 <head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <nav>
     <ul>
-        <li><a href="home.html">Home</a></li>
+		<li style class="active"><a href="home.php">Home</a></li>
+        <li><a href="teams.php">Teams</a></li>
+        <li><a href="battles.php">Battles</a></li>
+        <li><a href="tournament.php">Tournament</a></li>
 
-        <li><a href="login.html">Login</a></li>
-        <li><a href="registration.html">Register</a></li>
-    </ul>
+		<li style="float:right"><a href="index.html">Login/Sign-Up</a></li>
+
+	</ul>
 </nav>
 
 </body>

@@ -1,23 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
   <title>Home</title>
-  <link rel="stylesheet" href="style.css">
 </head>
 
+<?php require(__DIR__ . "/nav.php"); ?>
 
-<nav>
-	<ul>
-		    <li style class="active"><a href="home.html">Home</a></li>
-        <li><a href="teams.html">Teams</a></li>
-        <li><a href="battles.html">Battles</a></li>
-        <li><a href="tournament.html">Tournament</a></li>
-
-		<li style="float:right"><a href="index.html">Login/Sign-Up</a></li>
-
-	</ul>
-</nav>
 <body>
   <h1>PokeAPI Search Page</h1>
   
