@@ -175,11 +175,26 @@ function registerUser($request)
 		                print json_encode($rows);
                 		return array("returnCode"=>3, 'message'=>json_encode($rows));
 			}
+		case "getlobbies":
+			$TeamVersion = $request['VersionID'];
+			$query = "SELECT * FROM BattleRooms WHERE VersionID = $TeamVersion AND Full = 0 ORDER BY RoomID;";
+			$response = $mydb->query($query);
+			if (mysqli_num_rows($response) > 0)
+			{
+				$rows = array();
+				echo "Rooms Gotten".PHP_EOL;
+				while ($row = mysqli_fetch_assoc($response))
+				{
+					$rows[] = $row;
+				}
+				print json_encode($rows);
+				return array("returnCode"=>1, 'message'=>json_encode($rows));
+			}
 case "createbattleroom":
                         $UserID = $request['UserID'];
                         $RoomName = $request['RoomName'];
                         $VersionID = $request['VersionID'];
-                $query = "INSERT INTO BattleRooms (Player_One, VersionID, RoomName) VALUES ($UserID, $VersionID,'$RoomName');";
+                $query = "INSERT INTO BattleRooms (Player_One, VersionID, RoomName, Full) VALUES ($UserID, $VersionID,'$RoomName', 0);";
                         $response = $mydb->query($query);
                         return array("returnCode"=>2, 'message'=>"Room created");
                 case "finishbattle":

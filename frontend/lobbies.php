@@ -1,21 +1,18 @@
-<!DOCTYPE html>
-<?php
-
-$lobbies;
-
-    $msg = "testMessage";
-    $request = array();
-    $request['type'] = "getlobbies";
-    $request['message'] = $msg;
-
-
-    $lobbies = {
-        RoomName: testRoom,
-        VersionID: 2,
-    }
-
-?>
+<!DOCTYPE HTML>
 <html>
+<?php
+   include('messageManager.php');
+   $lobbies;
+
+     $msg = "testMessage";
+     $request = array();
+     $request['type'] = "getlobbies";
+     $request['message'] = $msg;
+     $request['VersionID'] = 1;
+     $response = directMessage($request, "testServer");
+
+     $lobbies = json_decode($response['message'], true);  
+?>
 
 <head>
 <meta charset="UTF-8">
@@ -87,22 +84,23 @@ nav {
             <th>Room Name</th>
             <th>Version</th>
             <th>Join Lobby</th>
-            </tr>";
-            <?php
+	    </tr>
+		<?php
                 foreach ($lobbies as $openLobby) {
                 echo ' <tr>
                 <td>'.$openLobby['RoomName'].'</td>
-                <td>'.$row['VersionID'].'</td>
+                <td>'.$openLobby['VersionID'].'</td>
                 <td><button>Join Lobby</button></td>
-                </tr>';
+                </tr>'.PHP_EOL;
 
-                  } ?>
+		  }
+?>
               </table>
         </section>
 
         <aside>
             <div id="New_Lobby_Button">
-                <button>Create Lobby></button>
+                <button>Create Lobby</button>
             </div>
         </aside>
 
