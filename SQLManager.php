@@ -196,20 +196,22 @@ case "createbattleroom":
 			$VersionID = $request['VersionID'];
 			$query = "SELECT * FROM BattleRooms WHERE Player_One = $UserID OR Player_Two = $UserID;";
 			$response = $mydb->query($query);
-
+			
+				
 			if (mysqli_num_rows($response) > 0) {
 
+				echo"rows".PHP_EOL;
 				$query = "DELETE FROM BattleRooms WHERE Player_One = $UserID OR Player_Two = $UserID;";
 				//$response = $mydb->query($query);
 				return array("returnCode"=>0, 'message'=>"Room Already Exists for this user");
 
-			}
-			else {
+			}			
+			
 				$query = "INSERT INTO BattleRooms (Player_One, VersionID, RoomName, Full) VALUES ($UserID, $VersionID,'$RoomName', 0);";
 				$response = $mydb->query($query);
 				return array("returnCode"=>1, 'message'=>"Room created");
 
-			}
+			
 case "joinlobby":
 	$UserID = $request['UserID'];
 	$RoomID = $request['RoomID'];

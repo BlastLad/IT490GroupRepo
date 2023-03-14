@@ -41,8 +41,8 @@ function JoinLobby(buttonPressed)
 			alert(this.responseText);
 			const jsonResponse = JSON.parse(this.responseText);
 			if (jsonResponse.returnCode =='1')
-			{
-				alert("SUCCESS");
+			{			
+				window.location.replace("battles.html");
 			}
 			else
 			{
@@ -71,7 +71,8 @@ function CreateLobby()
                         const jsonResponse = JSON.parse(this.responseText);
                         if (jsonResponse.returnCode =='1')
                         {
-                                alert("SUCCESS");
+				window.location.replace("battles.html");
+                               
                         }
                         else
                         {
