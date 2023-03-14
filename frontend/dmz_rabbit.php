@@ -25,7 +25,12 @@ function apiCalls($request)
         case "pokemon":
             //run api call for pokemon
             $pokemon = $request['name'];
-            return doLogin($request['username'],$request['password']);
+            //$url = 'https://pokeapi.co/api/v2/pokemon/' . $pokemon;
+            $json = file_get_contents("https://pokeapi.co/api/v2/pokemon/{$pokemon}");
+            $pokemon_data = json_decode($json, TRUE);
+            return array("code" => 0, "message" => $pokemon_data);
+
+            //return doLogin($request['username'],$request['password']);
         case "move":
             //run api call for move
             return doValidate($request['sessionId']);
