@@ -193,11 +193,43 @@ function registerUser($request)
 case "createbattleroom":
                         $UserID = $request['UserID'];
                         $RoomName = $request['RoomName'];
-                        $VersionID = $request['VersionID'];
-                $query = "INSERT INTO BattleRooms (Player_One, VersionID, RoomName, Full) VALUES ($UserID, $VersionID,'$RoomName', 0);";
-                        $response = $mydb->query($query);
-                        return array("returnCode"=>2, 'message'=>"Room created");
-                case "finishbattle":
+			$VersionID = $request['VersionID'];
+			$query = "SELECT * FROM BattleRooms WHERE Player_One = $UserID OR Player_Two = $UserID;";
+			$response = $mydb->query($query);
+
+			if (mysqli_num_rows($response) > 0) {
+
+				$query = "DELETE FROM BattleRooms WHERE Player_One = $UserID OR Player_Two = $UserID;";
+				//$response = $mydb->query($query);
+				return array("returnCode"=>0, 'message'=>"Room Already Exists for this user");
+
+			}
+			else {
+				$query = "INSERT INTO BattleRooms (Player_One, VersionID, RoomName, Full) VALUES ($UserID, $VersionID,'$RoomName', 0);";
+				$response = $mydb->query($query);
+				return array("returnCode"=>1, 'message'=>"Room created");
+
+			}
+case "joinlobby":
+	$UserID = $request['UserID'];
+	$RoomID = $request['RoomID'];
+	echo "here1".PHP_EOL;
+	$query = "SELECT * FROM BattleRooms WHERE RoomID = $RoomID AND Player_One != $UserID AND Full = 0;";
+		$response = $mydb->query($query);
+	if (mysqli_num_rows($response) > 0) {
+			$query = "UPDATE BattleRooms SET Full = 1, Player_Two = $UserID;";
+			$response = $mydb->query($query);
+			if ($response){
+				echo "successroomjoin".PHP_EOL;
+			}
+			return array("returnCode"=>1, 'message'=>"Room Join");
+		}
+	else {
+		 return array("returnCode"=>0, 'message'=>"Room Full");
+
+	}
+
+		case "finishbattle":
                         $query = "SELECT * FROM BattleRooms WHERE Player_One = $UserID AND Player_Two = $Player_Two;";
                         $response = $mydb->query($query);
                         if (mysqli_num_rows($response) > 0)
