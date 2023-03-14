@@ -85,10 +85,9 @@ nav {
         </section>
 
         <aside>
-	    <div id="New_Lobby_Button">
-		<form onsubmit="CreateLobby()">
+	    <div>
 		Lobby Name: <input id="roomName" type="text" value ="New Lobby">
-		<input type="submit">
+		<button id="New_Lobby_Button" onclick="CreateLobby()">Create Lobby</button>
 		</form>
             </div>
         </aside>

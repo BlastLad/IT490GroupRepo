@@ -1,6 +1,5 @@
 window.addEventListener('load', GetListOfLobbies());
 
-
 function GetListOfLobbies()
 {
 	const xhr = new XMLHttpRequest();
@@ -14,7 +13,7 @@ function GetListOfLobbies()
 				if (key == 'message')
 					 {
 						 const innerJson = JSON.parse(value);
-					Object.entries(innerJson).forEach(([key2,value2]) => { alert(value2.RoomID);
+					Object.entries(innerJson).forEach(([key2,value2]) => { 
 						tableElement.innerHTML += '<tr><td>'+value2.RoomName+'</td> <td>'+value2.VersionID+'</td> <td><button class="lobbyButton" value="'+value2.RoomID+'" onclick="JoinLobby(this)">Join Lobby</button></td></tr>';
 					});					
 				}
@@ -32,7 +31,6 @@ function JoinLobby(buttonPressed)
 {	
 	event.preventDefault();
 	let roomNum = buttonPressed.value;
-	alert(buttonPressed.value);
 	const body = {
 	    RoomID: roomNum
         };
@@ -59,17 +57,17 @@ function JoinLobby(buttonPressed)
 }
 
 function CreateLobby()
-{	          
-	let rn = document.getElementByID("roomName");
+{	         
+	
+	let rn = document.getElementById("roomName").value;
         const body = {
             RoomName: rn
-        };
+        };	
         const jsonBody = JSON.stringify(body);
         const xhr = new XMLHttpRequest();
 
 	   xhr.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                        alert(this.responseText);
+                if (this.readyState == 4 && this.status == 200) {                        
                         const jsonResponse = JSON.parse(this.responseText);
                         if (jsonResponse.returnCode =='1')
                         {
