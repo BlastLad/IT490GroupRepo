@@ -9,12 +9,12 @@
 <body>
   <h1>PokeAPI Search Page</h1>
   
-  <form>
+  <form action="get_moves.php" method="get">
     <label for="pokemon">Enter a Pokemon:</label>
     <input type="text" id="pokemon" name="pokemon">
     <p></p>
     <label for="generation">Select a Generation:</label>
-    <select id="generation">
+    <select id="generation" name="generation">
       <option value="1">Generation 1</option>
       <option value="2">Generation 2</option>
       <option value="3">Generation 3</option>
@@ -23,6 +23,7 @@
       <option value="6">Generation 6</option>
       <option value="7">Generation 7</option>
       <option value="8">Generation 8</option>
+      <option value="9">Generation 9</option>
     </select>
     
     <button type="submit">Search</button>
@@ -48,6 +49,7 @@
 	$request['type'] = "getteaminfo";
 	$request['UserID'] = 1;
 	$request['message'] = "hi";
+  /*
 	$response = $client->send_request($request);	
 	if (true) 
 	{			        
@@ -61,7 +63,7 @@
 	}
 	else {
 	echo "<option value='1'>{$response['returncode']} Opt</option>";
-	}
+	}*/
 
 	?>
 	</select>
@@ -69,6 +71,6 @@
      </form>
     </div>
   
-  <script src="pokeapi.js"></script>
+  <!--<script src="pokeapi.js"></script>-->
 </body>
 </html>
