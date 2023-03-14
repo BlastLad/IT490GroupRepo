@@ -16,8 +16,9 @@ else
 $storePost = file_get_contents("php://input");
 $object = json_decode($storePost, true);
 $request = array();
+session_start();
 $request['type'] = "addpokemon";
-$request['UserID'] = "1";
+$request['UserID'] = $_SESSION['UserID'];
 $request['TeamID'] = $object['TeamID'];
 $request['PokemonID'] = $object['PokemonID'];
 $request['PokemonName'] = $object['PokemonName'];//$storePost->"PokemonName";

@@ -18,7 +18,7 @@ addButton.addEventListener('submit', async (event) => {
         Move_Four: moveNum,
         PokemonID: pokemonNum,
         PokemonName: pokemonName2,
-        TeamID: 0,
+        TeamID: teamNum,
         UserID: 1
 	};
 	const jsonBody = JSON.stringify(body);

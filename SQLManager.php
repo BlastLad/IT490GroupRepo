@@ -34,8 +34,7 @@ function AddStarterTeam($request, $mydb, $UserID) {
         if (mysqli_num_rows($response) > 0) {
             $row = $response->fetch_row();
             $TID = $row[0] ?? false;
-        }
-            echo "$TID teamID " . PHP_EOL;
+        }           
 
 
         $array = array(
@@ -47,8 +46,10 @@ function AddStarterTeam($request, $mydb, $UserID) {
                 array(6, "charizard", 'cut', 'ember', 'scratch', 'bite', 'blaze'),
         );
         foreach ($array as list($a, $b, $m1, $m2, $m3, $m4, $ab))
-        {
-            $queryN = "INSERT INTO PokemonInfo VALUES ($UserID, $TID, $a, '$b', '$m1', '$m2', '$m3', '$m4', '$ab');";
+	{
+		  echo "$TID teamID " . PHP_EOL;
+
+            $queryN = "INSERT INTO PokemonInfo (UserID, TeamID, PokemonID, PokemonName, Move_One, Move_Two, Move_Three, Move_Four, AbilityID) VALUES ($UserID, $TID, $a, '$b', '$m1', '$m2', '$m3', '$m4', '$ab');";
             $responseN = $mydb->query($queryN);
             if ($responseN)
             {
@@ -106,7 +107,7 @@ function registerUser($request)
             } else {
                 $password = $request['password'];
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                $query = "INSERT INTO users (username, password) VALUES('$username', '$hashed_password');";
+                $query = "INSERT INTO users (username, password, activeTeamID) VALUES('$username', '$hashed_password', 1);";
                 $response = $mydb->query($query);
 
                 $query = "SELECT userID, username FROM users WHERE username = '$username';";
@@ -175,7 +176,7 @@ function registerUser($request)
             $query = "SELECT * FROM TeamInfo WHERE TeamID = $TeamID and UserID = $UserID";
             $response = $mydb->query($query);
             if (mysqli_num_rows($response) > 0 && mysqli_num_rows($response) < 6) {
-                $queryN = "INSERT INTO PokemonInfo VALUES ($UserID, $TeamID, $PokemonID, '$PokemonName', '$Move_One', '$Move_Two', '$Move_Three',  '$Move_Four', '$AbilityID');";
+                $queryN = "INSERT INTO PokemonInfo (UserID, TeamID, PokemonID, PokemonName, Move_One, Move_Two, Move_Three, Move_Four, AbilityID) VALUES ($UserID, $TeamID, $PokemonID, '$PokemonName', '$Move_One', '$Move_Two', '$Move_Three',  '$Move_Four', '$AbilityID');";
                 echo "ugh" . PHP_EOL;
                 $responseN = $mydb->query($queryN);
                 if ($responseN) {

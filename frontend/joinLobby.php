@@ -5,12 +5,13 @@
      $storePost = file_get_contents("php://input");
      $object = json_decode($storePost, true);
 
+     session_start();
 
      $msg = "testMessage";
      $request = array();
      $request['type'] = "joinlobby";
      $request['message'] = $msg;
-     $request['UserID'] = 2;     
+     $request['UserID'] = $_SESSION["UserID"];     
      $request['RoomID'] = $object['RoomID'];
      $response = directMessage($request, "testServer");
 

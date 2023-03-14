@@ -44,9 +44,10 @@
 	require_once('get_host_info.inc');
 	require_once('rabbitMQLib.inc');	
 	$client = new rabbitMQClient("testRabbitMQ.ini","testServer");
+	session_start();
 	$request = array();
 	$request['type'] = "getteaminfo";
-	$request['UserID'] = 1;
+	$request['UserID'] = $_SESSION['UserID'];
 	$request['message'] = "hi";
 	$response = $client->send_request($request);	
 	if (true) 
