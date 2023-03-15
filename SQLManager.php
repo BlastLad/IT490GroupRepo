@@ -279,7 +279,7 @@ function registerUser($request)
             $query = "SELECT * FROM BattleRooms WHERE RoomID = $RoomID AND Player_One != $UserID AND Full = 0;";
             $response = $mydb->query($query);
             if (mysqli_num_rows($response) > 0) {
-                $query = "UPDATE BattleRooms SET Full = 1, Player_Two = $UserID;WHERE RoomID = $RoomID";
+                $query = "UPDATE BattleRooms SET Full = 1, Player_Two = $UserID WHERE RoomID = $RoomID;";
                 $response = $mydb->query($query);
                 if ($response) {
                     echo "successroomjoin" . PHP_EOL;
@@ -289,7 +289,53 @@ function registerUser($request)
                 return array("returnCode" => 0, 'message' => "Room Full");
 
             }
+        case "inItBattler":
+            $UserID = $request['UserID'];
+            $TeamID = $request['TeamID'];
+            $query = "SELECT RoomID, BattleRooms FROM BattleRooms WHERE AND (Player_One = $UserID OR Player_Two = $UserID);";
+            $response = $mydb->query($query);//we now have a RoomID and the Full status for the Room that player is bounded to
+            $RoomID = '';
+            $isHost = 1;
 
+            while ($roomIDRow = mysqli_fetch_assoc($response)) {
+                $RoomID = $roomIDRow['RoomID'];
+                if ($roomIDRow['Full'] == 0) {
+                    $isHost = 1;
+                }
+                else if ($roomIDRow['Full'] == 1) {
+                    $isHost = 2;
+                }
+            }
+
+
+            $query = "SELECT * FROM PokemonInfo WHERE TeamID = $TeamID AND UserID = $UserID ORDER BY UniquePokemonID;";
+            //now we have a array that is maximum of 6 pokemon long that the user is using for this battle first row is active pkmn
+
+            $response = $mydb->query($query);
+            $rows = array();
+            if (mysqli_num_rows($response) > 0 && mysqli_num_rows($response) <= 6) {
+                echo "We correctly worked" . PHP_EOL;
+                $makeFirstActive = 1;
+                while ($row = mysqli_fetch_assoc($response)) {
+                    echo 'n' . $row['PokemonName'] . 'n';
+                    $upid = $row['UniquePokemonID'];
+
+                    $innerQuery = "INSERT INTO GameState (RoomID, UniquePokemonID, UserID, Fainted, Active) VALUES ($RoomID, $upid, $UserID, 0, $makeFirstActive);";
+                    $innerResponse = $mydb->query($innerQuery);
+                    //we now have added up 6 pokemon to game state bounded to the room and user with the
+                    // first entry of a team being the active pokemon and
+                    if ($innerResponse) {
+                        echo "We correctly added to game state worked" . PHP_EOL;
+                    }
+
+
+                    $makeFirstActive = 0;
+                    $rows[] = $row;
+                }
+                print json_encode($rows);
+                return array("returnCode" => $isHost, 'message' => json_encode($rows));
+            }
+                return array("returnCode" => 0, 'message' => "Failed to InItBattler");
         case "finishbattle":
             $query = "SELECT * FROM BattleRooms WHERE Player_One = $UserID AND Player_Two = $Player_Two;";
             $response = $mydb->query($query);

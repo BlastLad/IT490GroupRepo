@@ -1,13 +1,14 @@
 
 //const makeApiCall = async (ranNum) => await axios.get(`https://pokeapi.co/api/v2/pokemon/${ranNum}`);
-let player1DataArr = [];
-let activePlayer1Index = -1;
-let activePlayer2Index = -1;
-let player2DataArr = [];
+let userArr = [];
+let userUniquePkmnID = -1;
+let opponentUniquePkmnID = -1;
+let opponentArr = [];
+let isHost = -1;
 document.addEventListener('DOMContentLoaded', async () => {
     //const start = Date.now();
     //use two session cookies one for player 1 selected pokemon and 1 for static teams selected
-    await getPokemon(1,1, 2, 2);
+   // await getPokemon(1,1, 2, 2);
     //console.log(`Time: ${Date.now() - start} ms`);
 
     // Each time getPokemon button gets clicked => Display two new Pokemon
@@ -32,7 +33,7 @@ const getPokemon = async (player1ID, player1Team, player2ID, player2Team) => {
 	    UserID: userNum,
         TeamID: teamNum
 	};
-	const jsonBody = JSON.stringify(body);
+	//const jsonBody = JSON.stringify(body);
 	/*const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200)
@@ -60,35 +61,77 @@ const getPokemon = async (player1ID, player1Team, player2ID, player2Team) => {
 	xhr.setRequestHeader("Content-Type", "application/json");
 	xhr.send(jsonBody);*/
 
-    const pokemon = ["1", "2", "3", "4", "5", "6"];
-    await pokemon.forEach(addPokemonToUI);
+  //  const pokemon = ["1", "2", "3", "4", "5", "6"];
+   // await pokemon.forEach(addPokemonToUI);
 
    //call the php script to get a response comprised of all the pokemon in the user and teamID
 }
 
 function inItUser(user, team) {
 
-	const body = {
-            UserID: user,
-            TeamID: team
-        };
+    const body = {
+        UserID: user,
+        TeamID: team
+    };
 
-	alert(team);
+    //alert(team);
     //const pokemon = ["1", "2", "3", "4", "5", "6"];
     //await pokemon.forEach(addPokemonToUI);
     const jsonBody = JSON.stringify(body);
     const xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200)
-    {
-    }
-    xhr.open("POST", "inItUser.php");
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send(jsonBody);
-  }
-}
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            const jsonResponse = JSON.parse(this.responseText);
 
-async function addPokemonToUI(item) {
+
+            tableElement.innerHTML = '<tr> <th>Room Name</th> <th>Version</th> <th>Join Lobby</th> </tr>';
+            if (jsonResponse.returnCode == '1' || jsonResponse.returnCode == '2') {
+
+                if (jsonResponse.returnCode == '1') {
+                    isHost = user;
+                    //isHost is = to userID;
+                }
+                let sent = 0;
+                Object.entries(jsonResponse).forEach(([key, value]) => {
+                    if (key == 'message') {
+                        const innerJson = JSON.parse(value);
+                        Object.entries(innerJson).forEach(([key2, value2]) => {
+                            alert(value2.PokemonID);
+                            if (user == value2.UserID)
+                            {
+
+                                if (sent == 0)
+                                {
+                                    userUniquePkmnID = value2.UniquePokemonID
+                                    sent = 1;
+                                    //sets active pokemon
+                                }
+
+                                const pokemonObj =
+                                    {
+                                        name: value2.PokemonName,
+                                        id: value2.id,
+                                        UniquePokemonID: value2.UniquePokemonID,
+                                    };
+
+                                const pkmnMoves = [value2.Move_One, value2.Move_Two, value2.Move_Three, value2.Move_Three];
+                                pokemonObj['move'] = pkmnMoves.map( tempMove => tempMove);
+                                userArr.push(pokemonObj);
+
+
+                                addPokemonToUI(pokemonObj, user);
+                            }
+                        });
+                    }
+                });
+            }
+            xhr.open("POST", "inItUser.php");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(jsonBody);
+        }
+    }
+}
+async function addPokemonToUI(pokemonItem, attachedUser, upid) {
     const url = `https://pokeapi.co/api/v2/pokemon/${item}`;
     const response = await fetch(url);
 
@@ -97,40 +140,36 @@ async function addPokemonToUI(item) {
          return;
     }
 
-    const tempMoves = ["cut", "pound", "cut", "pound"];
 
     const data = await response.json();
-    const pokemonObj =
-        {
-            name: data.name,
-            id: data.id,
-            image: data.sprites['front_default'],
-            hp: data.stats[0].base_stat,
-            attack: data.stats[1].base_stat,
-            defense: data.stats[2].base_stat,
-            spattack: data.stats[3].base_stat,
-            spdefense: data.stats[4].base_stat,
-            speed: data.stats[5].base_stat
-        };
-    pokemonObj['type'] = data.types.map( type => type.type.name);
-    pokemonObj['move'] = tempMoves.map( tempMove => tempMove);
-    player1DataArr.push(pokemonObj);
 
-    await displayPokemonData(pokemonObj);
-    await SetActivePokemon(0);
+    pokemonItem['image'] = data.sprites['front_default'];
+    pokemonItem['hp'] = data.stats[0].base_stat;
+    pokemonItem['attack'] = data.stats[1].base_stat;
+    pokemonItem['defense'] = data.stats[2].base_stat;
+    pokemonItem['spattack'] = data.stats[3].base_stat;
+    pokemonItem['spdefense'] = data.stats[3].base_stat;
+    pokemonItem['speed'] = data.stats[3].base_stat;
+    pokemonItem['type'] = data.types.map( type => type.type.name);
+
+    await displayPokemonData(pokemonItem);
+    if (upid == userUniquePkmnID)
+    {
+        await SetActivePokemon(0);
+    }
 }
 
 async function SetActivePokemon(index)
 {
     let activePokemon = document.getElementById("activePokemon");
-    activePlayer1Index = index;
+    userUniquePkmnID = index;
     activePokemon.innerHTML = '';
-    const htmlString = '<img src="'+player1DataArr[index].image+'"/><h1>'+player1DataArr[index].name+'</h1><p>HP: '+player1DataArr[index].hp+'</p><p>Attack: '+player1DataArr[index].spdefense+'</p>';
+    const htmlString = '<img src="'+userArr[index].image+'"/><h1>'+userArr[index].name+'</h1><p>HP: '+userArr[index].hp+'</p><p>Attack: '+userArr[index].spdefense+'</p>';
     activePokemon.innerHTML = htmlString;
-    activePokemon.innerHTML += '<button id="MoveOne" value ="'+player1DataArr[index].move[0]+'" onclick="UseMove1(this.value)">'+player1DataArr[index].move[0]+'</button>';
-    activePokemon.innerHTML += '<button id="MoveTwo" value ="'+player1DataArr[index].move[1]+'" onclick="UseMove2(this.value)">'+player1DataArr[index].move[1]+'</button>';
-    activePokemon.innerHTML += '<button id="MoveThree" value="'+player1DataArr[index].move[2]+'" onclick="UseMove3(this.value)">'+player1DataArr[index].move[2]+'</button>';
-    activePokemon.innerHTML += '<button id="MoveFour" value="'+player1DataArr[index].move[3]+'" onclick="UseMove4(this.value)">'+player1DataArr[index].move[3]+'</button>';
+    activePokemon.innerHTML += '<button id="MoveOne" value ="'+userArr[index].move[0]+'" onclick="UseMove1(this.value)">'+userArr[index].move[0]+'</button>';
+    activePokemon.innerHTML += '<button id="MoveTwo" value ="'+userArr[index].move[1]+'" onclick="UseMove2(this.value)">'+userArr[index].move[1]+'</button>';
+    activePokemon.innerHTML += '<button id="MoveThree" value="'+userArr[index].move[2]+'" onclick="UseMove3(this.value)">'+userArr[index].move[2]+'</button>';
+    activePokemon.innerHTML += '<button id="MoveFour" value="'+userArr[index].move[3]+'" onclick="UseMove4(this.value)">'+userArr[index].move[3]+'</button>';
 }
 
 function calculateDamage(pokemon1, pokemon2, attack1)
@@ -179,7 +218,7 @@ async function UseMove1(val)
 
         const finalMove = await response.json();
 
-         calculateDamage(player1DataArr[activePlayer1Index], player1DataArr[2], finalMove);
+         calculateDamage(userArr[userUniquePkmnID], userArr[2], finalMove);
 }
 async function UseMove2(val)
 {
@@ -194,7 +233,7 @@ async function UseMove2(val)
 
         const finalMove = await response.json();
 
-        calculateDamage(player1DataArr[activePlayer1Index], player1DataArr[2], finalMove);
+        calculateDamage(userArr[userUniquePkmnID], userArr[2], finalMove);
 }
 async function UseMove3(val)
 {
@@ -209,7 +248,7 @@ async function UseMove3(val)
 
         const finalMove = await response.json();
 
-         calculateDamage(player1DataArr[activePlayer1Index], player1DataArr[2], finalMove);
+         calculateDamage(userArr[userUniquePkmnID], userArr[2], finalMove);
 }
 
 async function UseMove4(val)
@@ -225,7 +264,7 @@ async function UseMove4(val)
 
         const finalMove = await response.json();
 
-         calculateDamage(player1DataArr[activePlayer1Index], player1DataArr[2], finalMove);
+         calculateDamage(userArr[userUniquePkmnID], userArr[2], finalMove);
 }
 
 const displayPokemonData = async (data) => {
@@ -254,7 +293,6 @@ const displayPokemonData = async (data) => {
     //pokeDiv.appendChild(moves);
 
     // Add randomly chosen moves right under 'Moves:'
-    let movesHistory = [];
 
     for (let i = 0; i < 4; i++) {
         const movesIndex = i;
