@@ -1,24 +1,11 @@
-<!DOCTYPE html>
-<?php
-
-$lobbies;
-
-    $msg = "testMessage";
-    $request = array();
-    $request['type'] = "getlobbies";
-    $request['message'] = $msg;
-
-
-    $lobbies = {
-        RoomName: testRoom,
-        VersionID: 2,
-    }
-
-?>
+<!DOCTYPE HTML>
 <html>
 
 <head>
 <meta charset="UTF-8">
+ <script src="lobbies.js">
+  </script>
+
 </head>
 <style>
     ul {
@@ -82,27 +69,26 @@ nav {
     <h1>Lobbies page</h1>
 <main>
         <section id="Lobby_list">
-            <table class='table'>
-            <tr>
-            <th>Room Name</th>
-            <th>Version</th>
-            <th>Join Lobby</th>
-            </tr>";
-            <?php
-                foreach ($lobbies as $openLobby) {
-                echo ' <tr>
-                <td>'.$openLobby['RoomName'].'</td>
-                <td>'.$row['VersionID'].'</td>
-                <td><button>Join Lobby</button></td>
-                </tr>';
+            <table id='table'>
+           
+		<?php
+          //      foreach ($lobbies as $openLobby) {
+            //    echo ' <tr>
+              //  <td>'.$openLobby['RoomName'].'</td>
+               // <td>'.$openLobby['VersionID'].'</td>
+               // <td><button>Join Lobby</button></td>
+               // </tr>'.PHP_EOL;
 
-                  } ?>
+		//  }
+?>
               </table>
         </section>
 
         <aside>
-            <div id="New_Lobby_Button">
-                <button>Create Lobby></button>
+	    <div>
+		Lobby Name: <input id="roomName" type="text" value ="New Lobby">
+		<button id="New_Lobby_Button" onclick="CreateLobby()">Create Lobby</button>
+		</form>
             </div>
         </aside>
 
