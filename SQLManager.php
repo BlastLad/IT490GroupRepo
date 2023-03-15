@@ -279,7 +279,7 @@ function registerUser($request)
             $query = "SELECT * FROM BattleRooms WHERE RoomID = $RoomID AND Player_One != $UserID AND Full = 0;";
             $response = $mydb->query($query);
             if (mysqli_num_rows($response) > 0) {
-                $query = "UPDATE BattleRooms SET Full = 1, Player_Two = $UserID;";
+                $query = "UPDATE BattleRooms SET Full = 1, Player_Two = $UserID;WHERE RoomID = $RoomID";
                 $response = $mydb->query($query);
                 if ($response) {
                     echo "successroomjoin" . PHP_EOL;
