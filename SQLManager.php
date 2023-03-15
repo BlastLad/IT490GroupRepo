@@ -130,7 +130,7 @@ function registerUser($request)
         case 'getteam':
             $TeamID = $request['TeamID'];
             $UserID = $request['UserID'];
-            $query = "SELECT * FROM PokemonInfo WHERE TeamID = $TeamID AND UserID = $UserID;";
+            $query = "SELECT * FROM PokemonInfo WHERE TeamID = $TeamID AND UserID = $UserID ORDER BY UniquePokemonID;";
 
             $response = $mydb->query($query);
             $rows = array();

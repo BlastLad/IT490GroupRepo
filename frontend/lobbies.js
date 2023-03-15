@@ -42,7 +42,7 @@ function JoinLobby(buttonPressed)
 			const jsonResponse = JSON.parse(this.responseText);
 			if (jsonResponse.returnCode =='1')
 			{			
-				window.location.replace("battles.html");
+				window.location.replace("battles.php");
 			}
 			else
 			{
@@ -71,7 +71,7 @@ function CreateLobby()
                         const jsonResponse = JSON.parse(this.responseText);
                         if (jsonResponse.returnCode =='1')
                         {
-				window.location.replace("battles.html");
+				window.location.replace("battles.php");
                                
                         }
                         else

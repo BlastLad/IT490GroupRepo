@@ -2,6 +2,7 @@
 //const makeApiCall = async (ranNum) => await axios.get(`https://pokeapi.co/api/v2/pokemon/${ranNum}`);
 let player1DataArr = [];
 let activePlayer1Index = -1;
+let activePlayer2Index = -1;
 let player2DataArr = [];
 document.addEventListener('DOMContentLoaded', async () => {
     //const start = Date.now();
@@ -65,6 +66,27 @@ const getPokemon = async (player1ID, player1Team, player2ID, player2Team) => {
    //call the php script to get a response comprised of all the pokemon in the user and teamID
 }
 
+function inItUser(user, team) {
+
+	const body = {
+            UserID: user,
+            TeamID: team
+        };
+
+	alert(team);
+    //const pokemon = ["1", "2", "3", "4", "5", "6"];
+    //await pokemon.forEach(addPokemonToUI);
+    const jsonBody = JSON.stringify(body);
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200)
+    {
+    }
+    xhr.open("POST", "inItUser.php");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(jsonBody);
+  }
+}
 
 async function addPokemonToUI(item) {
     const url = `https://pokeapi.co/api/v2/pokemon/${item}`;
