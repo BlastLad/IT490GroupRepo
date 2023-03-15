@@ -74,7 +74,6 @@ function inItUser(user, team) {
         TeamID: team
     };
 
-    //alert(team);
     //const pokemon = ["1", "2", "3", "4", "5", "6"];
     //await pokemon.forEach(addPokemonToUI);
     const jsonBody = JSON.stringify(body);
@@ -82,9 +81,7 @@ function inItUser(user, team) {
     xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             const jsonResponse = JSON.parse(this.responseText);
-
-
-            tableElement.innerHTML = '<tr> <th>Room Name</th> <th>Version</th> <th>Join Lobby</th> </tr>';
+            
             if (jsonResponse.returnCode == '1' || jsonResponse.returnCode == '2') {
 
                 if (jsonResponse.returnCode == '1') {
@@ -96,7 +93,7 @@ function inItUser(user, team) {
                     if (key == 'message') {
                         const innerJson = JSON.parse(value);
                         Object.entries(innerJson).forEach(([key2, value2]) => {
-                            alert(value2.PokemonID);
+                           
                             if (user == value2.UserID)
                             {
 
@@ -110,33 +107,36 @@ function inItUser(user, team) {
                                 const pokemonObj =
                                     {
                                         name: value2.PokemonName,
-                                        id: value2.id,
+                                        id: value2.PokemonID,
                                         UniquePokemonID: value2.UniquePokemonID,
                                     };
 
-                                const pkmnMoves = [value2.Move_One, value2.Move_Two, value2.Move_Three, value2.Move_Three];
+                                const pkmnMoves = [value2.Move_One, value2.Move_Two, value2.Move_Three, value2.Move_Four];
                                 pokemonObj['move'] = pkmnMoves.map( tempMove => tempMove);
                                 userArr.push(pokemonObj);
 
 
-                                addPokemonToUI(pokemonObj, user);
+                                addPokemonToUI(pokemonObj, user, value2.UniquePokemonID);
                             }
                         });
                     }
                 });
-            }
-            xhr.open("POST", "inItUser.php");
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(jsonBody);
+            }            
         }
     }
+	xhr.open("POST", "inItUser.php");
+        alert(team);
+        xhr.setRequestHeader("Content-Type", "application/json");            		xhr.send(jsonBody);
 }
+
 async function addPokemonToUI(pokemonItem, attachedUser, upid) {
-    const url = `https://pokeapi.co/api/v2/pokemon/${item}`;
+	let id = pokemonItem['id'];
+
+    const url = 'https://pokeapi.co/api/v2/pokemon/'+id;
     const response = await fetch(url);
 
     if (!response.ok) {
-         document.getElementById("Pokemon_One").innerHTML = `<p>No results found for ${item}.</p>`;
+         document.getElementById("Pokemon_One").innerHTML = "<p>No results found for"+id+"</p>";
          return;
     }
 
@@ -148,13 +148,15 @@ async function addPokemonToUI(pokemonItem, attachedUser, upid) {
     pokemonItem['attack'] = data.stats[1].base_stat;
     pokemonItem['defense'] = data.stats[2].base_stat;
     pokemonItem['spattack'] = data.stats[3].base_stat;
-    pokemonItem['spdefense'] = data.stats[3].base_stat;
-    pokemonItem['speed'] = data.stats[3].base_stat;
+    pokemonItem['spdefense'] = data.stats[4].base_stat;
+    pokemonItem['speed'] = data.stats[5].base_stat;
     pokemonItem['type'] = data.types.map( type => type.type.name);
 
     await displayPokemonData(pokemonItem);
+	alert(upid);
     if (upid == userUniquePkmnID)
     {
+	alert(upid);
         await SetActivePokemon(0);
     }
 }
@@ -324,8 +326,7 @@ const displayPokemonData = async (data) => {
     })
 
     img.addEventListener('mouseleave', () => {
-        img.style.transition = '.5s ease';
-        img.src = data.sprites.front_shiny;
+        img.style.transition = '.5s ease';       
     })
 
     pokeContainer.addEventListener('mouseleave', () => {

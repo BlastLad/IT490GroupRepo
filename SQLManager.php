@@ -292,7 +292,7 @@ function registerUser($request)
         case "inItBattler":
             $UserID = $request['UserID'];
             $TeamID = $request['TeamID'];
-            $query = "SELECT RoomID, BattleRooms FROM BattleRooms WHERE AND (Player_One = $UserID OR Player_Two = $UserID);";
+            $query = "SELECT RoomID, Full FROM BattleRooms WHERE (Player_One = $UserID OR Player_Two = $UserID);";
             $response = $mydb->query($query);//we now have a RoomID and the Full status for the Room that player is bounded to
             $RoomID = '';
             $isHost = 1;
