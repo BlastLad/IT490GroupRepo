@@ -37,18 +37,18 @@ function AddStarterTeam($request, $mydb, $UserID) {
 
 
         $array = array(
-                array(1, "bulbasaur", 'cut', 'vine-whip', 'headbutt', 'tackle', 'overgrow'),
-                array(2, "ivyasaur", 'cut', 'vine-whip', 'headbutt', 'tackle', 'overgrow'),
-                array(3, "venusaur", 'cut', 'vine-whip', 'headbutt', 'tackle', 'overgrow'),
-                array(4, "charmander", 'cut', 'ember', 'scratch', 'bite', 'blaze'),
-                array(5, "charmeleon", 'cut', 'ember', 'scratch', 'bite', 'blaze'),
-                array(6, "charizard", 'cut', 'ember', 'scratch', 'bite', 'blaze'),
+                array(1, "bulbasaur", 'cut', 'vine-whip', 'headbutt', 'tackle', 'overgrow',45),
+                array(2, "ivyasaur", 'cut', 'vine-whip', 'headbutt', 'tackle', 'overgrow',60),
+                array(3, "venusaur", 'cut', 'vine-whip', 'headbutt', 'tackle', 'overgrow',80),
+                array(4, "charmander", 'cut', 'ember', 'scratch', 'bite', 'blaze', 39),
+                array(5, "charmeleon", 'cut', 'ember', 'scratch', 'bite', 'blaze', 58),
+                array(6, "charizard", 'cut', 'ember', 'scratch', 'bite', 'blaze', 78),
         );
-        foreach ($array as list($a, $b, $m1, $m2, $m3, $m4, $ab))
+        foreach ($array as list($a, $b, $m1, $m2, $m3, $m4, $ab, $hp))
 	{
 		  echo "$TID teamID " . PHP_EOL;
 
-            $queryN = "INSERT INTO PokemonInfo (UserID, TeamID, PokemonID, PokemonName, Move_One, Move_Two, Move_Three, Move_Four, AbilityID) VALUES ($UserID, $TID, $a, '$b', '$m1', '$m2', '$m3', '$m4', '$ab');";
+            $queryN = "INSERT INTO PokemonInfo (UserID, TeamID, PokemonID, PokemonName, Move_One, Move_Two, Move_Three, Move_Four, AbilityID, MaxHP) VALUES ($UserID, $TID, $a, '$b', '$m1', '$m2', '$m3', '$m4', '$ab', $hp);";
             $responseN = $mydb->query($queryN);
             if ($responseN)
             {
@@ -182,7 +182,8 @@ function registerUser($request)
             $Move_Two = $request['Move_Two'];
             $Move_Three = $request['Move_Three'];
             $Move_Four = $request['Move_Four'];
-            $AbilityID = $request['AbilityID'];
+	    $AbilityID = $request['AbilityID'];
+	    $MaxHP = $request['MaxHP'];
 
             if ($TeamID == 0) {
                 echo "creating new team" . PHP_EOL;
@@ -206,7 +207,7 @@ function registerUser($request)
             $query = "SELECT * FROM TeamInfo WHERE TeamID = $TeamID and UserID = $UserID";
             $response = $mydb->query($query);
             if (mysqli_num_rows($response) > 0 && mysqli_num_rows($response) < 6) {
-                $queryN = "INSERT INTO PokemonInfo (UserID, TeamID, PokemonID, PokemonName, Move_One, Move_Two, Move_Three, Move_Four, AbilityID) VALUES ($UserID, $TeamID, $PokemonID, '$PokemonName', '$Move_One', '$Move_Two', '$Move_Three',  '$Move_Four', '$AbilityID');";
+                $queryN = "INSERT INTO PokemonInfo (UserID, TeamID, PokemonID, PokemonName, Move_One, Move_Two, Move_Three, Move_Four, AbilityID, MaxHP) VALUES ($UserID, $TeamID, $PokemonID, '$PokemonName', '$Move_One', '$Move_Two', '$Move_Three',  '$Move_Four', '$AbilityID', $MaxHP);";
                 echo "ugh" . PHP_EOL;
                 $responseN = $mydb->query($queryN);
                 if ($responseN) {
@@ -373,9 +374,10 @@ function registerUser($request)
                 $makeFirstActive = 1;
                 while ($row = mysqli_fetch_assoc($response)) {
                     echo 'n' . $row['PokemonName'] . 'n';
-                    $upid = $row['UniquePokemonID'];
+		    $upid = $row['UniquePokemonID'];
+		    $hpSettings = $row['MaxHP'];
 
-                    $innerQuery = "INSERT INTO GameState (RoomID, UniquePokemonID, UserID, Fainted, Active, ActionID) VALUES ($RoomID, $upid, $UserID, 0, $makeFirstActive, 0);";
+                    $innerQuery = "INSERT INTO GameState (RoomID, UniquePokemonID, UserID, Fainted, Active, ActionID, CurrentHP, MaxHP) VALUES ($RoomID, $upid, $UserID, 0, $makeFirstActive, 0, $hpSettings, $hpSettings);";
                     $innerResponse = $mydb->query($innerQuery);
                     //we now have added up 6 pokemon to game state bounded to the room and user with the
                     // first entry of a team being the active pokemon and

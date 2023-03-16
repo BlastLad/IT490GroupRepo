@@ -5,11 +5,12 @@ var pokemonNum = 0;
 var pokemonName2 ='';
 addButton.addEventListener('submit', async (event) => {
        
-	
+	event.preventDefault();
 	let moveNum = 5;
 	let abNum = document.getElementById("ability").value;
 	let move1Nam = document.getElementById("move_one").value;
 	let teamNum = document.getElementById("teamSelection").value;
+	let hp = document.getElementById("hp").innerHTML;
 	const body = {
 	AbilityID: abNum,
         Move_One: move1Nam,
@@ -19,7 +20,8 @@ addButton.addEventListener('submit', async (event) => {
         PokemonID: pokemonNum,
         PokemonName: pokemonName2,
         TeamID: teamNum,
-        UserID: 1
+        UserID: 1,
+	MaxHP:hp
 	};
 	const jsonBody = JSON.stringify(body);
 	const xhr = new XMLHttpRequest();
@@ -28,9 +30,9 @@ addButton.addEventListener('submit', async (event) => {
 	xhr.send(jsonBody);	
 });
 
-form.addEventListener('submit', async (event) => {
+form.addEventListener('submit', async (event) => {  
   event.preventDefault();
-  
+
   const pokemonName = document.querySelector('#pokemon').value.toLowerCase();
   const generation = document.querySelector('#generation').value;
   
@@ -90,7 +92,7 @@ form.addEventListener('submit', async (event) => {
   const resultsTemplate = new Array(4).fill(selectTemplate).join('');
   
   const stats = pokemon.stats.map((stat) => {
-    return `${stat.stat.name}: ${stat.base_stat}`;
+    return `${stat.stat.name}: <p id="${stat.stat.name}">${stat.base_stat}</p>`;
   }).join('<br>');
   
   const types = pokemon.types.map((type) => {

@@ -27,6 +27,7 @@ $request['Move_One'] = $object['Move_One'] ;
 $request['Move_Two'] = $object['Move_Two'];
 $request['Move_Three'] = $object['Move_Three'];
 $request['Move_Four'] = $object['Move_Four'];
+$request['MaxHP'] = $object['MaxHP'];
 $request['message'] = $object;//$msg;
 $response = $client->send_request($request);
 //$response = $client->publish($request);
