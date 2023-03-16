@@ -3,6 +3,12 @@
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
+$server = new rabbitMQServer("testRabbitMQ.ini","testServer"); //change second parameter to name of dmz queue
+
+echo "testRabbitMQServer BEGIN".PHP_EOL;
+$server->process_requests('apiCalls');
+echo "testRabbitMQServer END".PHP_EOL;
+exit();
 /*
 function doLogin($username,$password)
 {
@@ -27,8 +33,8 @@ function apiCalls($request)
             $pokemon = $request['name'];
             //$url = 'https://pokeapi.co/api/v2/pokemon/' . $pokemon;
             $json = file_get_contents("https://pokeapi.co/api/v2/pokemon/{$pokemon}");
-            $pokemon_data = json_decode($json, TRUE);
-            return array("code" => 0, "message" => $pokemon_data);
+            //$pokemon_data = json_decode($json, TRUE);
+            return array("code" => 0, "message" => $json);
 
             //return doLogin($request['username'],$request['password']);
         case "move":
@@ -38,10 +44,7 @@ function apiCalls($request)
     return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
 
-$server = new rabbitMQServer("testRabbitMQ.ini","dmzQueue"); //change second parameter to name of dmz queue
+//$server = new rabbitMQServer("testRabbitMQ.ini","testServer"); //change second parameter to name of dmz queue
 
-echo "testRabbitMQServer BEGIN".PHP_EOL;
-$server->process_requests('apiCalls');
-echo "testRabbitMQServer END".PHP_EOL;
-exit();
+
 ?>
