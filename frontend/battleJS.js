@@ -153,6 +153,7 @@ alert("outer");
                                                             name: value2.PokemonName,
                                                             id: value2.PokemonID,
                                                             UniquePokemonID: value2.UniquePokemonID,
+                                                            Fainted: 0,
                                                         };
 
                                                     const pkmnMoves = [value2.Move_One, value2.Move_Two, value2.Move_Three, value2.Move_Four];
@@ -426,6 +427,7 @@ alert("outer");
     const displayPokemonData = async (data) => {
         const pokeContainer = document.createElement('div');
         pokeContainer.setAttribute('class', 'card');
+        pokeContainer.id = data.UniquePokemonID;
         const pokeDiv = document.createElement('div');
         pokeDiv.setAttribute('class', 'cardDiv')
         const name = document.createElement('h3');
@@ -438,6 +440,7 @@ alert("outer");
         name.innerText = data.name;
         img.src = data.image;
         hp.innerText = `HP: ${data.hp}`;
+        hp.id = data.UniquePokemonID + 'hp';
         moves.innerText = 'Moves:';
 
         const container = document.querySelector('#Pokemon_One');
@@ -474,6 +477,10 @@ alert("outer");
             move.innerText = `${finalMove.name} PP: ${finalMove.pp}`;
             // pokeDiv.appendChild(move);
         }
+
+        pokeContainer.addEventListener('click', () => {
+            //pokeContainer.style.transform = 'scale(1.05)';
+        })
 
         pokeContainer.addEventListener('mouseover', () => {
             pokeContainer.style.transform = 'scale(1.05)';

@@ -21,6 +21,77 @@ let userUniquePkmnID = -1; //our active upid of useArr
 let actionChosen = false;
 
 
+
+var battleWatchFunc = clientGameStateCheck;
+var runWatcher = setInterval(battleWatchFunc, 5000);
+
+function clientGameStateCheck()
+{
+    const body = {
+        UserID: ourNum,
+        RoomID: hostRoomID
+    };
+
+    const jsonBody = JSON.stringify(body);
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function ()
+    {
+        if (this.readyState == 4 && this.status == 200)
+        {
+            const jsonResponse = JSON.parse(this.responseText);
+            if (jsonResponse.returnCode == '1')
+            {
+                Object.entries(jsonResponse).forEach(([key, value]) => {
+                    if (key == 'message') {
+                        const innerJson = JSON.parse(value);
+                        actionChosen = false;
+                        Object.entries(innerJson).forEach(([key2, value2]) => {
+
+                            if (ourNum == value2.UserID)
+                            {
+                                if (value2.ActionID != 0)
+                                {
+                                    actionChosen = true;
+                                }
+
+                                for (let i = 0; i < userArr.length; i++)
+                                {
+                                    if (userArr[i].UniquePokemonID == value2.UniquePokemonID)
+                                    {
+                                        userArr[i].hp = value2.CurrentHP;
+                                        //update text
+                                        document.getElementById(value2.UniquePokemonID).innerText = userArr[i].hp;
+                                        userArr[i].Fainted = value2.Fainted;
+                                        if (value2.Fainted == 1) {
+                                            document.getElementById(value2.UniquePokemonID + "hp").innerText = "Fainted";
+                                        }
+                                        if (value2.Active == 1)
+                                        {
+                                            userUniquePkmnID = value2.UniquePokemonID;
+                                            SetActivePokemon(i);
+                                        }
+                                    }
+                                }
+                            }
+                            else if (value2.UserID = HostPokemon.HostID)//host pokemon
+                            {
+                                HostPokemon.HostUPID = value2.UniquePokemonID;
+                                hostUniquePokemonID = value2.UniquePokemonID;
+                                HostPokemon.HostHP = value2.CurrentHP;
+                                HostPokemon.HostPID = value2.PokemonID;
+                            }
+                        });
+                    }
+                });
+                UpdateHostPokemonInfo();
+            }
+        }
+    }
+    xhr.open("POST", "guestGameStateCheck.php");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(jsonBody);
+}
+
 async function UpdateHostPokemonInfo()
 {
     let opponentPokemon = document.getElementById("opponentPokemon");
@@ -83,6 +154,7 @@ function inItUser(user, team) {
                                         name: value2.PokemonName,
                                         id: value2.PokemonID,
                                         UniquePokemonID: value2.UniquePokemonID,
+                                        Fainted: 0,
                                     };
 
                                 const pkmnMoves = [value2.Move_One, value2.Move_Two, value2.Move_Three, value2.Move_Four];
@@ -145,30 +217,6 @@ function inItUser(user, team) {
     alert(team);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(jsonBody);
-}
-
-
-var battleWatchFunc = checkGameState;
-var runWatcher = setInterval(battleWatchFunc, 5000);
-
-function checkGameState()
-{
-    if (hostRoomID < 0 && isHost == ourNum)
-    {
-
-
-        //meaning that our lobby is not full and the battle has not started
-        //preBattleStartCheck();
-    }
-    else if (hostRoomID == ourNum)
-    {
-        //battle has started but now we need to initalize the opponetArray FOR HOST ONLY, the client only needs this hosts active
-        //pokemon
-        if (opponentUniquePkmnID < 0)
-        {
-            //we need to run a query to get the opponets pokemon arr
-        }
-    }
 }
 
 async function addPokemonToUI(pokemonItem, attachedUser, upid) {
@@ -333,6 +381,7 @@ async function UseMove4(val) {
 const displayPokemonData = async (data) => {
     const pokeContainer = document.createElement('div');
     pokeContainer.setAttribute('class', 'card');
+    pokeContainer.setAttribute('id', data.UniquePokemonID);
     const pokeDiv = document.createElement('div');
     pokeDiv.setAttribute('class', 'cardDiv')
     const name = document.createElement('h3');
@@ -345,6 +394,7 @@ const displayPokemonData = async (data) => {
     name.innerText = data.name;
     img.src = data.image;
     hp.innerText = `HP: ${data.hp}`;
+    hp.setAttribute('id', data.UniquePokemonID + "hp");
     moves.innerText = 'Moves:';
 
     const container = document.querySelector('#Pokemon_One');
@@ -381,6 +431,10 @@ const displayPokemonData = async (data) => {
         move.innerText = `${finalMove.name} PP: ${finalMove.pp}`;
         // pokeDiv.appendChild(move);
     }
+
+    pokeContainer.addEventListener('click', () => {
+        //pokeContainer.style.transform = 'scale(1.05)';
+    })
 
     pokeContainer.addEventListener('mouseover', () => {
         pokeContainer.style.transform = 'scale(1.05)';
