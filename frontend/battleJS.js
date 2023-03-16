@@ -25,10 +25,70 @@ document.addEventListener('DOMContentLoaded', async () => {
     // })
 })
 
+function inItUser(user, team) {
+
+    ourNum = document.getElementByID("UserID").innerText;
+    alert(ourNum);
+    const body = {
+        UserID: user,
+        TeamID: team
+    };
+
+    //const pokemon = ["1", "2", "3", "4", "5", "6"];
+    //await pokemon.forEach(addPokemonToUI);
+    const jsonBody = JSON.stringify(body);
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            const jsonResponse = JSON.parse(this.responseText);
+
+            if (jsonResponse.returnCode == '1' || jsonResponse.returnCode == '2') {
+
+                if (jsonResponse.returnCode == '1') {
+                    isHost = user;
+                    //isHost is = to userID;
+                }
+                let sent = 0;
+                Object.entries(jsonResponse).forEach(([key, value]) => {
+                    if (key == 'message') {
+                        const innerJson = JSON.parse(value);
+                        Object.entries(innerJson).forEach(([key2, value2]) => {
+
+                            if (user == value2.UserID) {
+
+                                if (sent == 0) {
+                                    userUniquePkmnID = value2.UniquePokemonID
+                                    sent = 1;
+                                    //sets active pokemon
+                                }
+
+                                const pokemonObj =
+                                    {
+                                        name: value2.PokemonName,
+                                        id: value2.PokemonID,
+                                        UniquePokemonID: value2.UniquePokemonID,
+                                    };
+
+                                const pkmnMoves = [value2.Move_One, value2.Move_Two, value2.Move_Three, value2.Move_Four];
+                                pokemonObj['move'] = pkmnMoves.map(tempMove => tempMove);
+                                userArr.push(pokemonObj);
+
+
+                                addPokemonToUI(pokemonObj, user, value2.UniquePokemonID);
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    }
+    xhr.open("POST", "inItUser.php");
+    alert(team);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(jsonBody);
+}
+
 let battleWatcher = setInterval(checkGameState, 2000);
-
-inItUser();
-
 function checkGameState()
 {
     if (hostRoomID < 0 && isHost == ourNum)
@@ -185,69 +245,6 @@ function preBattleStartCheck() {
         // await pokemon.forEach(addPokemonToUI);
 
         //call the php script to get a response comprised of all the pokemon in the user and teamID
-    }
-
-    function inItUser() {
-
-        ourNum = document.getElementByID("UserID").innerText;
-	alert(ourNum);
-        const body = {
-            UserID: user,
-            TeamID: 1
-        };
-
-        //const pokemon = ["1", "2", "3", "4", "5", "6"];
-        //await pokemon.forEach(addPokemonToUI);
-        const jsonBody = JSON.stringify(body);
-        const xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                const jsonResponse = JSON.parse(this.responseText);
-
-                if (jsonResponse.returnCode == '1' || jsonResponse.returnCode == '2') {
-
-                    if (jsonResponse.returnCode == '1') {
-                        isHost = user;
-                        //isHost is = to userID;
-                    }
-                    let sent = 0;
-                    Object.entries(jsonResponse).forEach(([key, value]) => {
-                        if (key == 'message') {
-                            const innerJson = JSON.parse(value);
-                            Object.entries(innerJson).forEach(([key2, value2]) => {
-
-                                if (user == value2.UserID) {
-
-                                    if (sent == 0) {
-                                        userUniquePkmnID = value2.UniquePokemonID
-                                        sent = 1;
-                                        //sets active pokemon
-                                    }
-
-                                    const pokemonObj =
-                                        {
-                                            name: value2.PokemonName,
-                                            id: value2.PokemonID,
-                                            UniquePokemonID: value2.UniquePokemonID,
-                                        };
-
-                                    const pkmnMoves = [value2.Move_One, value2.Move_Two, value2.Move_Three, value2.Move_Four];
-                                    pokemonObj['move'] = pkmnMoves.map(tempMove => tempMove);
-                                    userArr.push(pokemonObj);
-
-
-                                    addPokemonToUI(pokemonObj, user, value2.UniquePokemonID);
-                                }
-                            });
-                        }
-                    });
-                }
-            }
-        }
-        xhr.open("POST", "inItUser.php");
-        alert(team);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(jsonBody);
     }
 
     async function addPokemonToUI(pokemonItem, attachedUser, upid) {

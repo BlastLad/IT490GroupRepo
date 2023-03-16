@@ -111,14 +111,8 @@ nav {
 	</ul>
 </nav>
 <body>
-<?php
-session_start();
-$uid = $_SESSION['UserID'];
-$tid = $_SESSION['ActiveTeam'];
-//echo "<p id = "userID" hidden>$uid</p>";
-//echo "<p id = "activeTeam" hidden>$tid</p>";
-?>
 <script src="battleJS.js"></script>
+
 
     <h1>Battles page</h1>
     <p id="incomingMessage"></p>
@@ -148,5 +142,14 @@ $tid = $_SESSION['ActiveTeam'];
         </div>       
 
     </main>
+
+<?php
+session_start();
+$uid = $_SESSION['UserID'];
+$tid = $_SESSION['ActiveTeam'];
+echo '<script type="text/javascript">',
+     "inItUser($uid, $tid);",
+     '</script>'
+?>
 </body>
 </html>
