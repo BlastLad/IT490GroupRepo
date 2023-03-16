@@ -7,7 +7,7 @@ function GetListOfLobbies()
 		if (this.readyState == 4 && this.status == 200) {			
 			const jsonResponse = JSON.parse(this.responseText);
 			const tableElement = document.getElementById('table');
-			tableElement.innerHTML = '<tr> <th>Room Name</th> <th>Version</th> <th>Join Lobby</th> </tr>';
+			tableElement.innerHTML = '<tr> <th>Host Room Namem</th> <th>Version</th> <th>Join Lobby</th> </tr>';
 			if (jsonResponse.returnCode =='1') {						
 				 Object.entries(jsonResponse).forEach(([key,value]) => {
 				if (key == 'message')
@@ -42,7 +42,7 @@ function JoinLobby(buttonPressed)
 			const jsonResponse = JSON.parse(this.responseText);
 			if (jsonResponse.returnCode =='1')
 			{			
-				window.location.replace("battles.php");
+				window.location.replace("guestConnection.php");
 			}
 			else
 			{

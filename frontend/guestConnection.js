@@ -27,7 +27,7 @@ async function UpdateHostPokemonInfo()
 
     let id = HostPokemon.HostPID;
 
-    const url = 'https://pokeapi.co/api/v2/pokemon/' + id;
+    const url = 'https://pokeapi.co/api/v2/pokemon/'+id;
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -39,11 +39,11 @@ async function UpdateHostPokemonInfo()
     const data = await response.json();
 
     //sets current active opponentPokemon
-
+    const imageH = data.sprites['front_default'];
     //await
 
     opponentPokemon.innerHTML = '';
-    const htmlString = '<img src="' + data.sprites['front_default'].image + '"/><h1>' + HostPokemon.HostHP + '</h1><p>HP: ' + HostPokemon.HostHP +'</p>';
+    const htmlString = '<img src="' + imageH + '"/><h1>' + data.name + '</h1><p>HP: ' + HostPokemon.HostHP +'</p>';
     opponentPokemon.innerHTML = htmlString;
     alert("COMPLETE");
 }
@@ -97,8 +97,10 @@ function inItUser(user, team) {
                         });
                     }
                 });
+		    alert(jsonResponse.returnCode + "her is code");
                 if (jsonResponse.returnCode == '2')
                 {
+			alert("DOING NEXT CONNECTION");
                     //do the next connection
                     const xhrNext = new XMLHttpRequest();
                     const bodyNext = {
@@ -109,10 +111,10 @@ function inItUser(user, team) {
                     xhrNext.onreadystatechange = function () {
                         if (this.readyState == 4 && this.status == 200) {
                             const jsonResponse = JSON.parse(this.responseText);
-
+				alert("HEW WE GO WITH RETURN CODE" + jsonResponse.returnCode);
                             if (jsonResponse.returnCode > 0) {
                                 hostRoomID = jsonResponse.returnCode;
-
+					alert("INNER RESPONSE CODE");
                                 document.getElementById("incomingMessage").innerText = "HostFound "+oppNum+"found loading info!";
                                 Object.entries(jsonResponse).forEach(([key, value]) => {
                                     if (key == 'message') {
@@ -132,8 +134,7 @@ function inItUser(user, team) {
                             }
                         }
                     }
-                    xhrNext.open("POST", "guestConnectFunction.php");
-                    alert(team);
+                    xhrNext.open("POST", "guestConnectionFunction.php");                   
                     xhrNext.setRequestHeader("Content-Type", "application/json");
                     xhrNext.send(jsonBodyNext);
                 }
