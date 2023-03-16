@@ -119,9 +119,10 @@ $tid = $_SESSION['ActiveTeam'];
 echo "<script type='text/javascript'> inItUser($uid, $tid); </script>";
 ?>
     <h1>Battles page</h1>
+    <p id="incomingMessage"></p>
     <main>
         <section>
-            <div id="enemyPokemon">
+            <div id="opponentPokemon">
 
             </div>
 
