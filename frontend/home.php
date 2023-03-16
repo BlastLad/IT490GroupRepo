@@ -259,7 +259,7 @@
           echo "<p><b>Stats:</b></p>";
           echo "<ul>";
           foreach($stats as $stat) {
-            echo "<li>".$stat['stat']['name'].": ".$stat['base_stat']."</li>";
+            echo "<li>".$stat['stat']['name'].": ".$stat['base_stat']."</li><br>";
           }
           echo "</ul>";
           //Display move dropdown menus
