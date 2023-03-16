@@ -60,7 +60,7 @@ function clientGameStateCheck()
                                     {
                                         userArr[i].hp = value2.CurrentHP;
                                         //update text
-                                        document.getElementById(value2.UniquePokemonID).innerText = userArr[i].hp;
+                                       document.getElementById(value2.UniquePokemonID+"hp").innerText = userArr[i].hp;
                                         userArr[i].Fainted = value2.Fainted;
                                         if (value2.Fainted == 1) {
                                             document.getElementById(value2.UniquePokemonID + "hp").innerText = "Fainted";
