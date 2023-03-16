@@ -321,7 +321,7 @@ function registerUser($request)
             }
         case "checkBattleRoomFull":
             $UserID = $request['UserID'];
-            $query = "SELECT * FROM BattleRooms WHERE  Player_One == $UserID AND Full = 1;";
+            $query = "SELECT * FROM BattleRooms WHERE Player_One = $UserID AND Full = 1;";
             $response = $mydb->query($query);
             $RoomID = '';
             $Player_Two = '';
@@ -330,13 +330,15 @@ function registerUser($request)
                 echo "We found a full room for the user in a battleroom" . PHP_EOL;
                 while ($row = mysqli_fetch_assoc($response)) {
                     $RoomID = $row['RoomID'];
-                    $Player_Two = $row['Player_Two'];
+		    $Player_Two = $row['Player_Two'];
+		    echo"$RoomID".PHP_EOL;
+		    echo"$Player_Two player 2".PHP_EOL;
                     $returnrow = array("RoomID"=> $RoomID, "Player_Two"=> $Player_Two);
                     break;
                 }
 
 
-                return array("returnCode" => 1, 'message' => json_encode($returnrow));
+                return array("returnCode" => $RoomID, 'message' => $Player_Two);
             }
             return array("returnCode" => 0, 'message' => "Still Waiting for Opponent");
 

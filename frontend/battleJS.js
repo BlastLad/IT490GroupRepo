@@ -112,18 +112,12 @@ function preBattleStartCheck() {
             //only return roomID
             let jsonResponse = JSON.parse(this.responseText);
 		
-            if (jsonResponse.returnCode == '1') {
-                Object.entries(jsonResponse).forEach(([key, value]) => {
-                    if (key == 'message') {
-                        const innerJson = JSON.parse(value);
-                        Object.entries(innerJson).forEach(([key2, value2]) => {
-                            hostRoomID =  value2.RoomID;
-                            oppNum =  value2.Player_Two;
-                        });
-                    }
-                });
+            if (jsonResponse.returnCode >= 1) {
+                
+		hostRoomID = jsonResponse.returnCode;
+		oppNum = jsonResponse.message;
 
-                alert(hostRoomID + "Host room id" + " oppNum" + oppNum);
+                alert(hostRoomID + " Host  room id" + " oppNum" + oppNum);
                 //roomIsFull and we can offcially begin the battle
                 //roomNumber = roomNum;
                 //battle has started but now we need to initalize the opponetArray FOR HOST ONLY, the client only needs this hosts active
@@ -168,7 +162,7 @@ alert("outer");
                                                     if (sent == 0) {
                                                         sent = 1;
                                                         opponentUniquePkmnID = value2.UniquePokemonID
-                                                        addPokemonToUI(pokemonObj, user, value2.UniquePokemonID);
+                                                        addPokemonToUI(pokemonObj, sent, value2.UniquePokemonID);
                                                         //sets opponet pokemon to active
                                                     }
 
@@ -273,7 +267,7 @@ alert("outer");
         //called from setup
         if (upid == opponentUniquePkmnID) {
 
-            await SetActivePokemon(upid);
+            await SetOpponentActivePokemon(upid);
             return;
         }
        

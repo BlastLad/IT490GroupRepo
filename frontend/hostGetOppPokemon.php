@@ -11,8 +11,8 @@ $msg = "testMessage";
 $request = array();
 $request['type'] = "getOpponentTeam";
 $request['message'] = $msg;
-$request['UserID'] = $object["UserID"];
-$request['TeamID'] = $_SESSION["OppID"];
+$request['UserID'] = $object["OppID"];
+$request['TeamID'] = $_SESSION["UserID"];
 $request['RoomID'] = $object['RoomID'];
 $response = directMessage($request, "testServer");
 
