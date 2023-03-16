@@ -112,12 +112,18 @@ function preBattleStartCheck() {
             //only return roomID
             let jsonResponse = JSON.parse(this.responseText);
 		
-            if (jsonResponse.returnCode == '1') {	
-                alert(jsonResponse.message["RoomID"]);
-                alert(jsonResponse.message);
+            if (jsonResponse.returnCode == '1') {
+                Object.entries(jsonResponse).forEach(([key, value]) => {
+                    if (key == 'message') {
+                        const innerJson = JSON.parse(value);
+                        Object.entries(innerJson).forEach(([key2, value2]) => {
+                            hostRoomID =  value2.RoomID;
+                            oppNum =  value2.Player_Two;
+                        });
+                    }
+                });
 
-                hostRoomID = jsonResponse.message["RoomID"];
-                oppNum = jsonResponse.message["Player_Two"];
+                alert(hostRoomID + "Host room id" + " oppNum" + oppNum);
                 //roomIsFull and we can offcially begin the battle
                 //roomNumber = roomNum;
                 //battle has started but now we need to initalize the opponetArray FOR HOST ONLY, the client only needs this hosts active
@@ -173,10 +179,10 @@ alert("outer");
                                 }
 
                         }
-                        innerHXRRequest.open("POST", "hostGetOppPokemon.php");
-                        innerHXRRequest.setRequestHeader("Content-Type", "application/json");
-                        innerHXRRequest.send(jsonBody);
                     }
+                    innerHXRRequest.open("POST", "hostGetOppPokemon.php");
+                    innerHXRRequest.setRequestHeader("Content-Type", "application/json");
+                    innerHXRRequest.send(jsonBody);
                 }
             }
             else
