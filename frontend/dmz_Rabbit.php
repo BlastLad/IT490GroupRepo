@@ -33,6 +33,8 @@ function apiCalls($request)
             $pokemon = $request['name'];
             //$url = 'https://pokeapi.co/api/v2/pokemon/' . $pokemon;
             $json = file_get_contents("https://pokeapi.co/api/v2/pokemon/{$pokemon}");
+            //get move damage/name !!!!!! 
+
             //$pokemon_data = json_decode($json, TRUE);
             return array("code" => 0, "message" => $json);
 

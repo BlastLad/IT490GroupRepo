@@ -341,7 +341,7 @@
 	$request['type'] = "getteaminfo";
 	$request['UserID'] = 1;
 	$request['message'] = "hi";
-  /*
+  
 	$response = $client->send_request($request);	
 	if (true) 
 	{			        
@@ -355,7 +355,7 @@
 	}
 	else {
 	echo "<option value='1'>{$response['returncode']} Opt</option>";
-	}*/
+	}
 
 	?>
 	</select>
