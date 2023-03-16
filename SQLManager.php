@@ -345,6 +345,32 @@ function registerUser($request)
 
         case "checkGameState":
         break;
+        case "connectGuestToHost":
+            $UserID = $request['UserID'];
+            $RoomID = '';
+            $PokemonID = '';
+            $CurrentHP = '';
+
+            $query = "SELECT RoomID, Full FROM BattleRooms WHERE (Player_One = $UserID OR Player_Two = $UserID);";
+            $response = $mydb->query($query);//we now have a RoomID and the Full status for the Room that player is bounded to
+
+            while ($roomIDRow = mysqli_fetch_assoc($response)) {
+                $RoomID = $roomIDRow['RoomID'];
+                break;
+            }
+
+            $query = "SELECT GameState.UniquePokemonID, PokemonID, GameState.UserID, GameState.MaxHP FROM GameState JOIN PokemonInfo 
+    ON PokemonInfo.UniquePokemonID = GameState.UniquePokemonID WHERE RoomID = $RoomID AND GameState.UserID != $UserID AND Active = 1;";
+            $response = $mydb->query($query);
+
+            $rows = array();
+            while ($row = mysqli_fetch_assoc($response)) {
+                echo 'n' . $row['PokemonID'] . 'n';
+                $rows[] = $row;
+            }
+            echo 'n getting stuff done'.PHP_EOL;
+            print json_encode($rows);
+            return array("returnCode" => $RoomID, 'message' => json_encode($rows));
         case "inItBattler":
             $UserID = $request['UserID'];
             $TeamID = $request['TeamID'];
