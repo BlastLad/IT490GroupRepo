@@ -9,26 +9,11 @@ let ourNum = -2;
 let oppNum = -2;
 let actionChosen = false;
 let hostRoomID = -1;
-document.addEventListener('DOMContentLoaded', async () => {
-    //const start = Date.now();
-    //use two session cookies one for player 1 selected pokemon and 1 for static teams selected
-    // await getPokemon(1,1, 2, 2);
-    //console.log(`Time: ${Date.now() - start} ms`);
 
-    // Each time getPokemon button gets clicked => Display two new Pokemon
-    // document.querySelector('#get-pokemon-btn').addEventListener('click', async () => {
-    //await getNewPokemon();
-    // })
-
-    //document.querySelector('#battle-btn').addEventListener('click', () => {
-    //  battlePokemon();
-    // })
-})
 
 function inItUser(user, team) {
 
-    ourNum = document.getElementByID("UserID").innerText;
-    alert(ourNum);
+    ourNum = user;
     const body = {
         UserID: user,
         TeamID: team
@@ -88,11 +73,16 @@ function inItUser(user, team) {
     xhr.send(jsonBody);
 }
 
-let battleWatcher = setInterval(checkGameState, 2000);
+
+var battleWatchFunc = checkGameState;
+var runWatcher = setInterval(battleWatchFunc, 5000);
+
 function checkGameState()
 {
     if (hostRoomID < 0 && isHost == ourNum)
     {
+
+
         //meaning that our lobby is not full and the battle has not started
         preBattleStartCheck();
     }
@@ -115,13 +105,14 @@ function preBattleStartCheck() {
 
     const jsonBody = JSON.stringify(body);
     const xhr = new XMLHttpRequest();
+	//alert(hostRoomID + " " + isHost + " " + ourNum);
+
     xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             //only return roomID
             let jsonResponse = JSON.parse(this.responseText);
-
-            if (jsonResponse.returnCode == '1') {
-
+		
+            if (jsonResponse.returnCode == '1') {	
                 alert(jsonResponse.message["RoomID"]);
                 alert(jsonResponse.message);
 
@@ -146,9 +137,10 @@ function preBattleStartCheck() {
                     innerHXRRequest.onreadystatechange = function () {
                         if (this.readyState == 4 && this.status == 200) {
                             const jsonResponse = JSON.parse(this.responseText);
-
+alert("outer");
                                 if (jsonResponse.returnCode == '1')//successfully gotten opponets pkmn
                                 {
+					alert("Inner");
                                     //isHost is = to userID;
                                     let sent = 0;
                                     Object.entries(jsonResponse).forEach(([key, value]) => {
@@ -189,14 +181,15 @@ function preBattleStartCheck() {
             }
             else
             {
-                document.getElementById("incomingMessage").innerText = "Waiting For Opponent";
+                document.getElementById("incomingMessage").innerText = "Waiting For Opponent" +jsonResponse.returnCode+"hello" ;
             }
         }
-
-        xhr.open("POST", "checkBattleRoomFull.php");
+    }
+	xhr.open("POST", "checkBattleRoomFull.php");
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(jsonBody);
-    }
+
+}
 
     function battleCheck() {
 
@@ -277,8 +270,7 @@ function preBattleStartCheck() {
             await SetActivePokemon(upid);
             return;
         }
-
-        alert("IF WE RECIVED THIS ALERT AFTER OUR POKEMON HAVE BEEN SHOWN SOMETHING IS WRONG")
+       
 
         await displayPokemonData(pokemonItem);
         if (upid == userUniquePkmnID) {
@@ -299,9 +291,7 @@ function preBattleStartCheck() {
         }
 
         opponentUniquePkmnID = opponentArr[index].UniquePokemonID;
-        //sets current active opponentPokemon
-
-        if (upid != opponentUniquePkmnID) {alert("WARNING SETOPPACTIVEPOKE MON IS INCORRECT")}
+        //sets current active opponentPokemon       
 
         opponentPokemon.innerHTML = '';
         const htmlString = '<img src="' + opponentArr[index].image + '"/><h1>' + opponentArr[index].name + '</h1><p>HP: ' + opponentArr[index].hp +'</p>';
@@ -499,6 +489,5 @@ function preBattleStartCheck() {
 
         container.appendChild(pokeContainer);
     }
-}
 
 

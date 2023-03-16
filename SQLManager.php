@@ -24,7 +24,6 @@ function AddStarterTeam($request, $mydb, $UserID) {
     $query = "INSERT INTO TeamInfo (UserID, TeamName, VersionID, Wins, Loses) VALUES ($UserID, 'Adventure', 1, 0, 0);";
 
     $response = $mydb->query($query);
-
     if ($response)
     {
         echo "first team successful" . PHP_EOL;
@@ -69,6 +68,8 @@ function registerUser($request)
     if (!isset($request['type'])) {
         return "ERROR: unsupported message type";
     }
+
+      echo"reacheddb".PHP_EOL;
 
     switch ($request['type']) {
         case "validate":

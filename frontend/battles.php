@@ -113,9 +113,8 @@ nav {
 <body>
 <script src="battleJS.js"></script>
 
-
     <h1>Battles page</h1>
-    <p id="incomingMessage"></p>
+    <p id="incomingMessage">helloo</p>
     <main>
         <section>
             <div id="opponentPokemon">
