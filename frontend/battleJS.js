@@ -27,6 +27,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 let battleWatcher = setInterval(checkGameState, 2000);
 
+inItUser();
+
 function checkGameState()
 {
     if (hostRoomID < 0 && isHost == ourNum)
@@ -42,24 +44,6 @@ function checkGameState()
         {
             //we need to run a query to get the opponets pokemon arr
         }
-    }
-
-
-    if (responseName.value.length != 0)
-    {
-        let xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function()
-        {
-            if (this.readyState == 4 && this.status == 200)
-            {
-
-                responseTextArea.innerHTML = this.response;
-
-            }
-
-        };
-        xhr.open("POST", "project5Get.php?userName="+responseName.value,true);
-        xhr.send();
     }
 }
 
@@ -203,13 +187,13 @@ function preBattleStartCheck() {
         //call the php script to get a response comprised of all the pokemon in the user and teamID
     }
 
-    function inItUser(user, team) {
+    function inItUser() {
 
-        ourNum = user;
-
+        ourNum = document.getElementByID("UserID").innerText;
+	alert(ourNum);
         const body = {
             UserID: user,
-            TeamID: team
+            TeamID: 1
         };
 
         //const pokemon = ["1", "2", "3", "4", "5", "6"];
