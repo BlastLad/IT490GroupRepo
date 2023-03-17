@@ -24,7 +24,7 @@ let actionChosen = false;
 
 
 var battleWatchFunc = clientGameStateCheck;
-var runWatcher = setInterval(battleWatchFunc, 5000);
+var runWatcher = setInterval(battleWatchFunc, 3000);
 
 
 function SwitchPokemon(newPkmn)
@@ -59,8 +59,7 @@ function SwitchPokemon(newPkmn)
                 {
                     if (this.readyState == 4 && this.status == 200)
                     {                       
-                            document.getElementById("incomingMessage").innerText = "Move Send!";
-                        
+                            document.getElementById("incomingMessage").innerText = "Switch Pokemon Sent!";
                     }
                 }
                 xhr.open("POST", "guestSendToHost.php");
@@ -113,7 +112,8 @@ function clientGameStateCheck()
                                         //update text
                                        document.getElementById(value2.UniquePokemonID+"hp").innerText = userArr[i].hp;
                                         userArr[i].Fainted = value2.Fainted;
-                                        if (value2.Fainted == 1) {
+                                        if (value2.Fainted == 1)
+                                        {
                                             document.getElementById(value2.UniquePokemonID + "hp").innerText = "Fainted";
                                         }
                                         if (value2.Active == 1)
@@ -139,6 +139,12 @@ function clientGameStateCheck()
                     }
                 });
                 UpdateHostPokemonInfo();
+                if (actionChosen){
+                    document.getElementById("incomingMessage").innerText = "Opponent Still Choosing!";
+                }
+                else {
+                    document.getElementById("incomingMessage").innerText = "Choose A Move or Switch Your Pokemon!";
+                }
             }
         }
     }

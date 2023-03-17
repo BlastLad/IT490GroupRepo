@@ -17,7 +17,8 @@ function SwitchPokemon(newPkmn)
         return;
     }
 
-    if (actionChosen == false) {
+    if (actionChosen == false)
+    {
         actionChosen = true;
 
         for (let i = 0; i < userArr.length; i++)
@@ -40,7 +41,7 @@ function SwitchPokemon(newPkmn)
                 {
                     if (this.readyState == 4 && this.status == 200)
                     {
-                        document.getElementById("incomingMessage").innerText = "Move Send!";
+                        document.getElementById("incomingMessage").innerText = "Switch Pokemon Sent!";
 
                     }
                 }
@@ -52,6 +53,10 @@ function SwitchPokemon(newPkmn)
                 break;
             }
         }
+    }
+    else
+    {
+        document.getElementById("incomingMessage").innerText = "You Can't choose a new move, Opponent Still Choosing!";
     }
 }
 function inItUser(user, team) {
@@ -219,6 +224,15 @@ function  hostGameStateUpdate()
                 {
                     PerformMoves(userActionID, OppActionID);
                 }
+
+                if (actionChosen)
+                {
+                    document.getElementById("incomingMessage").innerText = "Opponent Still Choosing!";
+                }
+                else
+                {
+                    document.getElementById("incomingMessage").innerText = "Pick A Move!";
+                }
                 //UpdateHostPokemonInfo();
             }
         }
@@ -304,7 +318,7 @@ function preBattleStartCheck() {
                 //pokemon
                 if (opponentUniquePkmnID < 0) {
                     //we need to run a query to get the opponets pokemon arr
-                    document.getElementById("incomingMessage").innerText = "Opponent ID "+oppNum+"found loading info!";
+                    document.getElementById("incomingMessage").innerText = "Opponent ID# "+oppNum+" found, loading info!";
 
                     const body = {
                         OppID: oppNum,
@@ -351,7 +365,7 @@ function preBattleStartCheck() {
                                             });
                                         }
                                     });
-                                    document.getElementById("incomingMessage").innerText = "Opponent loaded Let the Battle Begin!";
+                                    document.getElementById("incomingMessage").innerText = "Opponent loaded, Let the Battle Begin!";
                                 }
 
                         }
@@ -363,7 +377,7 @@ function preBattleStartCheck() {
             }
             else
             {
-                document.getElementById("incomingMessage").innerText = "Waiting For Opponent" +jsonResponse.returnCode+"hello" ;
+                document.getElementById("incomingMessage").innerText = "Waiting For Opponent";
             }
         }
     }
@@ -443,7 +457,7 @@ async function SendMove(moveval) {
         {
             if (this.readyState == 4 && this.status == 200)
             {
-                document.getElementById("incomingMessage").innerText = "Move Send!";
+                document.getElementById("incomingMessage").innerText = "Move Sent!";
 
             }
         }
