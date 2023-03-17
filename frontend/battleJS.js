@@ -197,7 +197,7 @@ function  hostGameStateUpdate()
 
                                 for (let i = 0; i < opponentArr.length; i++)
                                 {
-                                    if (opponentArrArr[i].UniquePokemonID == value2.UniquePokemonID)
+                                    if (opponentArr[i].UniquePokemonID == value2.UniquePokemonID)
                                     {
                                         opponentArr[i].hp = value2.CurrentHP;
                                         opponentArr[i].Fainted = value2.Fainted;
@@ -231,9 +231,11 @@ function  hostGameStateUpdate()
 async function SetOpponentActivePokemon(upid) {
     let opponentPokemon = document.getElementById("opponentPokemon");
     let index = 0;
+    let id = 15;
     for (let i = 0; i < opponentArr.length; i++) {
         if (opponentArr[i].UniquePokemonID == upid) {
             index = i;
+		id = opponentArr[i].id;
             break;
         }
     }
@@ -272,7 +274,7 @@ async function addTypeToOppArr(pokemonObj)
     const data = await response.json();
 
     pokemonObj['type'] = data.types.map(type => type.type.name);
-
+    pokemonObj['image'] = data.sprites['front_default'];
 }
 
 
@@ -456,9 +458,7 @@ async function SendMove(moveval) {
         let hostDamageToOpponent = 0;
         let opponentDamageTohost = 0;
         let hostIndex = 0;
-        let oppIndex = 0;
-        let newhostHP = 0;
-        let newoppHP = 0;
+        let oppIndex = 0;        
 
         for (let i = 0; i < userArr.length; i++)
         {
@@ -475,6 +475,9 @@ async function SendMove(moveval) {
                 break;
             }
         }
+        let newhostHP = userArr[hostIndex].hp;
+        let newoppHP = opponentArr[oppIndex].hp;
+
 
         if (hostAction > 0 && hostAction < 5)
         {

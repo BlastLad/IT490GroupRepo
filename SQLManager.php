@@ -388,14 +388,16 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
             {
                 $query = "UPDATE GameState SET CurrentHP = $HostHP, Fainted = 1, Active = 0 WHERE UniquePokemonID = $UPID AND RoomID = $RoomID;";// updates action to the act
                 $response = $mydb->query($query);
-                $query = "SELECT UniquePokemonID FROM GameState WHERE Faint = 0 AND UserID = $UserID AND RoomID = $RoomID;";
+                $query = "SELECT UniquePokemonID FROM GameState WHERE Fainted = 0 AND UserID = $UserID AND RoomID = $RoomID;";
                 $response = $mydb->query($query);
 
                 if (mysqli_num_rows($response) > 0) {
                     while ($row = mysqli_fetch_assoc($response)) {
                         $newHostPKMN = $row['UniquePokemonID'];
                         //we now have a new pokemon
-                        $query = "UPDATE GameState SET Active = 1 WHERE UniquePokemonID = $newHostPKMN AND RoomID = $RoomID;";// updates action to the act
+			$query = "UPDATE GameState SET Active = 1 WHERE UniquePokemonID = $newHostPKMN AND RoomID = $RoomID;";// updates action to the act
+			$response = $mydb->query($query);
+
                         break;
                     }
                 }
@@ -414,14 +416,16 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
             {
                 $query = "UPDATE GameState SET CurrentHP = $OppHP, Fainted = 1, Active = 0 WHERE UniquePokemonID = $OUPID AND RoomID = $RoomID;";// updates action to the act
                 $response = $mydb->query($query);
-                $query = "SELECT UniquePokemonID FROM GameState WHERE Faint = 0 AND UserID = $OppID AND RoomID = $RoomID;";
-                $response = $mydb->query($query);
+                $query = "SELECT UniquePokemonID FROM GameState WHERE Fainted = 0 AND UserID = $OppID AND RoomID = $RoomID;";
+                $response = $mydb->query($query);		
+		if (mysqli_num_rows($response) > 0) {			 
 
-                if (mysqli_num_rows($response) > 0) {
                     while ($row = mysqli_fetch_assoc($response)) {
                         $newOppPKMN = $row['UniquePokemonID'];
                         //we now have a new pokemon
-                        $query = "UPDATE GameState SET Active = 1 WHERE UniquePokemonID = $newOppPKMN AND RoomID = $RoomID;";// updates action to the act
+			$query = "UPDATE GameState SET Active = 1 WHERE UniquePokemonID = $newOppPKMN AND RoomID = $RoomID;";// updates action to the act
+			$response = $mydb->query($query);
+
                         break;
                     }
                 }
@@ -435,7 +439,7 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
                 $response = $mydb->query($query);
             }
 
-            $query = "UPDATE GameState SET ActionID = 0 WHERE RoomID = $RoomID";// updates action to the act
+            $query = "UPDATE GameState SET ActionID = 0 WHERE RoomID = $RoomID;";// updates action to the act
             $response = $mydb->query($query);
             return array("returnCode" => 1, 'message' => "DONE Dealing Damage");
             //resets the turn basically

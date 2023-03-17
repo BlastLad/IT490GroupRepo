@@ -1,4 +1,5 @@
 <?php
+include('messageManager.php');
 
 $storePost = file_get_contents("php://input");
 $object = json_decode($storePost, true);
