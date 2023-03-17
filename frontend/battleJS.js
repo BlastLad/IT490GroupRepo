@@ -289,6 +289,13 @@ async function addTypeToOppArr(pokemonObj)
 
     pokemonObj['type'] = data.types.map(type => type.type.name);
     pokemonObj['image'] = data.sprites['front_default'];
+    pokemonObj['attack'] = data.stats[1].base_stat;
+    pokemonObj['defense'] = data.stats[2].base_stat;
+    pokemonObj['spattack'] = data.stats[3].base_stat;
+    pokemonObj['spdefense'] = data.stats[4].base_stat;
+    pokemonObj['speed'] = data.stats[5].base_stat;
+
+
 }
 
 
@@ -485,9 +492,9 @@ async function SendMove(moveval) {
         for (let m = 0; m < opponentArr.length; m++)
         {
             if (opponentAction == 5)
-                console.log(opponentArr[m].hp + " Name User " + opponentArr[m].id + " Move Action " + opponentArr[m].move[3])
+                console.log(opponentArr[m].hp + " Name User " + opponentArr[m].id + " Move Action " + opponentArr[m].move[3]);
             else
-                console.log(opponentArr[m].hp + " Name User " + opponentArr[m].id + " Move Action " + opponentArr[m].move[opponentAction - 1])
+                console.log(opponentArr[m].hp + " Name User " + opponentArr[m].id + " Move Action " + opponentArr[m].move[opponentAction - 1]);
         }
 
         for (let i = 0; i < userArr.length; i++)
@@ -507,7 +514,7 @@ async function SendMove(moveval) {
         }
         let newhostHP = userArr[hostIndex].hp;
         let newoppHP = opponentArr[oppIndex].hp;
-
+console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
 
         if (hostAction > 0 && hostAction < 5)
         {
@@ -525,6 +532,8 @@ async function SendMove(moveval) {
             const finalMove = await response.json();
 
             hostDamageToOpponent = calculateDamage(userArr[hostIndex], opponentArr[oppIndex], finalMove);
+		console.log("HostDamageDealt " + hostDamageToOpponent);
+
             opponentArr[oppIndex].hp = opponentArr[oppIndex].hp - hostDamageToOpponent;
             if (opponentArr[oppIndex].hp < 0)
             { newoppHP = 0;}
@@ -547,6 +556,8 @@ async function SendMove(moveval) {
             const finalMove = await response.json();
 
             opponentDamageTohost = calculateDamage(opponentArr[oppIndex], userArr[hostIndex], finalMove);
+		console.log("opponentDamageDealthToHost " + opponentDamageTohost);
+
             userArr[hostIndex].hp = userArr[hostIndex].hp - opponentDamageTohost;
             if (userArr[hostIndex].hp < 0)
             { newhostHP = 0;}
@@ -581,12 +592,13 @@ async function SendMove(moveval) {
     function calculateDamage(pokemon1, pokemon2, attack1) {
         let damage = ((2 * 50) / 5) + 2;
         let power = attack1.power;
+	   console.log("CURRENT DAMAGE " + damage + "power as well" + power);
         if (attack1.damage_class.name == "physical") {
             damage = damage * power * pokemon1.attack / pokemon2.defense;
         } else {
             damage = damage * power * pokemon1.spattack / pokemon2.spdefense;
         }
-
+	console.log("CURRENT DAMAGE" + damage);
         damage = (damage / 50) + 2;
         let stab = 1.0;
         for (let i = 0; i < pokemon1.type.length; i++) {
@@ -601,6 +613,8 @@ async function SendMove(moveval) {
         if (pokemon2.type.length > 1) {
             damage = damage * 1;
         }
+	    console.log("CURRENT DAMAGE POST STAB" + damage);
+
         return Math.ceil(damage);
     }
 
