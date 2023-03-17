@@ -28,14 +28,15 @@ var runWatcher = setInterval(battleWatchFunc, 5000);
 
 function SwitchPokemon(newPkmn)
 {
+//	alert("CLIKED"+ newPkmn + "user " + userUniquePkmnID);
     if (newPkmn == userUniquePkmnID)//selecting current pokemon
     {
         return;
     }
 
     if (actionChosen == false) {
-        alert(newPkmn);
-        //actionChosen = true;
+//        alert(newPkmn);
+        actionChosen = true;
 
         for (let i = 0; i < userArr.length; i++)
         {
@@ -56,16 +57,14 @@ function SwitchPokemon(newPkmn)
                 xhr.onreadystatechange = function ()
                 {
                     if (this.readyState == 4 && this.status == 200)
-                    {
-                        const jsonResponse = JSON.parse(this.responseText);
-                        if (jsonResponse.returnCode == '1') {
+                    {                       
                             document.getElementById("incomingMessage").innerText = "Move Send!";
-                        }
+                        
                     }
                 }
                 xhr.open("POST", "guestSendToHost.php");
                 xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.send(jsonBody);
+               xhr.send(jsonBody);
 
                 //send to server 5
                 break;
