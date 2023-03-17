@@ -25,6 +25,57 @@ let actionChosen = false;
 var battleWatchFunc = clientGameStateCheck;
 var runWatcher = setInterval(battleWatchFunc, 5000);
 
+
+function SwitchPokemon(newPkmn)
+{
+    if (newPkmn == userUniquePkmnID)//selecting current pokemon
+    {
+        return;
+    }
+
+    if (actionChosen == false) {
+        alert(newPkmn);
+        //actionChosen = true;
+
+        for (let i = 0; i < userArr.length; i++)
+        {
+            if (userArr[i].UniquePokemonID == newPkmn)
+            {
+                userUniquePkmnID = userArr[i].UniquePokemonID;
+                SetActivePokemon(i);
+
+                const body = {
+                    UserID: ourNum,
+                    RoomID: hostRoomID,
+                    UniquePokemonID: userUniquePkmnID,
+                    ActionID: 5
+                };
+
+                const jsonBody = JSON.stringify(body);
+                const xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function ()
+                {
+                    if (this.readyState == 4 && this.status == 200)
+                    {
+                        const jsonResponse = JSON.parse(this.responseText);
+                        if (jsonResponse.returnCode == '1') {
+                            document.getElementById("incomingMessage").innerText = "Move Send!";
+                        }
+                    }
+                }
+                xhr.open("POST", "guestSendToHost.php");
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(jsonBody);
+
+                //send to server 5
+                break;
+            }
+        }
+
+
+    }
+}
+
 function clientGameStateCheck()
 {
     const body = {
@@ -116,7 +167,6 @@ async function UpdateHostPokemonInfo()
     opponentPokemon.innerHTML = '';
     const htmlString = '<img src="' + imageH + '"/><h1>' + data.name + '</h1><p>HP: ' + HostPokemon.HostHP +'</p>';
     opponentPokemon.innerHTML = htmlString;
-    alert("COMPLETE");
 }
 
 function inItUser(user, team) {
@@ -169,10 +219,8 @@ function inItUser(user, team) {
                         });
                     }
                 });
-		    alert(jsonResponse.returnCode + "her is code");
                 if (jsonResponse.returnCode == '2')
                 {
-			alert("DOING NEXT CONNECTION");
                     //do the next connection
                     const xhrNext = new XMLHttpRequest();
                     const bodyNext = {
@@ -183,10 +231,8 @@ function inItUser(user, team) {
                     xhrNext.onreadystatechange = function () {
                         if (this.readyState == 4 && this.status == 200) {
                             const jsonResponse = JSON.parse(this.responseText);
-				alert("HEW WE GO WITH RETURN CODE" + jsonResponse.returnCode);
                             if (jsonResponse.returnCode > 0) {
                                 hostRoomID = jsonResponse.returnCode;
-					alert("INNER RESPONSE CODE");
                                 document.getElementById("incomingMessage").innerText = "HostFound "+oppNum+"found loading info!";
                                 Object.entries(jsonResponse).forEach(([key, value]) => {
                                     if (key == 'message') {
@@ -434,6 +480,7 @@ const displayPokemonData = async (data) => {
 
     pokeContainer.addEventListener('click', () => {
         //pokeContainer.style.transform = 'scale(1.05)';
+        SwitchPokemon(pokeContainer.id);
     })
 
     pokeContainer.addEventListener('mouseover', () => {

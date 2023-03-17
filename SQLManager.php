@@ -345,6 +345,35 @@ function registerUser($request)
 
         case "checkGameState":
         break;
+        case  "guestSendToHost":
+            $UserID = $request['UserID'];
+            $RoomID = $request['RoomID'];
+            $ActionID = $request['ActionID'];
+            $UPID = $request['UniquePokemonID'];
+
+            $query = "SELECT UniquePokemonID From GameState WHERE Active = 1 AND RoomID = $RoomID;";//gets current active pkmn
+            $response = $mydb->query($query);
+
+            $test = '';
+            while ($row = mysqli_fetch_assoc($response))
+            {
+                $test = $row['UniquePokemonID'];
+                break;
+            }
+
+            if ($test != $UPID)//the active pokemon in the db is no longer the acitve pokemon sent
+            {
+                echo "This was action should be 5 in this case $ActionID".PHP_EOL;
+                $query = "UPDATE GameState SET ActionID = 0, Active = 0 WHERE UniquePokemonID = $test AND RoomID = $RoomID";// updates action to the action and active state of old pkmn
+                $response = $mydb->query($query);
+            }
+
+            //if upid != $UPID
+
+            $query = "UPDATE GameState SET ActionID = $ActionID, Active = 1 WHERE UniquePokemonID = $UPID;";// updates action to the action and
+            $response = $mydb->query($query);
+            return array("returnCode" => 1, 'message' => "DONE Updating host");
+            break;
         case "guestCheckGameState":
             $UserID = $request['UserID'];
             $RoomID = $request['RoomID'];
