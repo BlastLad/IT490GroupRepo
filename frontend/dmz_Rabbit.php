@@ -41,7 +41,15 @@ function apiCalls($request)
             //return doLogin($request['username'],$request['password']);
         case "move":
             //run api call for move
-            return doValidate($request['sessionId']);
+            $move = $request['move'];
+            $json = file_get_contents("https://pokeapi.co/api/v2/move/{$move}");
+            return array("code" => 0, "message" => $json);
+            //return doValidate($request['sessionId']);
+        case "type":
+            // api call for type
+            $type = $request['type'];
+            $json = file_get_contents("https://pokeapi.co/api/v2/type/{$type}");
+            return array("code" => 0, "message" => $json);
     }
     return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
