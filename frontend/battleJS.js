@@ -206,7 +206,7 @@ function  hostGameStateUpdate()
                                             opponentUniquePkmnID = value2.UniquePokemonID;//updatea ctive pokemon
                                             if (value2.ActionID < 5 || jsonResponse.returnCode == 2)
                                             {
-                                                SetOpponentActivePokemon(opponentUniquePkmnID);
+                                               SetOpponentActivePokemon(opponentUniquePkmnID);
                                             }
                                         }
                                     }
@@ -241,10 +241,40 @@ async function SetOpponentActivePokemon(upid) {
     opponentUniquePkmnID = opponentArr[index].UniquePokemonID;
     //sets current active opponentPokemon
 
+    const url = 'https://pokeapi.co/api/v2/pokemon/' + id;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        document.getElementById("Pokemon_One").innerHTML = "<p>No results found for" + id + "</p>";
+        return;
+    }
+
+
+    const data = await response.json();
+
     opponentPokemon.innerHTML = '';
     const htmlString = '<img src="' + opponentArr[index].image + '"/><h1>' + opponentArr[index].name + '</h1><p>HP: ' + opponentArr[index].hp +'</p>';
     opponentPokemon.innerHTML = htmlString;
 }
+
+async function addTypeToOppArr(pokemonObj)
+{
+    let id = pokemonObj['id'];
+
+    const url = 'https://pokeapi.co/api/v2/pokemon/' + id;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        document.getElementById("Pokemon_One").innerHTML = "<p>No results found for" + id + "</p>";
+        return;
+    }
+
+    const data = await response.json();
+
+    pokemonObj['type'] = data.types.map(type => type.type.name);
+
+}
+
 
 function preBattleStartCheck() {
 
@@ -304,7 +334,10 @@ function preBattleStartCheck() {
 
                                                     const pkmnMoves = [value2.Move_One, value2.Move_Two, value2.Move_Three, value2.Move_Four];
                                                     pokemonObj['move'] = pkmnMoves.map(tempMove => tempMove);
+                                                    addTypeToOppArr(pokemonObj);
+
                                                     opponentArr.push(pokemonObj);//populates opponets array of pokemon
+
 
                                                     if (sent == 0) {
                                                         sent = 1;
