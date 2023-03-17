@@ -345,13 +345,79 @@ function registerUser($request)
 
         case "checkGameState":
         break;
+        case "hostDealDamage":
+            $UserID = $request['UserID'];
+            $OppID = $request['OppID'];
+            $RoomID = $request['RoomID'];
+            $UPID =  $request['UniquePokemonID'];
+            $OUPID = $request['OpponentUniquePokemonID'];
+            $HostHP = $request['HostHP'];
+            $OppHP = $request['OppHP'];
+
+            if ($HostHP <= 0)
+            {
+                $query = "UPDATE GameState SET CurrentHP = $HostHP, Fainted = 1, Active = 0 WHERE UniquePokemonID = $UPID AND RoomID = $RoomID;";// updates action to the act
+                $response = $mydb->query($query);
+                $query = "SELECT UniquePokemonID FROM GameState WHERE Faint = 0 AND UserID = $UserID AND RoomID = $RoomID;";
+                $response = $mydb->query($query);
+
+                if (mysqli_num_rows($response) > 0) {
+                    while ($row = mysqli_fetch_assoc($response)) {
+                        $newHostPKMN = $row['UniquePokemonID'];
+                        //we now have a new pokemon
+                        $query = "UPDATE GameState SET Active = 1 WHERE UniquePokemonID = $newHostPKMN AND RoomID = $RoomID;";// updates action to the act
+                        break;
+                    }
+                }
+                else {
+                    //battleover winner has been determined
+                }
+            }
+            else
+            {
+                //updates Host HP
+                $query = "UPDATE GameState SET CurrentHP = $HostHP WHERE UniquePokemonID = $UPID AND RoomID = $RoomID;";// updates action to the act
+                $response = $mydb->query($query);
+            }
+
+            if ($OppHP <= 0)
+            {
+                $query = "UPDATE GameState SET CurrentHP = $OppHP, Fainted = 1, Active = 0 WHERE UniquePokemonID = $OUPID AND RoomID = $RoomID;";// updates action to the act
+                $response = $mydb->query($query);
+                $query = "SELECT UniquePokemonID FROM GameState WHERE Faint = 0 AND UserID = $OppID AND RoomID = $RoomID;";
+                $response = $mydb->query($query);
+
+                if (mysqli_num_rows($response) > 0) {
+                    while ($row = mysqli_fetch_assoc($response)) {
+                        $newOppPKMN = $row['UniquePokemonID'];
+                        //we now have a new pokemon
+                        $query = "UPDATE GameState SET Active = 1 WHERE UniquePokemonID = $newOppPKMN AND RoomID = $RoomID;";// updates action to the act
+                        break;
+                    }
+                }
+                else {
+                    //battleover winner has been determined
+                }
+            }
+            else
+            {
+                $query = "UPDATE GameState SET CurrentHP = $OppHP WHERE UniquePokemonID = $OUPID AND RoomID = $RoomID;";// updates action to the act
+                $response = $mydb->query($query);
+            }
+
+            $query = "UPDATE GameState SET ActionID = 0 WHERE RoomID = $RoomID";// updates action to the act
+            $response = $mydb->query($query);
+            return array("returnCode" => 1, 'message' => "DONE Dealing Damage");
+            //resets the turn basically
+
+            break;
         case  "guestSendToHost":
             $UserID = $request['UserID'];
             $RoomID = $request['RoomID'];
             $ActionID = $request['ActionID'];
             $UPID = $request['UniquePokemonID'];
 
-            $query = "SELECT UniquePokemonID From GameState WHERE Active = 1 AND RoomID = $RoomID;";//gets current active pkmn
+            $query = "SELECT UniquePokemonID From GameState WHERE Active = 1 AND RoomID = $RoomID AND UserID = $UserID;";//gets current active pkmn
             $response = $mydb->query($query);
 
             $test = '';

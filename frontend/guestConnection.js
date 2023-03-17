@@ -310,117 +310,47 @@ async function SetActivePokemon(index) {
     activePokemon.innerHTML += '<button id="MoveFour" value="' + userArr[index].move[3] + '" onclick="UseMove4(this.value)">' + userArr[index].move[3] + '</button>';
 }
 
-function calculateDamage(pokemon1, pokemon2, attack1) {
-    let damage = ((2 * 50) / 5) + 2;
-    let power = attack1.power;
-    if (attack1.damage_class.name == "physical") {
-        damage = damage * power * pokemon1.attack / pokemon2.defense;
-    } else {
-        damage = damage * power * pokemon1.spattack / pokemon2.spdefense;
-    }
-
-    damage = (damage / 50) + 2;
-    let stab = 1.0;
-    for (let i = 0; i < pokemon1.type.length; i++) {
-        if (attack1.type.name == pokemon1.type[i]) {
-            stab = 1.5;
-            break;
-        }
-    }
-
-    damage = damage * stab * 1;
-
-    if (pokemon2.type.length > 1) {
-        damage = damage * 1;
-    }
-    var damageFinal = Math.ceil(damage);
-    alert(damageFinal);
-
-}
-
-
-async function UseMove1(val) {
+async function SendMove(moveval) {
     if (actionChosen == false) {
 
-        if (isHost == ourNum && hostRoomID <= 0) {
-            return;
+        actionChosen = true;
+
+        const body = {
+            UserID: ourNum,
+            RoomID: hostRoomID,
+            UniquePokemonID: userUniquePkmnID,
+            ActionID: moveval
+        };
+
+        const jsonBody = JSON.stringify(body);
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function ()
+        {
+            if (this.readyState == 4 && this.status == 200)
+            {
+                document.getElementById("incomingMessage").innerText = "Move Send!";
+
+            }
         }
-        const url = `https://pokeapi.co/api/v2/move/${val}`;
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
-            return;
-        }
-
-        const finalMove = await response.json();
-
-        calculateDamage(userArr[userUniquePkmnID], userArr[2], finalMove);
+        xhr.open("POST", "guestSendToHost.php");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(jsonBody);
     }
+}
+async function UseMove1(val) {
+   await SendMove(1);
 }
 
 async function UseMove2(val) {
-    if (actionChosen == false) {
-
-        if (isHost == ourNum && hostRoomID <= 0) {
-            return;
-        }
-        const url = `https://pokeapi.co/api/v2/move/${val}`;
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
-            return;
-        }
-
-        const finalMove = await response.json();
-
-        calculateDamage(userArr[userUniquePkmnID], userArr[2], finalMove);
-    }
+    await SendMove(2);
 }
 
 async function UseMove3(val) {
-    if (actionChosen == false) {
-
-        if (isHost == ourNum && hostRoomID <= 0) {
-            return;
-        }
-        const url = `https://pokeapi.co/api/v2/move/${val}`;
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
-            return;
-        }
-
-        const finalMove = await response.json();
-
-        calculateDamage(userArr[userUniquePkmnID], userArr[2], finalMove);
-    }
+    await SendMove(3);
 }
 
 async function UseMove4(val) {
-    if (actionChosen == false) {
-
-        if (isHost == ourNum && hostRoomID <= 0) {
-            return;
-        }
-        const url = `https://pokeapi.co/api/v2/move/${val}`;
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
-            return;
-        }
-
-        const finalMove = await response.json();
-
-        calculateDamage(userArr[userUniquePkmnID], userArr[2], finalMove);
-    }
+    await SendMove(4);
 }
 
 const displayPokemonData = async (data) => {

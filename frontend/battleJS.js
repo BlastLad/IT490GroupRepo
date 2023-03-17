@@ -10,7 +10,50 @@ let oppNum = -2;
 let actionChosen = false;
 let hostRoomID = -1;
 
+function SwitchPokemon(newPkmn)
+{
+    if (newPkmn == userUniquePkmnID)//selecting current pokemon
+    {
+        return;
+    }
 
+    if (actionChosen == false) {
+        actionChosen = true;
+
+        for (let i = 0; i < userArr.length; i++)
+        {
+            if (userArr[i].UniquePokemonID == newPkmn)
+            {
+                userUniquePkmnID = userArr[i].UniquePokemonID;
+                SetActivePokemon(i);
+
+                const body = {
+                    UserID: ourNum,
+                    RoomID: hostRoomID,
+                    UniquePokemonID: userUniquePkmnID,
+                    ActionID: 5
+                };
+
+                const jsonBody = JSON.stringify(body);
+                const xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function ()
+                {
+                    if (this.readyState == 4 && this.status == 200)
+                    {
+                        document.getElementById("incomingMessage").innerText = "Move Send!";
+
+                    }
+                }
+                xhr.open("POST", "guestSendToHost.php");
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(jsonBody);
+
+                //send to server 5
+                break;
+            }
+        }
+    }
+}
 function inItUser(user, team) {
 
     ourNum = user;
@@ -68,7 +111,6 @@ function inItUser(user, team) {
         }
     }
     xhr.open("POST", "inItUser.php");
-    alert(team);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(jsonBody);
 }
@@ -117,7 +159,6 @@ function preBattleStartCheck() {
 		hostRoomID = jsonResponse.returnCode;
 		oppNum = jsonResponse.message;
 
-                alert(hostRoomID + " Host  room id" + " oppNum" + oppNum);
                 //roomIsFull and we can offcially begin the battle
                 //roomNumber = roomNum;
                 //battle has started but now we need to initalize the opponetArray FOR HOST ONLY, the client only needs this hosts active
@@ -137,10 +178,8 @@ function preBattleStartCheck() {
                     innerHXRRequest.onreadystatechange = function () {
                         if (this.readyState == 4 && this.status == 200) {
                             const jsonResponse = JSON.parse(this.responseText);
-alert("outer");
                                 if (jsonResponse.returnCode == '1')//successfully gotten opponets pkmn
                                 {
-					alert("Inner");
                                     //isHost is = to userID;
                                     let sent = 0;
                                     Object.entries(jsonResponse).forEach(([key, value]) => {
@@ -275,7 +314,6 @@ alert("outer");
 
         await displayPokemonData(pokemonItem);
         if (upid == userUniquePkmnID) {
-            alert(upid);
             await SetActivePokemon(0);
         }
     }
@@ -311,6 +349,128 @@ alert("outer");
         activePokemon.innerHTML += '<button id="MoveFour" value="' + userArr[index].move[3] + '" onclick="UseMove4(this.value)">' + userArr[index].move[3] + '</button>';
     }
 
+async function SendMove(moveval) {
+    if (actionChosen == false) {
+
+        actionChosen = true;
+
+        const body = {
+            UserID: ourNum,
+            RoomID: hostRoomID,
+            UniquePokemonID: userUniquePkmnID,
+            ActionID: moveval
+        };
+
+        const jsonBody = JSON.stringify(body);
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function ()
+        {
+            if (this.readyState == 4 && this.status == 200)
+            {
+                document.getElementById("incomingMessage").innerText = "Move Send!";
+
+            }
+        }
+        xhr.open("POST", "guestSendToHost.php");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(jsonBody);
+    }
+}
+
+    async function PerformMoves(hostAction, opponentAction)
+    {
+        let hostDamageToOpponent = 0;
+        let opponentDamageTohost = 0;
+        let hostIndex = 0;
+        let oppIndex = 0;
+        let newhostHP = 0;
+        let newoppHP = 0;
+
+        for (let i = 0; i < userArr.length; i++)
+        {
+            if (userArr[i].UniquePokemonID == userUniquePkmnID){
+                hostIndex = i;
+                break;
+            }
+        }
+
+        for (let i = 0; i < opponentArr.length; i++)
+        {
+            if (opponentArr[i].UniquePokemonID == opponentUniquePkmnID){
+                oppIndex = i;
+                break;
+            }
+        }
+
+        if (hostAction > 0 && hostAction < 5)
+        {
+            let val = userArr[hostIndex].move[hostAction - 1];
+
+            const url = `https://pokeapi.co/api/v2/move/${val}`;
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
+                return;
+            }
+
+            const finalMove = await response.json();
+
+            hostDamageToOpponent = calculateDamage(userArr[hostIndex], opponentArr[oppIndex], finalMove);
+            opponentArr[oppIndex].hp = opponentArr[oppIndex].hp - hostDamageToOpponent;
+            if (opponentArr[oppIndex].hp < 0)
+            { newoppHP = 0;}
+            else {newoppHP = opponentArr[oppIndex].hp;}
+        }
+
+        if (opponentAction > 0 && opponentAction < 5)
+        {
+            let val = userArr[oppIndex].move[opponentAction - 1];
+
+            const url = `https://pokeapi.co/api/v2/move/${val}`;
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
+                return;
+            }
+
+            const finalMove = await response.json();
+
+            opponentDamageTohost = calculateDamage(opponentArr[oppIndex], userArr[hostIndex], finalMove);
+            userArr[hostIndex].hp = userArr[hostIndex].hp - opponentDamageTohost;
+            if (userArr[hostIndex].hp < 0)
+            { newhostHP = 0;}
+            else { newhostHP = userArr[hostIndex].hp; }
+        }
+
+        const body = {
+            UserID: ourNum,
+            OppID: oppNum,
+            RoomID: hostRoomID,
+            UniquePokemonID: userUniquePkmnID,
+            OpponentUniquePokemonID: opponentUniquePkmnID,
+            HostHP: newhostHP,
+            OppHP: newoppHP
+        };
+
+        const jsonBody = JSON.stringify(body);
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function ()
+        {
+            if (this.readyState == 4 && this.status == 200)
+            {
+                document.getElementById("incomingMessage").innerText = "Damage Dealt Updating!";
+
+            }
+        }
+        xhr.open("POST", "hostDealDamage.php");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(jsonBody);
+    }
+
     function calculateDamage(pokemon1, pokemon2, attack1) {
         let damage = ((2 * 50) / 5) + 2;
         let power = attack1.power;
@@ -334,94 +494,24 @@ alert("outer");
         if (pokemon2.type.length > 1) {
             damage = damage * 1;
         }
-        var damageFinal = Math.ceil(damage);
-        alert(damageFinal);
-
+        return Math.ceil(damage);
     }
 
 
     async function UseMove1(val) {
-        if (actionChosen == false) {
-
-            if (isHost == ourNum && hostRoomID <= 0) {
-                return;
-            }
-            const url = `https://pokeapi.co/api/v2/move/${val}`;
-
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
-                return;
-            }
-
-            const finalMove = await response.json();
-
-            calculateDamage(userArr[userUniquePkmnID], userArr[2], finalMove);
-        }
+        await SendMove(1);
     }
 
     async function UseMove2(val) {
-        if (actionChosen == false) {
-
-            if (isHost == ourNum && hostRoomID <= 0) {
-                return;
-            }
-            const url = `https://pokeapi.co/api/v2/move/${val}`;
-
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
-                return;
-            }
-
-            const finalMove = await response.json();
-
-            calculateDamage(userArr[userUniquePkmnID], userArr[2], finalMove);
-        }
+        await SendMove(2);
     }
 
     async function UseMove3(val) {
-        if (actionChosen == false) {
-
-            if (isHost == ourNum && hostRoomID <= 0) {
-                return;
-            }
-            const url = `https://pokeapi.co/api/v2/move/${val}`;
-
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
-                return;
-            }
-
-            const finalMove = await response.json();
-
-            calculateDamage(userArr[userUniquePkmnID], userArr[2], finalMove);
-        }
+        await SendMove(3);
     }
 
     async function UseMove4(val) {
-        if (actionChosen == false) {
-
-            if (isHost == ourNum && hostRoomID <= 0) {
-                return;
-            }
-            const url = `https://pokeapi.co/api/v2/move/${val}`;
-
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
-                return;
-            }
-
-            const finalMove = await response.json();
-
-            calculateDamage(userArr[userUniquePkmnID], userArr[2], finalMove);
-        }
+        await SendMove(4);
     }
 
     const displayPokemonData = async (data) => {
@@ -480,6 +570,7 @@ alert("outer");
 
         pokeContainer.addEventListener('click', () => {
             //pokeContainer.style.transform = 'scale(1.05)';
+            SwitchPokemon(pokeContainer.id);
         })
 
         pokeContainer.addEventListener('mouseover', () => {
