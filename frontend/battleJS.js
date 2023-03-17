@@ -472,7 +472,23 @@ async function SendMove(moveval) {
         let hostDamageToOpponent = 0;
         let opponentDamageTohost = 0;
         let hostIndex = 0;
-        let oppIndex = 0;        
+        let oppIndex = 0;
+
+        for (let k = 0; k < userArr.length; k++)
+        {
+            if (hostAction == 5)
+                console.log(userArr[k].hp + " Name User " + userArr[k].id + " Move Action " + userArr[k].move[3])
+            else
+                console.log(userArr[k].hp + " Name User " + userArr[k].id + " Move Action " + userArr[k].move[opponentAction - 1])
+        }
+
+        for (let m = 0; m < opponentArr.length; m++)
+        {
+            if (opponentAction == 5)
+                console.log(opponentArr[m].hp + " Name User " + opponentArr[m].id + " Move Action " + opponentArr[m].move[3])
+            else
+                console.log(opponentArr[m].hp + " Name User " + opponentArr[m].id + " Move Action " + opponentArr[m].move[opponentAction - 1])
+        }
 
         for (let i = 0; i < userArr.length; i++)
         {
@@ -482,10 +498,10 @@ async function SendMove(moveval) {
             }
         }
 
-        for (let i = 0; i < opponentArr.length; i++)
+        for (let j = 0; j < opponentArr.length; j++)
         {
-            if (opponentArr[i].UniquePokemonID == opponentUniquePkmnID){
-                oppIndex = i;
+            if (opponentArr[j].UniquePokemonID == opponentUniquePkmnID){
+                oppIndex = j;
                 break;
             }
         }
