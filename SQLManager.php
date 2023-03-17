@@ -343,7 +343,37 @@ function registerUser($request)
             }
             return array("returnCode" => 0, 'message' => "Still Waiting for Opponent");
 
-        case "checkGameState":
+        case "hostGameStateCheck":
+            $UserID = $request['UserID'];
+            $RoomID = $request['RoomID'];
+            //TO DO add check for if battle is done
+
+
+            $query = "SELECT RoomID, GameState.UserID, PokemonID, GameState.UniquePokemonID, Active, ActionID, CurrentHP, Fainted FROM GameState JOIN PokemonInfo
+ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID;";
+            $response = $mydb->query($query);
+            $ActionsThatArent0 = 0;
+            $ReturnVal = 1;
+            $rows = array();
+            while ($row = mysqli_fetch_assoc($response)) {
+                echo 'n' . $row['PokemonID'] . 'n';
+
+                if ($row['ActionID'] > 0){
+                    $ActionsThatArent0 += 1;
+                }
+
+                $rows[] = $row;
+            }
+
+            if ($ActionsThatArent0 == 2) {
+                echo 'Time To Deal Damage'.PHP_EOL;
+                $ReturnVal = 2;
+            }
+
+            echo 'Returning New Game State Info'.PHP_EOL;
+            print json_encode($rows);
+            return array("returnCode" => $ReturnVal, 'message' => json_encode($rows));
+
         break;
         case "hostDealDamage":
             $UserID = $request['UserID'];

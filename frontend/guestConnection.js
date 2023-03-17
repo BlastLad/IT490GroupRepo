@@ -5,6 +5,7 @@ let opponentUniquePkmnID = -1;
 let opponentArr = [];
 let isHost = -1;
 let oppNum = -2;
+let setUpComplete = 0;
 
 const HostPokemon = {
    HostID: 0,
@@ -125,10 +126,14 @@ function clientGameStateCheck()
                             }
                             else if (value2.UserID = HostPokemon.HostID)//host pokemon
                             {
-                                HostPokemon.HostUPID = value2.UniquePokemonID;
-                                hostUniquePokemonID = value2.UniquePokemonID;
-                                HostPokemon.HostHP = value2.CurrentHP;
-                                HostPokemon.HostPID = value2.PokemonID;
+                                if (value2.ActionID < 5 || setUpComplete == 0)//Not a switch or firsttime set up
+                                {
+                                    HostPokemon.HostUPID = value2.UniquePokemonID;
+                                    hostUniquePokemonID = value2.UniquePokemonID;
+                                    HostPokemon.HostHP = value2.CurrentHP;
+                                    HostPokemon.HostPID = value2.PokemonID;
+                                    setUpComplete = 1;
+                                }
                             }
                         });
                     }

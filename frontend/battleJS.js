@@ -123,20 +123,127 @@ function checkGameState()
 {
     if (hostRoomID < 0 && isHost == ourNum)
     {
-
-
         //meaning that our lobby is not full and the battle has not started
         preBattleStartCheck();
     }
-    else if (hostRoomID == ourNum)
+    else if (hostRoomID > 0)
     {
-        //battle has started but now we need to initalize the opponetArray FOR HOST ONLY, the client only needs this hosts active
-        //pokemon
-        if (opponentUniquePkmnID < 0)
+        //game state update
+        hostGameStateUpdate();
+    }
+}
+
+function  hostGameStateUpdate()
+{
+    const body = {
+        UserID: ourNum,
+        RoomID: hostRoomID
+    };
+
+    const jsonBody = JSON.stringify(body);
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function ()
+    {
+        if (this.readyState == 4 && this.status == 200)
         {
-            //we need to run a query to get the opponets pokemon arr
+            const jsonResponse = JSON.parse(this.responseText);
+            if (jsonResponse.returnCode >= 0)//Someone or both of us are still picking a move update our user info and activeOpp ID
+            {
+                let OppActionID = 0;
+                let userActionID = 0;
+                //up to twelve rows 1 for each entry of GameState = RoomID
+                Object.entries(jsonResponse).forEach(([key, value]) => {
+                    if (key == 'message') {
+                        const innerJson = JSON.parse(value);
+                        actionChosen = false;
+                        let oppActionChosen = false;
+
+                        Object.entries(innerJson).forEach(([key2, value2]) => {
+
+                            if (ourNum == value2.UserID)
+                            {
+                                if (value2.ActionID != 0)
+                                {
+                                    actionChosen = true;
+                                    userActionID = value2.ActionID;
+                                }
+
+                                for (let i = 0; i < userArr.length; i++)
+                                {
+                                    if (userArr[i].UniquePokemonID == value2.UniquePokemonID)
+                                    {
+                                        userArr[i].hp = value2.CurrentHP;
+                                        //update text
+                                        document.getElementById(value2.UniquePokemonID+"hp").innerText = userArr[i].hp;
+                                        userArr[i].Fainted = value2.Fainted;
+                                        if (value2.Fainted == 1) {
+                                            document.getElementById(value2.UniquePokemonID + "hp").innerText = "Fainted";
+                                        }
+                                        if (value2.Active == 1)
+                                        {
+                                            userUniquePkmnID = value2.UniquePokemonID;
+                                            SetActivePokemon(i);
+                                        }
+                                    }
+                                }
+                            }
+                            else if (value2.UserID = oppNum)//host pokemon
+                            {
+                                if (value2.ActionID != 0)
+                                {
+                                    oppActionChosen = true;
+                                    OppActionID = value2.ActionID;
+                                }
+
+                                for (let i = 0; i < opponentArr.length; i++)
+                                {
+                                    if (opponentArrArr[i].UniquePokemonID == value2.UniquePokemonID)
+                                    {
+                                        opponentArr[i].hp = value2.CurrentHP;
+                                        opponentArr[i].Fainted = value2.Fainted;
+                                        if (value2.Active == 1)//active opppokemon and action is not a pre done switch
+                                        {
+                                            opponentUniquePkmnID = value2.UniquePokemonID;//updatea ctive pokemon
+                                            if (value2.ActionID < 5 || jsonResponse.returnCode == 2)
+                                            {
+                                                SetOpponentActivePokemon(opponentUniquePkmnID);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+                if (jsonResponse.returnCode == 2)
+                {
+                    PerformMoves(userActionID, OppActionID);
+                }
+                //UpdateHostPokemonInfo();
+            }
         }
     }
+    xhr.open("POST", "hostGameStateCheck.php");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(jsonBody);
+}
+
+async function SetOpponentActivePokemon(upid) {
+    let opponentPokemon = document.getElementById("opponentPokemon");
+    let index = 0;
+    for (let i = 0; i < opponentArr.length; i++) {
+        if (opponentArr[i].UniquePokemonID == upid) {
+            index = i;
+            break;
+        }
+    }
+
+    opponentUniquePkmnID = opponentArr[index].UniquePokemonID;
+    //sets current active opponentPokemon
+
+    opponentPokemon.innerHTML = '';
+    const htmlString = '<img src="' + opponentArr[index].image + '"/><h1>' + opponentArr[index].name + '</h1><p>HP: ' + opponentArr[index].hp +'</p>';
+    opponentPokemon.innerHTML = htmlString;
 }
 
 function preBattleStartCheck() {
@@ -231,55 +338,6 @@ function preBattleStartCheck() {
 
 }
 
-    function battleCheck() {
-
-    }
-
-    const getPokemon = async (player1ID, player1Team, player2ID, player2Team) => {
-
-        //pokemonDataArray for all the pokemon on a players team
-
-
-        let userNum = player1ID;
-        let teamNum = player1Team;
-        const body = {
-            UserID: userNum,
-            TeamID: teamNum
-        };
-        //const jsonBody = JSON.stringify(body);
-        /*const xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200)
-        {
-          document.getElementById("Pokemon_One").innerHTML =
-          this.responseText;
-       /*   const pokemonOne = await makeApiCall(num1);
-          const pokemonTwo = await makeApiCall(num2);
-
-          pokeDataArr.push(pokemonOne);
-          pokeDataArr.push(pokemonTwo);
-
-          const url = `https://pokeapi.co/api/v2/pokemon/${player1Team}`;
-          const response = await fetch(url);
-
-          if (!response.ok)
-           {
-             resultsDiv.innerHTML = `<p>No results found for ${pokemonName}.</p>`;
-           }
-
-            const pokemon = await response.json()
-         }
-        };
-        xhr.open("POST", "battleJS.php");
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(jsonBody);*/
-
-        //  const pokemon = ["1", "2", "3", "4", "5", "6"];
-        // await pokemon.forEach(addPokemonToUI);
-
-        //call the php script to get a response comprised of all the pokemon in the user and teamID
-    }
-
     async function addPokemonToUI(pokemonItem, attachedUser, upid) {
         let id = pokemonItem['id'];
 
@@ -319,23 +377,6 @@ function preBattleStartCheck() {
     }
 
     //only run through gets
-    async function SetOpponentActivePokemon(upid) {
-        let opponentPokemon = document.getElementById("opponentPokemon");
-        let index = 0;
-        for (let i = 0; i < opponentArr.length; i++) {
-            if (opponentArr[i].UniquePokemonID == upid) {
-                index = i;
-                break;
-            }
-        }
-
-        opponentUniquePkmnID = opponentArr[index].UniquePokemonID;
-        //sets current active opponentPokemon       
-
-        opponentPokemon.innerHTML = '';
-        const htmlString = '<img src="' + opponentArr[index].image + '"/><h1>' + opponentArr[index].name + '</h1><p>HP: ' + opponentArr[index].hp +'</p>';
-        opponentPokemon.innerHTML = htmlString;
-    }
 
     async function SetActivePokemon(index) {
         let activePokemon = document.getElementById("activePokemon");
