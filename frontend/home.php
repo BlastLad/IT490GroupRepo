@@ -64,7 +64,7 @@
           $pokemon_sprite = $pokemon_data['sprites']['front_default'];
           $stats = $pokemon_data['stats'];
           $pokemon_num = $pokemon_data['id'];
-
+		echo"$pokemon_num pokemonNum".PHP_EOL;
           //filter moves by generation
           foreach($pokemon_data["moves"] as $move) {
             $moveName = $move["move"]["name"];
@@ -261,7 +261,10 @@
           echo "<img src='".$pokemon_sprite."'><br>";
           echo "<p><b>Stats:</b></p>";
           echo "<ul>";
-          foreach($stats as $stat) {
+	  foreach($stats as $stat) {
+		  $statID = $stat['stat']['name'];
+		  $statval = $stat['base_stat'];
+		  echo "<p hidden='hidden' id='$statID'>$statval</p>";
             echo "<li>".$stat['stat']['name'].": ".$stat['base_stat']."</li><br>";
           }
           echo "</ul>";
@@ -367,6 +370,6 @@
      </form>
     </div>
   
-  < <script src="pokeapi.js"></script>
+   <script src="pokeapi.js"></script>
 </body>
 </html>
