@@ -146,6 +146,26 @@ function clientGameStateCheck()
                     document.getElementById("incomingMessage").innerText = "Choose A Move or Switch Your Pokemon!";
                 }
             }
+            else if (jsonResponse.returnCode == '2')//battle done
+            {
+                alert(jsonResponse.message);
+                const bodyf = {
+                    UserID: ourNum,
+                    RoomID: hostRoomID
+                };
+                const jsonBodyf = JSON.stringify(bodyf);
+                const ehr = new XMLHttpRequest();
+                ehr.onreadystatechange = function ()
+                {
+                    if (this.readyState == 4 && this.status == 200)
+                    {
+                        window.location.replace("lobbies.php");
+                    }
+                }
+                ehr.open("POST", "battleOver.php");
+                ehr.setRequestHeader("Content-Type", "application/json");
+                ehr.send(jsonBodyf);
+            }
         }
     }
     xhr.open("POST", "guestGameStateCheck.php");

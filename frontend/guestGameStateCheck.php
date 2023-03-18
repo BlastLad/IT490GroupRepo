@@ -13,6 +13,7 @@ $request['type'] = "guestCheckGameState";
 $request['message'] = $msg;
 $request['UserID'] = $_SESSION["UserID"];
 $request['RoomID'] = $object['RoomID'];
+$request['TeamID'] = $_SESSION["ActiveTeam"];
 $response = directMessage($request, "testServer");
 
 $lobbies = json_encode($response);

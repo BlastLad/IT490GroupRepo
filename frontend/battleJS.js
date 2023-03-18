@@ -481,6 +481,7 @@ async function SendMove(moveval) {
         let hostIndex = 0;
         let oppIndex = 0;
 
+
         for (let k = 0; k < userArr.length; k++)
         {
             if (hostAction == 5)
@@ -514,6 +515,24 @@ async function SendMove(moveval) {
         }
         let newhostHP = userArr[hostIndex].hp;
         let newoppHP = opponentArr[oppIndex].hp;
+        let hostPreBattleHP = newhostHP;
+        let oppPreBattleHP = newoppHP;
+        let firstAttacker = Math.random();//host
+
+        if (opponentArr[oppIndex].speed > userArr[hostIndex].speed)
+        {
+                firstAttacker = 2;/opp
+        }
+        else if (opponentArr[oppIndex].speed > userArr[hostIndex].speed) {
+            if (firstAttacker <= 0.5)
+            {
+                firstAttacker = 1;//host
+            }
+            else { firstAttacker = 2 }
+        }
+        else { firstAttacker = 1}
+
+
 console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
 
         if (hostAction > 0 && hostAction < 5)
@@ -536,7 +555,13 @@ console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
 
             opponentArr[oppIndex].hp = opponentArr[oppIndex].hp - hostDamageToOpponent;
             if (opponentArr[oppIndex].hp < 0)
-            { newoppHP = 0;}
+            {
+                newoppHP = 0;
+                if (firstAttacker != 2)
+                {
+                    opponentAction = 5;
+                }
+            }
             else {newoppHP = opponentArr[oppIndex].hp;}
         }
 
@@ -560,7 +585,13 @@ console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
 
             userArr[hostIndex].hp = userArr[hostIndex].hp - opponentDamageTohost;
             if (userArr[hostIndex].hp < 0)
-            { newhostHP = 0;}
+            { newhostHP = 0;
+                if (firstAttacker != 1)
+                {
+                    opponentArr[oppIndex].hp = oppPreBattleHP;
+                    newoppHP = oppPreBattleHP;
+                }
+            }
             else { newhostHP = userArr[hostIndex].hp; }
         }
 
@@ -580,8 +611,31 @@ console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
         {
             if (this.readyState == 4 && this.status == 200)
             {
-                document.getElementById("incomingMessage").innerText = "Damage Dealt Updating!";
-
+                const jsonResponse = JSON.parse(this.responseText);
+                if (jsonResponse.returnCode == 1)
+                {
+                    document.getElementById("incomingMessage").innerText = "Damage Dealt Updating!";
+                }
+                else if (jsonResponse.returnCode == '2')//battle done
+                {
+                    alert(jsonResponse.message);
+                    const bodyf = {
+                    UserID: ourNum,
+                    RoomID: hostRoomID
+                    };
+                const jsonBodyf = JSON.stringify(bodyf);
+                const ehr = new XMLHttpRequest();
+                ehr.onreadystatechange = function ()
+                {
+                    if (this.readyState == 4 && this.status == 200)
+                    {
+                        window.location.replace("lobbies.php");
+                    }
+                }
+                ehr.open("POST", "battleOver.php");
+                ehr.setRequestHeader("Content-Type", "application/json");
+                ehr.send(jsonBodyf);
+                }
             }
         }
         xhr.open("POST", "hostDealDamage.php");

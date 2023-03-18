@@ -383,6 +383,7 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
             $OUPID = $request['OpponentUniquePokemonID'];
             $HostHP = $request['HostHP'];
             $OppHP = $request['OppHP'];
+            $TeamID = $request['TeamID'];
 
             if ($HostHP <= 0)
             {
@@ -403,6 +404,11 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
                 }
                 else {
                     //battleover winner has been determined
+                    $query = "UPDATE BattleRooms SET BattleWinner = 2 WHERE RoomID = $RoomID";
+                    $response = $mydb->query($query);
+                    $query = "UPDATE TeamInfo SET Loses = Loses + 1 WHERE TeamID = $TeamID AND UserID = $UserID;";
+                    $response = $mydb->query($query);
+                    return array("returnCode" => 2, 'message' => "You Lost!");
                 }
             }
             else
@@ -430,7 +436,11 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
                     }
                 }
                 else {
-                    //battleover winner has been determined
+                    $query = "UPDATE BattleRooms SET BattleWinner = 1 WHERE RoomID = $RoomID";
+                    $response = $mydb->query($query);
+                    $query = "UPDATE TeamInfo SET Wins = Wins + 1 WHERE TeamID = $TeamID AND UserID = $UserID;";
+                    $response = $mydb->query($query);
+                    return array("returnCode" => 2, 'message' => "You Won!");
                 }
             }
             else
@@ -477,8 +487,32 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
         case "guestCheckGameState":
             $UserID = $request['UserID'];
             $RoomID = $request['RoomID'];
+            $TeamID = $request['TeamID'];
 
             //TO DO add check for if battle is done
+
+            $query = "SELECT BattleWinner, RoomID FROM BattleRooms WHERE RoomID = $RoomID; ";
+            $response = $mydb->query($query);
+
+            $battleRoomWinner = "";
+            while ($row = mysqli_fetch_assoc($response)) {
+                $battleRoomWinner = $row['BattleWinner'];
+                break;
+            }
+
+            if ($battleRoomWinner == 1)
+            {
+                $query = "UPDATE TeamInfo SET Loses = Loses + 1 WHERE TeamID = $TeamID AND UserID = $UserID;";
+                $response = $mydb->query($query);
+                return array("returnCode" => 2, 'message' => "You Lost!");
+            }
+            if ($battleRoomWinner == 2)
+            {
+                $query = "UPDATE TeamInfo SET Wins = Wins + 1 WHERE TeamID = $TeamID AND UserID = $UserID;";
+                $response = $mydb->query($query);
+                return array("returnCode" => 2, 'message' => "You Won!");
+            }
+
 
 
             $query = "SELECT RoomID, GameState.UserID, PokemonID, GameState.UniquePokemonID, Active, ActionID, CurrentHP, Fainted FROM GameState JOIN PokemonInfo
@@ -568,15 +602,37 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
                 return array("returnCode" => $isHost, 'message' => json_encode($rows));
             }
                 return array("returnCode" => 0, 'message' => "Failed to InItBattler");
-        case "finishbattle":
-            $query = "SELECT * FROM BattleRooms WHERE Player_One = $UserID AND Player_Two = $Player_Two;";
+        case "LeaveBattleRoom":
+            $RoomID = $request['RoomID'];
+            $UserID = $request['UserID'];
+
+
+            $query = "DELETE FROM GameState WHERE UserID = $UserID && RoomID = $RoomID;";
+            //
             $response = $mydb->query($query);
-            if (mysqli_num_rows($response) > 0) {
-                $query = "DELETE FROM BattleRooms WHERE Player_One = $UserID AND Player_Two = $Player_Two;";
+
+            $query = "SELECT * FROM GameState WHERE RoomID = $RoomID;";
+            $response = $mydb->query($query);
+
+            if (mysqli_num_rows($response) > 0)
+            {
+                return array("returnCode" => 1, 'message' => "Thank You For Battling");
+            }
+            else //delete room because both players have left the room
+            {
+                $query = "DELETE FROM BattleRooms WHERE RoomID = $RoomID;";
+                $response = $mydb->query($query);
+                if ($response)
+                {
+                    return array("returnCode" => 1, 'message' => "Thank You For Battling");
+                }
+                else
+                {
+                    //log to error logger
+                    return array("returnCode" => 2, 'message' => "Thank You For Battling With Error");
+                }
 
             }
-
-
     }
 }
 
