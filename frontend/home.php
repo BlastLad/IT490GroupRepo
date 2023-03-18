@@ -63,7 +63,8 @@
           $pokemon_name = ucfirst($pokemon_data['name']);
           $pokemon_sprite = $pokemon_data['sprites']['front_default'];
           $stats = $pokemon_data['stats'];
-          
+          $pokemon_num = $pokemon_data['id'];
+
           //filter moves by generation
           foreach($pokemon_data["moves"] as $move) {
             $moveName = $move["move"]["name"];
@@ -254,6 +255,8 @@
             }
           }
           //Display Pokemon stats and sprite
+            echo "<p hidden='hidden' id='pokemonName'>$pokemon_name</p>";
+            echo "<p hidden='hidden' id='pokemonNum'>$pokemon_num</p>";
           echo "<h2>".$pokemon_name." (Generation ".$generation.")</h2>";
           echo "<img src='".$pokemon_sprite."'><br>";
           echo "<p><b>Stats:</b></p>";
@@ -266,7 +269,7 @@
           echo "<p><b>Moves:</b></p>";
           echo "<form>";
           foreach(range(1,4) as $i) {
-            echo "<select name='move$i'>";
+            echo "<select name='move$i' id='move$i'>";
             echo "<option value=''>Select a move</option>";
             switch($generation) {
               case 1:
@@ -364,6 +367,6 @@
      </form>
     </div>
   
-  <!--<script src="pokeapi.js"></script>-->
+  < <script src="pokeapi.js"></script>
 </body>
 </html>
