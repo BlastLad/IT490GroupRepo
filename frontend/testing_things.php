@@ -130,35 +130,51 @@
     
                 // Display the offensive_weaknesses of the Pokemon's types
                 echo "<p><b>Offensive Weaknesses:</b></p>";
-                echo "<ul>";
-                foreach($offensive_weaknesses as $offensive_weakness) {
-                    echo "<li>".$offensive_weakness."</li>";
+                if (empty($offensive_weaknesses)) {
+                    echo "<p>None</p>";
+                } else {
+                    echo "<ul>";
+                    foreach($offensive_weaknesses as $offensive_weakness) {
+                        echo "<li>".$offensive_weakness."</li>";
+                    }
+                    echo "</ul>";
                 }
-                echo "</ul>";
 
-                 // Display the defensive_weaknesses of the Pokemon's types
-                 echo "<p><b>Defensive Weaknesses:</b></p>";
-                 echo "<ul>";
-                 foreach($defensive_weaknesses as $defensive_weakness) {
-                     echo "<li>".$defensive_weakness."</li>";
-                 }
-                 echo "</ul>";
+                // Display the defensive_weaknesses of the Pokemon's types
+                echo "<p><b>Defensive Weaknesses:</b></p>";
+                if (empty($defensive_weaknesses)) {
+                    echo "<p>None</p>";
+                } else {
+                    echo "<ul>";
+                    foreach($defensive_weaknesses as $defensive_weakness) {
+                        echo "<li>".$defensive_weakness."</li>";
+                    }
+                    echo "</ul>";
+                }
 
                   // Display the offensive_strengths of the Pokemon's types
-                  echo "<p><b>Offensive Strengths:</b></p>";
-                  echo "<ul>";
-                  foreach($offensive_strengths as $offensive_strength) {
-                      echo "<li>".$offensive_strength."</li>";
-                  }
-                  echo "</ul>";
+                echo "<p><b>Offensive Strengths:</b></p>";
+                if (empty($offensive_strengths)) {
+                    echo "<p>None</p>";
+                } else {
+                    echo "<ul>";
+                    foreach($offensive_strengths as $offensive_strength) {
+                        echo "<li>".$offensive_strength."</li>";
+                    }
+                    echo "</ul>";
+                }
 
-                     // Display the defensive_strengths of the Pokemon's types
-                     echo "<p><b>Defensive Strengths:</b></p>";
-                     echo "<ul>";
-                     foreach($defensive_strengths as $defensive_strength) {
-                         echo "<li>".$defensive_strength."</li>";
-                     }
-                     echo "</ul>";
+                // Display the defensive_strengths of the Pokemon's types
+                echo "<p><b>Defensive Strengths:</b></p>";
+                if (empty($defensive_strengths)) {
+                    echo "<p>None</p>";
+                } else {
+                    echo "<ul>";
+                    foreach($defensive_strengths as $defensive_strength) {
+                        echo "<li>".$defensive_strength."</li>";
+                    }
+                    echo "</ul>";
+                }
     
                 // Display the move dropdown menus
                 echo "<p><b>Moves:</b></p>";
