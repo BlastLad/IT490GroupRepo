@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for file in ~/git/GroupRepoMarch/frontend/*;
+for file in ~/git/DeathMarch/frontend/*;
 do
     sudo cp $file /var/www/sample
     echo "$file has been copied to /var/www/sample" 

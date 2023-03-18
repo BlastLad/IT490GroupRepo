@@ -5,7 +5,7 @@
 </head>
 
 <?php require(__DIR__ . "/nav.php"); ?>
-
+<?php     session_start(); ?>
 <body>
   <h1>PokeAPI Search Page</h1>
   
@@ -63,7 +63,8 @@
           $pokemon_name = ucfirst($pokemon_data['name']);
           $pokemon_sprite = $pokemon_data['sprites']['front_default'];
           $stats = $pokemon_data['stats'];
-          
+          $pokemon_num = $pokemon_data['id'];
+		echo"$pokemon_num pokemonNum".PHP_EOL;
           //filter moves by generation
           foreach($pokemon_data["moves"] as $move) {
             $moveName = $move["move"]["name"];
@@ -254,11 +255,16 @@
             }
           }
           //Display Pokemon stats and sprite
+            echo "<p hidden='hidden' id='pokemonName'>$pokemon_name</p>";
+            echo "<p hidden='hidden' id='pokemonNum'>$pokemon_num</p>";
           echo "<h2>".$pokemon_name." (Generation ".$generation.")</h2>";
           echo "<img src='".$pokemon_sprite."'><br>";
           echo "<p><b>Stats:</b></p>";
           echo "<ul>";
-          foreach($stats as $stat) {
+	  foreach($stats as $stat) {
+		  $statID = $stat['stat']['name'];
+		  $statval = $stat['base_stat'];
+		  echo "<p hidden='hidden' id='$statID'>$statval</p>";
             echo "<li>".$stat['stat']['name'].": ".$stat['base_stat']."</li><br>";
           }
           echo "</ul>";
@@ -266,7 +272,7 @@
           echo "<p><b>Moves:</b></p>";
           echo "<form>";
           foreach(range(1,4) as $i) {
-            echo "<select name='move$i'>";
+            echo "<select name='move$i' id='move$i'>";
             echo "<option value=''>Select a move</option>";
             switch($generation) {
               case 1:
@@ -361,9 +367,10 @@
 	?>
 	</select>
 	 <button id="addTeam" class="addTeam" ></button>
+	 <input id ="teamName" type="text" value = "New Pokemon Team">
      </form>
     </div>
   
-  <!--<script src="pokeapi.js"></script>-->
+   <script src="pokeapi.js"></script>
 </body>
 </html>

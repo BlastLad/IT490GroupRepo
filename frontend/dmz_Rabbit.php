@@ -47,7 +47,7 @@ function apiCalls($request)
             //return doValidate($request['sessionId']);
         case "type":
             // api call for type
-            $type = $request['type'];
+            $type = $request['poke_type'];
             $json = file_get_contents("https://pokeapi.co/api/v2/type/{$type}");
             return array("code" => 0, "message" => $json);
     }

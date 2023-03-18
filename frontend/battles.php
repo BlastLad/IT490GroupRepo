@@ -111,17 +111,13 @@ nav {
 	</ul>
 </nav>
 <body>
- <script src="battleJS.js"></script>
-<?php
-session_start();
-$uid = $_SESSION['UserID'];
-$tid = $_SESSION['ActiveTeam'];
-echo "<script type='text/javascript'> inItUser($uid, $tid); </script>";
-?>
+<script src="battleJS.js"></script>
+
     <h1>Battles page</h1>
+    <p id="incomingMessage">helloo</p>
     <main>
         <section>
-            <div id="enemyPokemon">
+            <div id="opponentPokemon">
 
             </div>
 
@@ -145,5 +141,14 @@ echo "<script type='text/javascript'> inItUser($uid, $tid); </script>";
         </div>       
 
     </main>
+
+<?php
+session_start();
+$uid = $_SESSION['UserID'];
+$tid = $_SESSION['ActiveTeam'];
+echo '<script type="text/javascript">',
+     "inItUser($uid, $tid);",
+     '</script>'
+?>
 </body>
 </html>

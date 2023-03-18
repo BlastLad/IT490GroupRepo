@@ -1,4 +1,3 @@
-#!/usr/bin/php
 <?php
 require_once('path.inc');
 require_once('get_host_info.inc');
@@ -21,12 +20,14 @@ $request['type'] = "addpokemon";
 $request['UserID'] = $_SESSION['UserID'];
 $request['TeamID'] = $object['TeamID'];
 $request['PokemonID'] = $object['PokemonID'];
+$request['TeamName'] = $object['TeamName'];
 $request['PokemonName'] = $object['PokemonName'];//$storePost->"PokemonName";
 $request['AbilityID'] = $object['AbilityID'];
 $request['Move_One'] = $object['Move_One'] ;
 $request['Move_Two'] = $object['Move_Two'];
 $request['Move_Three'] = $object['Move_Three'];
 $request['Move_Four'] = $object['Move_Four'];
+$request['MaxHP'] = $object['MaxHP'];
 $request['message'] = $object;//$msg;
 $response = $client->send_request($request);
 //$response = $client->publish($request);
