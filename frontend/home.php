@@ -5,7 +5,7 @@
 </head>
 
 <?php require(__DIR__ . "/nav.php"); ?>
-
+<?php     session_start(); ?>
 <body>
   <h1>PokeAPI Search Page</h1>
   
@@ -367,6 +367,7 @@
 	?>
 	</select>
 	 <button id="addTeam" class="addTeam" ></button>
+	 <input id ="teamName" type="text" value = "New Pokemon Team">
      </form>
     </div>
   

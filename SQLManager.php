@@ -174,7 +174,8 @@ function registerUser($request)
             }
             break;
         case 'addpokemon':
-            $TeamID = $request['TeamID'];
+		$TeamID = $request['TeamID'];
+		$TeamName = $request['TeamName'];
             $UserID = $request['UserID'];
             $PokemonID = $request['PokemonID'];
             $PokemonName = $request['PokemonName'];
@@ -187,7 +188,7 @@ function registerUser($request)
 
             if ($TeamID == 0) {
                 echo "creating new team" . PHP_EOL;
-                $query = "INSERT INTO TeamInfo (UserID, TeamName, VersionID, Wins, Loses) VALUES ($UserID, '$TeamID', 1, 0, 0);";
+                $query = "INSERT INTO TeamInfo (UserID, TeamName, VersionID, Wins, Loses) VALUES ($UserID, '$TeamName', 1, 0, 0);";
 
                 $response = $mydb->query($query);
 

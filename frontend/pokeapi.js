@@ -12,12 +12,15 @@ addButton.addEventListener('submit', async (event) => {
 	alert(pokemonNumUpdate);
     let pokemonNameUpdate = document.getElementById("pokemonName").innerText;
 	let hp = document.getElementById("hp").innerText;
+	let teamName = document.getElementById("teamName").value;
+
 	const body = {
 	AbilityID: abNum,
         Move_One: move1Nam,
         Move_Two: move2Nam,
         Move_Three: move3Nam,
         Move_Four: move4Nam,
+	TeamName: teamName, 
         PokemonID: pokemonNumUpdate,
         PokemonName: pokemonNameUpdate,
         TeamID: teamNum,

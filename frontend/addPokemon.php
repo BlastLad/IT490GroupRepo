@@ -20,6 +20,7 @@ $request['type'] = "addpokemon";
 $request['UserID'] = $_SESSION['UserID'];
 $request['TeamID'] = $object['TeamID'];
 $request['PokemonID'] = $object['PokemonID'];
+$request['TeamName'] = $object['TeamName'];
 $request['PokemonName'] = $object['PokemonName'];//$storePost->"PokemonName";
 $request['AbilityID'] = $object['AbilityID'];
 $request['Move_One'] = $object['Move_One'] ;
