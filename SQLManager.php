@@ -145,19 +145,37 @@ function registerUser($request)
             print json_encode($rows);
             return array("returnCode" => 0, 'message' => json_encode($rows));
         case 'getOpponentTeam':
-            $TeamID = $request['RoomID'];
+            $RoomID = $request['RoomID'];
             $UserID = $request['UserID'];
 
-            $query = "SELECT activeTeamID, username FROM users WHERE UserID = $UserID";
+
             $activeTeamID = '';
-            $response = $mydb->query($query);
-            if (mysqli_num_rows($response) > 0)
-            {
-                echo "We correctly got the opponets teamID worked" . PHP_EOL;
-                while ($row = mysqli_fetch_assoc($response)) {
-                    $activeTeamID = $row['activeTeamID'];
-                    break;
+
+            if ($UserID == 0) {
+                $query = "SELECT RoomName FROM BattleRooms WHERE RoomID = $RoomID;";//gets
+                $response = $mydb->query($query);
+                if (mysqli_num_rows($response) > 0)
+                {
+                    while ($row = mysqli_fetch_assoc($response)) {
+                        $activeTeamID = $row['RoomName'];
+                        echo "$activeTeamID The Stock Team".PHP_EOL;
+                        break;
+                    }
                 }
+            }
+            else {
+                $query = "SELECT activeTeamID, username FROM users WHERE UserID = $UserID";
+                $response = $mydb->query($query);
+                if (mysqli_num_rows($response) > 0)
+                {
+                    echo "We correctly got the opponets teamID worked" . PHP_EOL;
+                    while ($row = mysqli_fetch_assoc($response)) {
+                        $activeTeamID = $row['activeTeamID'];
+                        break;
+                    }
+                }
+            }
+
                 $query = "SELECT * FROM PokemonInfo WHERE TeamID = $activeTeamID AND UserID = $UserID ORDER BY UniquePokemonID;";
 
                 $response = $mydb->query($query);
@@ -171,7 +189,7 @@ function registerUser($request)
                 }
                 print json_encode($rows);
                 return array("returnCode" => 1, 'message' => json_encode($rows));
-            }
+
             break;
         case 'addpokemon':
 		$TeamID = $request['TeamID'];
@@ -274,6 +292,63 @@ function registerUser($request)
                 }
             }
             break;
+        case "getStockTeams":
+            $TeamID = $request['TeamID'];
+            $UserID = $request['UserID'];
+
+            $query = "SELECT VersionID, TeamName FROM TeamInfo WHERE TeamID = (SELECT activeTeamID FROM users WHERE activeTeamID = $TeamID AND UserID = $UserID) AND UserID = $UserID;";
+            $response = $mydb->query($query);
+
+            $VersionID = '';
+
+            if (mysqli_num_rows($response) > 0) {
+                echo "We correctly worked" . PHP_EOL;
+                while ($row = mysqli_fetch_assoc($response)) {
+                    $VersionID = $row['VersionID'];
+                }
+                $query = "SELECT * FROM TeamInfo WHERE VersionID = $VersionID UserID = 0 ORDER BY TeamID;";
+                $response = $mydb->query($query);
+                if (mysqli_num_rows($response) > 0) {
+                    $rows = array();
+                    echo "Stock Rooms Gotten" . PHP_EOL;
+                    while ($row = mysqli_fetch_assoc($response)) {
+                        $rows[] = $row;
+                    }
+                    print json_encode($rows);
+                    return array("returnCode" => 1, 'message' => json_encode($rows));
+                }
+            }
+            break;
+        case "createstockbattleroom":
+            $UserID = $request['UserID'];
+            $TeamID = $request['TeamID'];
+            $stockTeamID = $request['StockTeamID'];
+
+            $query = "SELECT VersionID, TeamName FROM TeamInfo WHERE UserID = $UserID AND TeamID = $TeamID;";
+            $response = $mydb->query($query);
+
+            if (mysqli_num_rows($response) > 0) {
+
+                $VersionID =  '0';
+                echo"ReachedVersionID For createbattleroom".PHP_EOL;
+                while ($row = mysqli_fetch_assoc($response)) {
+                    $VersionID = $row['VersionID'];
+                }
+
+                $query = "SELECT * FROM BattleRooms WHERE Player_One = $UserID OR Player_Two = $UserID;";
+                $response = $mydb->query($query);
+                if (mysqli_num_rows($response) > 0) {
+
+                    echo "rows" . PHP_EOL;
+                    $query = "DELETE FROM BattleRooms WHERE Player_One = $UserID OR Player_Two = $UserID;";
+                    //$response = $mydb->query($query);
+                    return array("returnCode" => 0, 'message' => "Room Already Exists for this user");
+                }
+                $query = "INSERT INTO BattleRooms (Player_One, Player_Two, VersionID, RoomName, Full) VALUES ($UserID, 0, VersionID, '$stockTeamID', 1);";
+                $response = $mydb->query($query);
+                return array("returnCode" => 1, 'message' => "Room created");
+            }
+            return array("returnCode" => 0, 'message' => "Room Failed");
         case "createbattleroom":
             $UserID = $request['UserID'];
             $RoomName = $request['RoomName'];
@@ -558,21 +633,27 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
         case "inItBattler":
             $UserID = $request['UserID'];
             $TeamID = $request['TeamID'];
-            $query = "SELECT RoomID, Full FROM BattleRooms WHERE (Player_One = $UserID OR Player_Two = $UserID);";
+            $query = "SELECT RoomID, Player_Two, RoomName Full FROM BattleRooms WHERE (Player_One = $UserID OR Player_Two = $UserID);";
             $response = $mydb->query($query);//we now have a RoomID and the Full status for the Room that player is bounded to
             $RoomID = '';
             $isHost = 1;
-
+            $isStockLobby = 0;
+            $StockTeamID = 0;
             while ($roomIDRow = mysqli_fetch_assoc($response)) {
                 $RoomID = $roomIDRow['RoomID'];
-                if ($roomIDRow['Full'] == 0) {
+
+                if ($roomIDRow['Full'] == 0 || $roomIDRow['Player_Two'] == 0) {
                     $isHost = 1;
+                    if ($roomIDRow['Player_Two'] == 0)
+                    {
+                        $isStockLobby = 1;
+                        $StockTeamID = $roomIDRow['RoomName'];
+                    }
                 }
                 else if ($roomIDRow['Full'] == 1) {
                     $isHost = 2;
                 }
             }
-
 
             $query = "SELECT * FROM PokemonInfo WHERE TeamID = $TeamID AND UserID = $UserID ORDER BY UniquePokemonID;";
             //now we have a array that is maximum of 6 pokemon long that the user is using for this battle first row is active pkmn
@@ -599,6 +680,7 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
                     $makeFirstActive = 0;
                     $rows[] = $row;
                 }
+
                 print json_encode($rows);
                 return array("returnCode" => $isHost, 'message' => json_encode($rows));
             }

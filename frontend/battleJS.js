@@ -77,10 +77,9 @@ function inItUser(user, team) {
 
             if (jsonResponse.returnCode == '1' || jsonResponse.returnCode == '2') {
 
-                if (jsonResponse.returnCode == '1') {
-                    isHost = user;
+                isHost = user;
                     //isHost is = to userID;
-                }
+
                 let sent = 0;
                 Object.entries(jsonResponse).forEach(([key, value]) => {
                     if (key == 'message') {
@@ -316,8 +315,8 @@ function preBattleStartCheck() {
 		
             if (jsonResponse.returnCode >= 1) {
                 
-		hostRoomID = jsonResponse.returnCode;
-		oppNum = jsonResponse.message;
+		        hostRoomID = jsonResponse.returnCode;
+		        oppNum = jsonResponse.message;
 
                 //roomIsFull and we can offcially begin the battle
                 //roomNumber = roomNum;
@@ -336,7 +335,8 @@ function preBattleStartCheck() {
 
                     const innerHXRRequest = new XMLHttpRequest();
                     innerHXRRequest.onreadystatechange = function () {
-                        if (this.readyState == 4 && this.status == 200) {
+                        if (this.readyState == 4 && this.status == 200)
+                        {
                             const jsonResponse = JSON.parse(this.responseText);
                                 if (jsonResponse.returnCode == '1')//successfully gotten opponets pkmn
                                 {
