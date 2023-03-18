@@ -521,7 +521,7 @@ async function SendMove(moveval) {
 
         if (opponentArr[oppIndex].speed > userArr[hostIndex].speed)
         {
-                firstAttacker = 2;/opp
+                firstAttacker = 2;
         }
         else if (opponentArr[oppIndex].speed > userArr[hostIndex].speed) {
             if (firstAttacker <= 0.5)
