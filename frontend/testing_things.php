@@ -30,81 +30,79 @@
     </form>
 <?php
       if(isset($_GET['pokemon_name']) && isset($_GET['generation'])) {
-          $pokemon_name = $_GET['pokemon_name'];
-          $generation = $_GET['generation'];
-      
-          // Call PokeAPI to get the Pokemon data
-          $pokemon_data = file_get_contents("https://pokeapi.co/api/v2/pokemon/$pokemon_name");
-          if($pokemon_data) {
-              $pokemon_data = json_decode($pokemon_data, true);
-              $pokemon_name = ucfirst($pokemon_data['name']);
-              $pokemon_sprite = $pokemon_data['sprites']['front_default'];
-      
-              // Call PokeAPI to get the Generation data
-              $generation_data = file_get_contents("https://pokeapi.co/api/v2/generation/$generation");
-              if($generation_data) {
-                  $generation_data = json_decode($generation_data, true);
-                  $stats = $pokemon_data['stats'];
-                  $gen_name = $generation_data['name'];
-                  $gen_moves = $generation_data['moves'];
-                  $types = $pokemon_data['types'];
-                  $type_names = array();
-                  $weaknesses = array();
-                  foreach ($types as $type) {
-                      $type_name = $type['type']['name'];
-                      array_push($type_names, $type_name);
-                      // Call PokeAPI to get the type data
-                      $type_data = file_get_contents("https://pokeapi.co/api/v2/type/$type_name");
-                      if($type_data) {
-                          $type_data = json_decode($type_data, true);
-                          $damage_relations = $type_data['damage_relations'];
-                          foreach($damage_relations as $key => $value) {
-                              if($key == 'double_damage_from') {
-                                  foreach($value as $weakness) {
-                                      $weakness_name = $weakness['name'];
-                                      array_push($weaknesses, $weakness_name);
-                                  }
-                              }
-                          }
-                      }
-                  }
-                  $type_text = implode("/", $type_names);
-                  $weakness_text = implode("/", $weaknesses);
-      
-                  // Display the Pokemon sprite and stats
-                  echo "<h2>".$pokemon_name." (Generation ".$gen_name.")</h2>";
-                  echo "<img src='".$pokemon_sprite."'><br>";
-                  echo "<p><b>Type:</b> ".$type_text."</p>";
-                  echo "<p><b>Stats:</b></p>";
-                  echo "<ul>";
-                  foreach($stats as $stat) {
-                      echo "<li>".$stat['stat']['name'].": ".$stat['base_stat']."</li>";
-                  }
-                  echo "</ul>";
-      
-                  // Display the move dropdown menus
-                  echo "<p><b>Moves:</b></p>";
-                  echo "<form>";
-                  foreach(range(1,4) as $i) {
-                      echo "<select name='move$i'>";
-                      echo "<option value=''>Select a move</option>";
-                      foreach($gen_moves as $move) {
-                          echo "<option value='".$move['name']."'>".$move['name']."</option>";
-                      }
-                      echo "</select><br>";
-                  }
-                  echo "</form>";
-      
-                  // Display weaknesses
-                  echo "<p><b>Weaknesses:</b> ".$weakness_text."</p>";
-              } else {
-                  echo "<p>Generation not found.</p>";
-              }
-          } else {
-              echo "<p>Pokemon not found.</p>";
-          }
-      }
-      ?>
-
+        $pokemon_name = $_GET['pokemon_name'];
+        $generation = $_GET['generation'];
+    
+        // Call PokeAPI to get the Pokemon data
+        $pokemon_data = file_get_contents("https://pokeapi.co/api/v2/pokemon/$pokemon_name");
+        if($pokemon_data) {
+            $pokemon_data = json_decode($pokemon_data, true);
+            $pokemon_name = ucfirst($pokemon_data['name']);
+            $pokemon_sprite = $pokemon_data['sprites']['front_default'];
+            $types = $pokemon_data['types'];
+            $weaknesses = [];
+    
+            // Call PokeAPI to get the Generation data
+            $generation_data = file_get_contents("https://pokeapi.co/api/v2/generation/$generation");
+            if($generation_data) {
+                $generation_data = json_decode($generation_data, true);
+                $stats = $pokemon_data['stats'];
+                $gen_name = $generation_data['name'];
+                $gen_moves = $generation_data['moves'];
+    
+                // Get the weaknesses of the Pokemon's types
+                foreach($types as $type) {
+                    $type_name = $type['type']['name'];
+                    $type_data = file_get_contents("https://pokeapi.co/api/v2/type/$type_name");
+                    if($type_data) {
+                        $type_data = json_decode($type_data, true);
+                        $type_weaknesses = $type_data['damage_relations']['double_damage_from'];
+                        foreach($type_weaknesses as $weakness) {
+                            $weakness_name = $weakness['name'];
+                            if(!in_array($weakness_name, $weaknesses)) {
+                                $weaknesses[] = $weakness_name;
+                            }
+                        }
+                    }
+                }
+    
+                // Display the Pokemon sprite and stats
+                echo "<h2>".$pokemon_name." (Generation ".$gen_name.")</h2>";
+                echo "<img src='".$pokemon_sprite."'><br>";
+                echo "<p><b>Stats:</b></p>";
+                echo "<ul>";
+                foreach($stats as $stat) {
+                    echo "<li>".$stat['stat']['name'].": ".$stat['base_stat']."</li>";
+                }
+                echo "</ul>";
+    
+                // Display the weaknesses of the Pokemon's types
+                echo "<p><b>Weaknesses:</b></p>";
+                echo "<ul>";
+                foreach($weaknesses as $weakness) {
+                    echo "<li>".$weakness."</li>";
+                }
+                echo "</ul>";
+    
+                // Display the move dropdown menus
+                echo "<p><b>Moves:</b></p>";
+                echo "<form>";
+                foreach(range(1,4) as $i) {
+                    echo "<select name='move$i'>";
+                    echo "<option value=''>Select a move</option>";
+                    foreach($gen_moves as $move) {
+                        echo "<option value='".$move['name']."'>".$move['name']."</option>";
+                    }
+                    echo "</select><br>";
+                }
+                echo "</form>";
+            } else {
+                echo "<p>Generation not found.</p>";
+            }
+        } else {
+            echo "<p>Pokemon not found.</p>";
+        }
+    }
+?>
 </body>
 </html>      
