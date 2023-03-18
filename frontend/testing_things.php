@@ -40,7 +40,10 @@
             $pokemon_name = ucfirst($pokemon_data['name']);
             $pokemon_sprite = $pokemon_data['sprites']['front_default'];
             $types = $pokemon_data['types'];
-            $weaknesses = [];
+            $offensive_weaknesses = [];
+            $defensive_weaknesses = [];
+            $offensive_strengths = [];
+            $defensive_strengths = [];
     
             // Call PokeAPI to get the Generation data
             $generation_data = file_get_contents("https://pokeapi.co/api/v2/generation/$generation");
@@ -50,21 +53,70 @@
                 $gen_name = $generation_data['name'];
                 $gen_moves = $generation_data['moves'];
     
-                // Get the weaknesses of the Pokemon's types
+                 // Get the offensive_weaknesses of the Pokemon's types
+                 foreach($types as $type) {
+                    $type_name = $type['type']['name'];
+                    $type_data = file_get_contents("https://pokeapi.co/api/v2/type/$type_name");
+                    if($type_data) {
+                        $type_data = json_decode($type_data, true);
+                        $type_offensive_weaknesses = $type_data['damage_relations']['no_damage_to'];
+                        foreach($type_offensive_weaknesses as $offensive_weakness) {
+                            $offensive_weakness_name = $offensive_weakness['name'];
+                            if(!in_array($offensive_weakness_name, $offensive_weaknesses)) {
+                                $offensive_weaknesses[] = $offensive_weakness_name;
+                            }
+                        }
+                    }
+                }
+
+                // Get the defensive_weaknesses of the Pokemon's types
                 foreach($types as $type) {
                     $type_name = $type['type']['name'];
                     $type_data = file_get_contents("https://pokeapi.co/api/v2/type/$type_name");
                     if($type_data) {
                         $type_data = json_decode($type_data, true);
-                        $type_weaknesses = $type_data['damage_relations']['double_damage_from'];
-                        foreach($type_weaknesses as $weakness) {
-                            $weakness_name = $weakness['name'];
-                            if(!in_array($weakness_name, $weaknesses)) {
-                                $weaknesses[] = $weakness_name;
+                        $type_defensive_weaknesses = $type_data['damage_relations']['double_damage_from'];
+                        foreach($type_defensive_weaknesses as $defensive_weakness) {
+                            $defensive_weakness_name = $defensive_weakness['name'];
+                            if(!in_array($defensive_weakness_name, $defensive_weaknesses)) {
+                                $defensive_weaknesses[] = $defensive_weakness_name;
                             }
                         }
                     }
                 }
+
+                 // Get the offensive_strengths of the Pokemon's types
+                 foreach($types as $type) {
+                    $type_name = $type['type']['name'];
+                    $type_data = file_get_contents("https://pokeapi.co/api/v2/type/$type_name");
+                    if($type_data) {
+                        $type_data = json_decode($type_data, true);
+                        $type_offensive_strengths = $type_data['damage_relations']['double_damage_to'];
+                        foreach($type_offensive_strengths as $offensive_strength) {
+                            $offensive_strength_name = $offensive_strength['name'];
+                            if(!in_array($offensive_strength_name, $offensive_strengths)) {
+                                $offensive_strengths[] = $offensive_strength_name;
+                            }
+                        }
+                    }
+                }
+
+                // Get the defensive_strengths of the Pokemon's types
+                foreach($types as $type) {
+                    $type_name = $type['type']['name'];
+                    $type_data = file_get_contents("https://pokeapi.co/api/v2/type/$type_name");
+                    if($type_data) {
+                        $type_data = json_decode($type_data, true);
+                        $type_defensive_strengths = $type_data['damage_relations']['no_damage_from'];
+                        foreach($type_defensive_strengths as $defensive_strength) {
+                            $defensive_strength_name = $defensive_strength['name'];
+                            if(!in_array($defensive_strength_name, $defensive_strengths)) {
+                                $defensive_strengths[] = $defensive_strength_name;
+                            }
+                        }
+                    }
+                }
+                
     
                 // Display the Pokemon sprite and stats
                 echo "<h2>".$pokemon_name." (Generation ".$gen_name.")</h2>";
@@ -76,13 +128,37 @@
                 }
                 echo "</ul>";
     
-                // Display the weaknesses of the Pokemon's types
-                echo "<p><b>Weaknesses:</b></p>";
+                // Display the offensive_weaknesses of the Pokemon's types
+                echo "<p><b>Offensive Weaknesses:</b></p>";
                 echo "<ul>";
-                foreach($weaknesses as $weakness) {
-                    echo "<li>".$weakness."</li>";
+                foreach($offensive_weaknesses as $offensive_weakness) {
+                    echo "<li>".$offensive_weakness."</li>";
                 }
                 echo "</ul>";
+
+                 // Display the defensive_weaknesses of the Pokemon's types
+                 echo "<p><b>Defensive Weaknesses:</b></p>";
+                 echo "<ul>";
+                 foreach($defensive_weaknesses as $defensive_weakness) {
+                     echo "<li>".$defensive_weakness."</li>";
+                 }
+                 echo "</ul>";
+
+                  // Display the offensive_strengths of the Pokemon's types
+                  echo "<p><b>Offensive Strengths:</b></p>";
+                  echo "<ul>";
+                  foreach($offensive_strengths as $offensive_strength) {
+                      echo "<li>".$offensive_strength."</li>";
+                  }
+                  echo "</ul>";
+
+                     // Display the defensive_strengths of the Pokemon's types
+                     echo "<p><b>Defensive Strengths:</b></p>";
+                     echo "<ul>";
+                     foreach($defensive_strengths as $defensive_strength) {
+                         echo "<li>".$defensive_strength."</li>";
+                     }
+                     echo "</ul>";
     
                 // Display the move dropdown menus
                 echo "<p><b>Moves:</b></p>";
