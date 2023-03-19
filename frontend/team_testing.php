@@ -64,6 +64,7 @@
 	 <button id="addTeam" class="addTeam" ></button>
 	 <input id ="teamName" type="text" value = "New Pokemon Team">
      </form>
+     
 </div>
 </body>
 </html>
