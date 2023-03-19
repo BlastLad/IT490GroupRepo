@@ -161,10 +161,11 @@ function registerUser($request)
                         echo "$activeTeamID The Stock Team".PHP_EOL;
                         break;
                     }
+
                 }
             }
             else {
-                $query = "SELECT activeTeamID, username FROM users WHERE UserID = $UserID";
+                $query = "SELECT activeTeamID, username FROM users WHERE UserID = $UserID;";
                 $response = $mydb->query($query);
                 if (mysqli_num_rows($response) > 0)
                 {
@@ -180,11 +181,22 @@ function registerUser($request)
 
                 $response = $mydb->query($query);
                 $rows = array();
+                $makeFirstActive = 1;
                 if (mysqli_num_rows($response) > 0) {
                     echo "We correctly worked" . PHP_EOL;
                     while ($row = mysqli_fetch_assoc($response)) {
                         echo 'n' . $row['PokemonName'] . 'n';
+
                         $rows[] = $row;
+
+                        if ($UserID == 0) {
+                            $upid = $row['UniquePokemonID'];
+                            $hpSettings = $row['MaxHP'];
+                            $query = "INSERT INTO GameState (RoomID, UniquePokemonID, UserID, Fainted, Active, ActionID, CurrentHP, MaxHP) VALUES ($RoomID, $upid, 0, 0, $makeFirstActive, 0, $hpSettings, $hpSettings);";
+                            $response = $mydb->query($query);
+                            $makeFirstActive = 0;
+                        }
+
                     }
                 }
                 print json_encode($rows);
