@@ -456,11 +456,12 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
                     if ($row['Active'] == 1 )
                     {
                         $isStockLobby = 1;
-                        $upids = $row['UniquePokemonID'];
-                        //UPDATE GameState StockOpp user id
-                        $randomNun = rand(1, 4);
+			$upids = $row['UniquePokemonID'];
+			         $randomNun = rand(1, 4);
                         $queryOp = "UPDATE GameState SET ActionID = $randomNun WHERE UniquePokemonID = $upids;";
                         $response1 = $mydb->query($queryOp);
+
+                        //UPDATE GameState StockOpp user id                        
                     }
                 }
 
@@ -473,8 +474,11 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
             }
             else if ($ActionsThatArent0 == 1 && $isStockLobby == 1)
             {
-                echo 'Time To Deal Damage'.PHP_EOL;
-                $ReturnVal = 2;
+		    echo 'Time To Deal Damage'.PHP_EOL;
+	        $randomNun = rand(1, 4);
+               // $queryOp = "UPDATE GameState SET ActionID = $randomNun WHERE UniquePokemonID = $upids;";
+               // $response1 = $mydb->query($queryOp);
+               // $ReturnVal = 2;
             }
 
             echo 'Returning New Game State Info'.PHP_EOL;
@@ -721,7 +725,7 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
             $UserID = $request['UserID'];
 
 
-            $query = "DELETE FROM GameState WHERE UserID = $UserID && RoomID = $RoomID;";
+            $query = "DELETE FROM GameState WHERE UserID = $UserID && RoomID = $RoomID || UserID = 0 AND RoomID = $RoomID;";
             //
             $response = $mydb->query($query);
 
