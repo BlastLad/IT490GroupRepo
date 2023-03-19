@@ -5,7 +5,7 @@
 </head>
 
 <?php require(__DIR__ . "/nav.php"); ?>
-<?php     session_start(); ?>
+<?php     session_start(); ?> 
 <body>
   <h1>PokeAPI Search Page</h1>
   
@@ -64,7 +64,7 @@
           $pokemon_sprite = $pokemon_data['sprites']['front_default'];
           $stats = $pokemon_data['stats'];
           $pokemon_num = $pokemon_data['id'];
-		echo"$pokemon_num pokemonNum".PHP_EOL;
+		//echo"$pokemon_num pokemonNum".PHP_EOL;
           //filter moves by generation
           foreach($pokemon_data["moves"] as $move) {
             $moveName = $move["move"]["name"];
@@ -277,7 +277,7 @@
             switch($generation) {
               case 1:
                 foreach($movesByGen["gen1"] as $move) {
-                  echo "<option value='".$move."'>".$move."</option>";
+                    echo "<option value='".$move."'>".$move."</option>";
                 }
                 break;
               case 2:
@@ -342,7 +342,7 @@
 	require_once('path.inc');
 	require_once('get_host_info.inc');
 	require_once('rabbitMQLib.inc');	
-	$client = new rabbitMQClient("testRabbitMQ.ini","testServer");
+	//$client = new rabbitMQClient("testRabbitMQ.ini","testServer");
 	session_start();
 	$request = array();
 	$request['type'] = "getteaminfo";
@@ -371,6 +371,7 @@
      </form>
     </div>
   
-   <script src="pokeapi.js"></script>
+   //<script src="pokeapi.js"></script>
+   ?>
 </body>
 </html>
