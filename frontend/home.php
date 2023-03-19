@@ -64,7 +64,7 @@
           $pokemon_sprite = $pokemon_data['sprites']['front_default'];
           $stats = $pokemon_data['stats'];
           $pokemon_num = $pokemon_data['id'];
-		echo"$pokemon_num pokemonNum".PHP_EOL;
+		//echo"$pokemon_num pokemonNum".PHP_EOL;
           //filter moves by generation
           foreach($pokemon_data["moves"] as $move) {
             $moveName = $move["move"]["name"];
@@ -258,6 +258,12 @@
             echo "<p hidden='hidden' id='pokemonName'>$pokemon_name</p>";
             echo "<p hidden='hidden' id='pokemonNum'>$pokemon_num</p>";
           echo "<h2>".$pokemon_name." (Generation ".$generation.")</h2>";
+
+          if (empty($movesByGen["gen".$generation])){
+            echo "Pokemon does not exist in generation ". $generation;
+            
+        }
+        else{
           echo "<img src='".$pokemon_sprite."'><br>";
           echo "<p><b>Stats:</b></p>";
           echo "<ul>";
@@ -324,9 +330,12 @@
             echo "</select><br>";
           }
           echo "</form>";
-        } else {
-          echo "<p>Pokemon not found</p>";
+        
         }
+    }
+        //else {
+          //echo "<p>Pokemon not found</p>";
+        //}
       }
     ?>
   </div>
@@ -337,8 +346,9 @@
 	 <select id="teamSelection">
          <option value="0">New Team</option>
 
-<?php
 
+<?php
+    /*
 	require_once('path.inc');
 	require_once('get_host_info.inc');
 	require_once('rabbitMQLib.inc');	
@@ -372,5 +382,9 @@
     </div>
   
    <script src="pokeapi.js"></script>
+   
 </body>
 </html>
+
+*/
+

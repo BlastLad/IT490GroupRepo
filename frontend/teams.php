@@ -9,6 +9,7 @@
 <body>
 
   <button class="collapsible">Team 1</button>
+  
   <div class="content">
   
     <div class="card-container">
