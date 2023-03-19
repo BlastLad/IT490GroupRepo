@@ -3,13 +3,24 @@
 require_once('frontend/path.inc');
 require_once('frontend/get_host_info.inc');
 require_once('frontend/rabbitMQLib.inc');
-
+include('messageManager.php');
 $server = new rabbitMQServer("testRabbitMQ.ini", "testServer");
 
 echo "testRabbitMQServer BEGIN" . PHP_EOL;
 $server->process_requests('requestProcessor');
 echo "testRabbitMQServer END" . PHP_EOL;
 exit();
+
+function sendEventMessage($typeOE, $messageOE) {
+     
+    $request = array();
+    $request['type'] = $typeOE;
+    $request['message'] = $messageOE;
+    $response = directMessage($request, "logger");
+
+ }
+
+
 
 function requestProcessor($request)
 {
@@ -76,7 +87,8 @@ function registerUser($request)
             $username = $request['username'];
             $query = "SELECT * FROM users WHERE username = '$username';";
             $response = $mydb->query($query);
-            echo "Here as well" . PHP_EOL;
+	    echo "Here as well" . PHP_EOL;
+	    $errorMsg = "User $username does not exist";
             if (mysqli_num_rows($response) > 0) //already present
             {
                 $password = $request['password'];
@@ -93,12 +105,14 @@ function registerUser($request)
                                     'ActiveTeam' => $row['activeTeamID'],
                             );
                             return array("returnCode" => '1', 'message' => json_encode($returnInfo));//SessionID cookie
-                        }
+			}
+			$errorMsg = "Incorrect password for $username";
                     }
                 }
 
-            }
-            return array("returnCode" => '0', 'message' => "Invalid Login");
+	    }
+	    sendEventMessage("Invalid Login", $errorMsg);
+            return array("returnCode" => '0', 'message' => $errorMsg);
         case 'register':
             $username = $request['username'];
             $query = "SELECT * FROM users WHERE username = '$username';";
