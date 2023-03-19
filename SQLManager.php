@@ -192,8 +192,8 @@ function registerUser($request)
                         if ($UserID == 0) {
                             $upid = $row['UniquePokemonID'];
                             $hpSettings = $row['MaxHP'];
-                            $query = "INSERT INTO GameState (RoomID, UniquePokemonID, UserID, Fainted, Active, ActionID, CurrentHP, MaxHP) VALUES ($RoomID, $upid, 0, 0, $makeFirstActive, 0, $hpSettings, $hpSettings);";
-                            $response = $mydb->query($query);
+                            $queryInner = "INSERT INTO GameState (RoomID, UniquePokemonID, UserID, Fainted, Active, ActionID, CurrentHP, MaxHP) VALUES ($RoomID, $upid, 0, 0, $makeFirstActive, 0, $hpSettings, $hpSettings);";
+                            $responseInner = $mydb->query($queryInner);
                             $makeFirstActive = 0;
                         }
 
@@ -318,7 +318,7 @@ function registerUser($request)
                 while ($row = mysqli_fetch_assoc($response)) {
                     $VersionID = $row['VersionID'];
                 }
-                $query = "SELECT * FROM TeamInfo WHERE VersionID = $VersionID UserID = 0 ORDER BY TeamID;";
+                $query = "SELECT * FROM TeamInfo WHERE VersionID = $VersionID AND UserID = 0 ORDER BY TeamID;";
                 $response = $mydb->query($query);
                 if (mysqli_num_rows($response) > 0) {
                     $rows = array();
