@@ -29,6 +29,8 @@
         <input type="submit" value="Search">
     </form>
 <?php
+        
+
       if(isset($_GET['pokemon_name']) && isset($_GET['generation'])) {
         $pokemon_name = $_GET['pokemon_name'];
         $generation = $_GET['generation'];
