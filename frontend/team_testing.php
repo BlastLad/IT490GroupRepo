@@ -50,12 +50,16 @@ $response = $client->send_request($request);
 	if (true) 
 	{			        
 	    $arry = json_decode($response['message'], true);
-      echo "<table><tr><th>Team ID</th><th>Team</th></tr>";
+      echo "<table><th>Team</th></tr>";
       foreach ($arry as $row){
-        echo "<tr><td>" . $row['TeamID'] . "</td><td>" . $row['TeamName'];
+        echo  "</td><br><td>" . $row['TeamName'];
          echo "</table>";
       }
       }
       else{
         echo "No Results";
     }
+    ?>
+</body>
+
+</html>
