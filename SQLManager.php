@@ -442,6 +442,7 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
             $response = $mydb->query($query);
             $ActionsThatArent0 = 0;
             $ReturnVal = 1;
+            $isStockLobby = 0;
             $rows = array();
             while ($row = mysqli_fetch_assoc($response)) {
                 echo 'n' . $row['PokemonID'] . 'n';
@@ -450,10 +451,28 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
                     $ActionsThatArent0 += 1;
                 }
 
+                if ($row['UserID'] == 0)
+                {
+                    if ($row['Active'] == 1 )
+                    {
+                        $isStockLobby = 1;
+                        $upids = $row['UniquePokemonID'];
+                        //UPDATE GameState StockOpp user id
+                        $randomNun = rand(1, 4);
+                        $queryOp = "UPDATE GameState SET ActionID = $randomNun WHERE UniquePokemonID = $upids;";
+                        $response1 = $mydb->query($queryOp);
+                    }
+                }
+
                 $rows[] = $row;
             }
 
             if ($ActionsThatArent0 == 2) {
+                echo 'Time To Deal Damage'.PHP_EOL;
+                $ReturnVal = 2;
+            }
+            else if ($ActionsThatArent0 == 1 && $isStockLobby == 1)
+            {
                 echo 'Time To Deal Damage'.PHP_EOL;
                 $ReturnVal = 2;
             }
