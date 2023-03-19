@@ -82,6 +82,9 @@ nav {
 		//  }
 ?>
               </table>
+
+            <table id='stockTable'>
+            </table>
         </section>
 
         <aside>
