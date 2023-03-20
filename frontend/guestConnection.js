@@ -433,22 +433,22 @@ async function SendMove(moveval) {
     }
 }
 async function UseMove1(val) {
-    guestMoveLog.push("You Used: " + document.getElementById("Move_One").innerText);
+    guestMoveLog.push("You Used: " + document.getElementById("MoveOne").innerText);
    await SendMove(1);
 }
 
 async function UseMove2(val) {
-    guestMoveLog.push("You Used: " + document.getElementById("Move_Two").innerText);
+    guestMoveLog.push("You Used: " + document.getElementById("MoveTwo").innerText);
     await SendMove(2);
 }
 
 async function UseMove3(val) {
-    guestMoveLog.push("You Used: " + document.getElementById("Move_Three").innerText);
+    guestMoveLog.push("You Used: " + document.getElementById("MoveThree").innerText);
     await SendMove(3);
 }
 
 async function UseMove4(val) {
-    guestMoveLog.push("You Used: " + document.getElementById("Move_Four").innerText);
+    guestMoveLog.push("You Used: " + document.getElementById("MoveFour").innerText);
     await SendMove(4);
 }
 
