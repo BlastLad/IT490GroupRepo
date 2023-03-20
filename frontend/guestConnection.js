@@ -6,7 +6,9 @@ let opponentArr = [];
 let isHost = -1;
 let oppNum = -2;
 let setUpComplete = 0;
-
+let turnNum = 0;
+turnNum += 1;
+let addedTurn = false;
 const HostPokemon = {
    HostID: 0,
    HostUPID: 0,
@@ -21,6 +23,7 @@ let hostUniquePokemonID = -1;//the upid of the hostPkmn
 let userUniquePkmnID = -1; //our active upid of useArr
 let actionChosen = false;
 
+let guestMoveLog = [];
 
 
 var battleWatchFunc = clientGameStateCheck;
@@ -60,6 +63,7 @@ function SwitchPokemon(newPkmn)
                     if (this.readyState == 4 && this.status == 200)
                     {                       
                             document.getElementById("incomingMessage").innerText = "Switch Pokemon Sent!";
+                            guestMoveLog.push("You Switched your pokemon");
                     }
                 }
                 xhr.open("POST", "guestSendToHost.php");
@@ -102,6 +106,7 @@ function clientGameStateCheck()
                                 if (value2.ActionID != 0)
                                 {
                                     actionChosen = true;
+                                    addedTurn = false;
                                 }
 
                                 for (let i = 0; i < userArr.length; i++)
@@ -136,6 +141,27 @@ function clientGameStateCheck()
                                 }
                             }
                         });
+                        //update battle log stuff
+                        if (actionChosen == false && addedTurn == false)
+                        {
+                            // if action chosen is still false... means its a new turn
+                                turnNum += 1;
+                                if (turnNum != 1)
+                                {//show move chosen by guest
+                                    guestMoveLog.reverse();
+                                    document.getElementById("BattleLog").innerText = "";
+                                    if (guestMoveLog.length > 5) {
+                                        guestMoveLog.pop();
+                                    }
+                                    for (let i = 0; i < guestMoveLog.length; i++) {
+                                        document.getElementById("BattleLog").innerText += guestMoveLog[i];
+                                    }
+                                    guestMoveLog.reverse();
+
+                                }
+                                document.getElementById("TurnNumber").innerText = "Turn Number: " + turnNum;
+                                addedTurn = true;
+                        }
                     }
                 });
                 UpdateHostPokemonInfo();
@@ -389,6 +415,8 @@ async function SendMove(moveval) {
             ActionID: moveval
         };
 
+
+
         const jsonBody = JSON.stringify(body);
         const xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function ()
@@ -405,18 +433,22 @@ async function SendMove(moveval) {
     }
 }
 async function UseMove1(val) {
+    guestMoveLog.push("You Used: " + document.getElementById("Move_One").innerText);
    await SendMove(1);
 }
 
 async function UseMove2(val) {
+    guestMoveLog.push("You Used: " + document.getElementById("Move_Two").innerText);
     await SendMove(2);
 }
 
 async function UseMove3(val) {
+    guestMoveLog.push("You Used: " + document.getElementById("Move_Three").innerText);
     await SendMove(3);
 }
 
 async function UseMove4(val) {
+    guestMoveLog.push("You Used: " + document.getElementById("Move_Four").innerText);
     await SendMove(4);
 }
 
