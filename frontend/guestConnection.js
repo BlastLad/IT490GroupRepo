@@ -290,7 +290,6 @@ function inItUser(user, team) {
         }
     }
     xhr.open("POST", "inItUser.php");
-    alert(team);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(jsonBody);
 }
@@ -298,33 +297,75 @@ function inItUser(user, team) {
 async function addPokemonToUI(pokemonItem, attachedUser, upid) {
     let id = pokemonItem['id'];
 
-    const url = 'https://pokeapi.co/api/v2/pokemon/' + id;
-    const response = await fetch(url);
+    const body = {
+        PokemonName: pokemonItem.id
+    };
 
-    if (!response.ok) {
-        document.getElementById("Pokemon_One").innerHTML = "<p>No results found for" + id + "</p>";
-        return;
+    const jsonBody = JSON.stringify(body);
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = async function () {
+        if (this.readyState == 4 && this.status == 200) {
+            alert(this.responseText);
+
+            const jsonResponse = this.responseText['code'];
+            alert(jsonResponse);
+
+            if (jsonResponse == '0') {
+
+                let data = JSON.parse(this.responseText['message']);
+                alert(data);
+
+                pokemonItem['image'] = data.sprites['front_default'];
+                pokemonItem['hp'] = data.stats[0].base_stat;
+                pokemonItem['attack'] = data.stats[1].base_stat;
+                pokemonItem['defense'] = data.stats[2].base_stat;
+                pokemonItem['spattack'] = data.stats[3].base_stat;
+                pokemonItem['spdefense'] = data.stats[4].base_stat;
+                pokemonItem['speed'] = data.stats[5].base_stat;
+                pokemonItem['type'] = data.types.map(type => type.type.name);
+
+                await displayPokemonData(pokemonItem);
+                if (upid == userUniquePkmnID) {
+                    alert(upid);
+                    await SetActivePokemon(0);
+                }
+            } else {
+                document.getElementById("Pokemon_One").innerHTML = "<p>No results found for" + id + "</p>";
+                return;
+            }
+        }
     }
+    xhr.open("POST", "dmzBattleGetter.php");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(jsonBody);
+
+   // const url = 'https://pokeapi.co/api/v2/pokemon/' + id;
+    //const response = await fetch(url);
+
+  //  if (!response.ok) {
+    //    document.getElementById("Pokemon_One").innerHTML = "<p>No results found for" + id + "</p>";
+    //    return;
+ //   }
 
 
-    const data = await response.json();
+ //   const data = await response.json();
 
-    pokemonItem['image'] = data.sprites['front_default'];
-    pokemonItem['hp'] = data.stats[0].base_stat;
-    pokemonItem['attack'] = data.stats[1].base_stat;
-    pokemonItem['defense'] = data.stats[2].base_stat;
-    pokemonItem['spattack'] = data.stats[3].base_stat;
-    pokemonItem['spdefense'] = data.stats[4].base_stat;
-    pokemonItem['speed'] = data.stats[5].base_stat;
-    pokemonItem['type'] = data.types.map(type => type.type.name);
+  //  pokemonItem['image'] = data.sprites['front_default'];
+  //  pokemonItem['hp'] = data.stats[0].base_stat;
+  //  pokemonItem['attack'] = data.stats[1].base_stat;
+  //  pokemonItem['defense'] = data.stats[2].base_stat;
+  //  pokemonItem['spattack'] = data.stats[3].base_stat;
+  //  pokemonItem['spdefense'] = data.stats[4].base_stat;
+  //  pokemonItem['speed'] = data.stats[5].base_stat;
+  //  pokemonItem['type'] = data.types.map(type => type.type.name);
 
 
     //called from setup
-    await displayPokemonData(pokemonItem);
-    if (upid == userUniquePkmnID) {
-        alert(upid);
-        await SetActivePokemon(0);
-    }
+ //   await displayPokemonData(pokemonItem);
+ //   if (upid == userUniquePkmnID) {
+    //    alert(upid);
+    ///    await SetActivePokemon(0);
+   // }
 }
 
 //only run through gets
