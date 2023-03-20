@@ -6,7 +6,7 @@ let opponentArr = [];
 let isHost = -1;
 let oppNum = -2;
 let setUpComplete = 0;
-let turnNum = 0;
+let turnNum = -1;
 turnNum += 1;
 let addedTurn = false;
 const HostPokemon = {
@@ -146,7 +146,7 @@ function clientGameStateCheck()
                         {
                             // if action chosen is still false... means its a new turn
                                 turnNum += 1;
-                                if (turnNum != 1)
+                                if (turnNum > 1)
                                 {//show move chosen by guest
                                     guestMoveLog.reverse();
                                     document.getElementById("BattleLog").innerText = "";
@@ -154,7 +154,7 @@ function clientGameStateCheck()
                                         guestMoveLog.pop();
                                     }
                                     for (let i = 0; i < guestMoveLog.length; i++) {
-                                        document.getElementById("BattleLog").innerText += guestMoveLog[i];
+                                        document.getElementById("BattleLog").innerText += guestMoveLog[i] + "/n";
                                     }
                                     guestMoveLog.reverse();
 

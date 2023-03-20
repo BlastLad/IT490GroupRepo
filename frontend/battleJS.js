@@ -9,6 +9,10 @@ let ourNum = -2;
 let oppNum = -2;
 let actionChosen = false;
 let hostRoomID = -1;
+let addedTurn = false;
+let turnNum = -1;
+let guestActionLog = [];
+let hostActionLog = [];
 
 function SwitchPokemon(newPkmn)
 {
@@ -42,6 +46,7 @@ function SwitchPokemon(newPkmn)
                     if (this.readyState == 4 && this.status == 200)
                     {
                         document.getElementById("incomingMessage").innerText = "Switch Pokemon Sent!";
+                        hostActionLog.push("You Switched Pokemon");
 
                     }
                 }
@@ -217,6 +222,26 @@ function  hostGameStateUpdate()
                                 }
                             }
                         });
+                        if (actionChosen == false && addedTurn == false)
+                        {
+                            // if action chosen is still false... means its a new turn
+                            turnNum += 1;
+                            if (turnNum > 1)
+                            {//show move chosen by guest
+                                hostActionLog.reverse();
+                                document.getElementById("BattleLog").innerText = "";
+                                if (hostActionLog.length > 5) {
+                                    hostActionLog.pop();
+                                }
+                                for (let i = 0; i < hostActionLog.length; i++) {
+                                    document.getElementById("BattleLog").innerText += hostActionLog[i] + "/n";
+                                }
+                                hostActionLog.reverse();
+
+                            }
+                            document.getElementById("TurnNumber").innerText = "Turn Number: " + turnNum;
+                            addedTurn = true;
+                        }
                     }
                 });
                 if (jsonResponse.returnCode == 2)
@@ -256,45 +281,112 @@ async function SetOpponentActivePokemon(upid) {
     opponentUniquePkmnID = opponentArr[index].UniquePokemonID;
     //sets current active opponentPokemon
 
-    const url = 'https://pokeapi.co/api/v2/pokemon/' + id;
-    const response = await fetch(url);
 
-    if (!response.ok) {
-        document.getElementById("Pokemon_One").innerHTML = "<p>No results found for" + id + "</p>";
-        return;
+    const body = {
+        PokemonName: opponentArr[index].id
+    };
+
+    const jsonBody = JSON.stringify(body);
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = async function () {
+        if (this.readyState == 4 && this.status == 200) {
+
+            const jsonResponse = JSON.parse(this.responseText);
+
+            if (jsonResponse.code == '0') {
+
+                let data = JSON.parse(jsonResponse.message);
+                const imageH = data.sprites['front_default'];
+
+              //  opponentPokemon.innerHTML = '';
+             //   const htmlString = '<img src="' + imageH + '"/><h1>' + data.name + '</h1><p>HP: ' + HostPokemon.HostHP +'</p>';
+               // opponentPokemon.innerHTML = htmlString;
+
+                opponentPokemon.innerHTML = '';
+                const htmlString = '<img src="' + imageH + '"/><h1>' + data.name + '</h1><p>HP: ' + opponentArr[index].hp +'</p>';
+                opponentPokemon.innerHTML = htmlString;
+
+            }
+            else {
+                document.getElementById("opponentPokemon").innerText = "<p>No results found for" + id + "</p>";
+            }
+        }
     }
+    xhr.open("POST", "dmzBattleGetter.php");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(jsonBody);
 
 
-    const data = await response.json();
+  //  const url = 'https://pokeapi.co/api/v2/pokemon/' + id;
+   // const response = await fetch(url);
 
-    opponentPokemon.innerHTML = '';
-    const htmlString = '<img src="' + opponentArr[index].image + '"/><h1>' + opponentArr[index].name + '</h1><p>HP: ' + opponentArr[index].hp +'</p>';
-    opponentPokemon.innerHTML = htmlString;
+   // if (!response.ok) {
+     //   document.getElementById("Pokemon_One").innerHTML = "<p>No results found for" + id + "</p>";
+       // return;
+    //}
+
+
+   // const data = await response.json();
+
+  //  opponentPokemon.innerHTML = '';
+   // const htmlString = '<img src="' + opponentArr[index].image + '"/><h1>' + opponentArr[index].name + '</h1><p>HP: ' + opponentArr[index].hp +'</p>';
+   // opponentPokemon.innerHTML = htmlString;
 }
 
 async function addTypeToOppArr(pokemonObj)
 {
     let id = pokemonObj['id'];
 
-    const url = 'https://pokeapi.co/api/v2/pokemon/' + id;
-    const response = await fetch(url);
+    const body = {
+        PokemonName: id
+    };
 
-    if (!response.ok) {
-        document.getElementById("Pokemon_One").innerHTML = "<p>No results found for" + id + "</p>";
-        return;
+    const jsonBody = JSON.stringify(body);
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = async function () {
+        if (this.readyState == 4 && this.status == 200) {
+
+            const jsonResponse = JSON.parse(this.responseText);
+
+            if (jsonResponse.code == '0') {
+
+                let data = JSON.parse(jsonResponse.message);
+
+                pokemonObj['type'] = data.types.map(type => type.type.name);
+                pokemonObj['image'] = data.sprites['front_default'];
+                pokemonObj['attack'] = data.stats[1].base_stat;
+                pokemonObj['defense'] = data.stats[2].base_stat;
+                pokemonObj['spattack'] = data.stats[3].base_stat;
+                pokemonObj['spdefense'] = data.stats[4].base_stat;
+                pokemonObj['speed'] = data.stats[5].base_stat;
+
+            }
+            else {
+                document.getElementById("opponentPokemon").innerText = "<p>No results found for" + id + "</p>";
+            }
+        }
     }
+    xhr.open("POST", "dmzBattleGetter.php");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(jsonBody);
 
-    const data = await response.json();
+  //  const url = 'https://pokeapi.co/api/v2/pokemon/' + id;
+//    const response = await fetch(url);
 
-    pokemonObj['type'] = data.types.map(type => type.type.name);
-    pokemonObj['image'] = data.sprites['front_default'];
-    pokemonObj['attack'] = data.stats[1].base_stat;
-    pokemonObj['defense'] = data.stats[2].base_stat;
-    pokemonObj['spattack'] = data.stats[3].base_stat;
-    pokemonObj['spdefense'] = data.stats[4].base_stat;
-    pokemonObj['speed'] = data.stats[5].base_stat;
+ //   if (!response.ok) {
+    //    document.getElementById("Pokemon_One").innerHTML = "<p>No results found for" + id + "</p>";
+    //    return;
+   // }
 
+ //   const data = await response.json();
 
+  //  pokemonObj['type'] = data.types.map(type => type.type.name);
+  //  pokemonObj['image'] = data.sprites['front_default'];
+  //  pokemonObj['attack'] = data.stats[1].base_stat;
+  //  pokemonObj['defense'] = data.stats[2].base_stat;
+  //  pokemonObj['spattack'] = data.stats[3].base_stat;
+   // pokemonObj['spdefense'] = data.stats[4].base_stat;
+   // pokemonObj['speed'] = data.stats[5].base_stat;
 }
 
 
@@ -397,25 +489,71 @@ function preBattleStartCheck() {
     async function addPokemonToUI(pokemonItem, attachedUser, upid) {
         let id = pokemonItem['id'];
 
-        const url = 'https://pokeapi.co/api/v2/pokemon/' + id;
-        const response = await fetch(url);
 
-        if (!response.ok) {
-            document.getElementById("Pokemon_One").innerHTML = "<p>No results found for" + id + "</p>";
-            return;
+        const body = {
+            PokemonName: pokemonItem.id
+        };
+
+        const jsonBody = JSON.stringify(body);
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = async function () {
+            if (this.readyState == 4 && this.status == 200) {
+
+                const jsonResponse = JSON.parse(this.responseText);
+
+                if (jsonResponse.code == '0') {
+
+                    let data = JSON.parse(jsonResponse.message);
+
+                    pokemonItem['image'] = data.sprites['front_default'];
+                    pokemonItem['hp'] = data.stats[0].base_stat;
+                    pokemonItem['attack'] = data.stats[1].base_stat;
+                    pokemonItem['defense'] = data.stats[2].base_stat;
+                    pokemonItem['spattack'] = data.stats[3].base_stat;
+                    pokemonItem['spdefense'] = data.stats[4].base_stat;
+                    pokemonItem['speed'] = data.stats[5].base_stat;
+                    pokemonItem['type'] = data.types.map(type => type.type.name);
+
+                    if (upid == opponentUniquePkmnID) {
+
+                        await SetOpponentActivePokemon(upid);
+                        return;
+                    }
+
+                    await displayPokemonData(pokemonItem);
+                    if (upid == userUniquePkmnID) {
+                        alert(upid);
+                        await SetActivePokemon(0);
+                    }
+                } else {
+                    document.getElementById("Pokemon_One").innerHTML = "<p>No results found for" + id + "</p>";
+                    return;
+                }
+            }
         }
+        xhr.open("POST", "dmzBattleGetter.php");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(jsonBody);
+
+       // const url = 'https://pokeapi.co/api/v2/pokemon/' + id;
+        //const response = await fetch(url);
+
+       // if (!response.ok) {
+         //   document.getElementById("Pokemon_One").innerHTML = "<p>No results found for" + id + "</p>";
+           // return;
+        //}
 
 
-        const data = await response.json();
+      //  const data = await response.json();
 
-        pokemonItem['image'] = data.sprites['front_default'];
-        pokemonItem['hp'] = data.stats[0].base_stat;
-        pokemonItem['attack'] = data.stats[1].base_stat;
-        pokemonItem['defense'] = data.stats[2].base_stat;
-        pokemonItem['spattack'] = data.stats[3].base_stat;
-        pokemonItem['spdefense'] = data.stats[4].base_stat;
-        pokemonItem['speed'] = data.stats[5].base_stat;
-        pokemonItem['type'] = data.types.map(type => type.type.name);
+    //    pokemonItem['image'] = data.sprites['front_default'];
+     //   pokemonItem['hp'] = data.stats[0].base_stat;
+      //  pokemonItem['attack'] = data.stats[1].base_stat;
+      //  pokemonItem['defense'] = data.stats[2].base_stat;
+      //  pokemonItem['spattack'] = data.stats[3].base_stat;
+      //  pokemonItem['spdefense'] = data.stats[4].base_stat;
+      //  pokemonItem['speed'] = data.stats[5].base_stat;
+//        pokemonItem['type'] = data.types.map(type => type.type.name);
 
 
         //called from setup
@@ -674,18 +812,22 @@ console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
 
 
     async function UseMove1(val) {
+        hostActionLog.push("You Used: " + document.getElementById("MoveOne").innerText);
         await SendMove(1);
     }
 
     async function UseMove2(val) {
+        hostActionLog.push("You Used: " + document.getElementById("MoveTwo").innerText);
         await SendMove(2);
     }
 
     async function UseMove3(val) {
+        hostActionLog.push("You Used: " + document.getElementById("MoveThree").innerText);
         await SendMove(3);
     }
 
     async function UseMove4(val) {
+        hostActionLog.push("You Used: " + document.getElementById("MoveFour").innerText);
         await SendMove(4);
     }
 
