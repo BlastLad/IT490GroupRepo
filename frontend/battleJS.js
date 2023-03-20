@@ -520,10 +520,13 @@ function preBattleStartCheck() {
                         return;
                     }
 
-                    await displayPokemonData(pokemonItem);
-                    if (upid == userUniquePkmnID) {
+                    if (attachedUser == ourNum) {
                         alert(upid);
-                        await SetActivePokemon(0);
+                        await displayPokemonData(pokemonItem);
+                        if (upid == userUniquePkmnID) {
+
+                            await SetActivePokemon(0);
+                        }
                     }
                 } else {
                     document.getElementById("Pokemon_One").innerHTML = "<p>No results found for" + id + "</p>";
