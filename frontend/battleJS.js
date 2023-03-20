@@ -685,7 +685,171 @@ async function SendMove(moveval) {
                         } else {
                             newoppHP = opponentArr[oppIndex].hp;
                         }
-                    } else {
+
+                        if (opponentAction > 0 && opponentAction < 5) {
+                            let val = userArr[oppIndex].move[opponentAction - 1];
+
+                            const oppBody = {
+                                Move: val
+                            };
+
+
+                            const oppJsonBody = JSON.stringify(oppBody);
+                            const oppxhr = new XMLHttpRequest();
+                            oppxhr.onreadystatechange = async function () {
+                                if (this.readyState == 4 && this.status == 200) {
+
+                                    const jsonResponse = JSON.parse(this.responseText);
+
+                                    if (jsonResponse.code == '0') {
+                                        let finalMove3 = JSON.parse(jsonResponse.message);
+
+                                        opponentDamageTohost = calculateDamage(opponentArr[oppIndex], userArr[hostIndex], finalMove3);
+                                        userArr[hostIndex].hp = userArr[hostIndex].hp - opponentDamageTohost;
+                                        if (userArr[hostIndex].hp < 0)
+                                        {
+                                            newhostHP = 0;
+                                            if (firstAttacker != 1) {
+                                                opponentArr[oppIndex].hp = oppPreBattleHP;
+                                                newoppHP = oppPreBattleHP;
+                                            }
+                                        } else
+                                        {
+                                            newhostHP = userArr[hostIndex].hp;
+                                        }
+
+                                        const body = {
+                                            UserID: ourNum,
+                                            OppID: oppNum,
+                                            RoomID: hostRoomID,
+                                            UniquePokemonID: userUniquePkmnID,
+                                            OpponentUniquePokemonID: opponentUniquePkmnID,
+                                            HostHP: newhostHP,
+                                            OppHP: newoppHP
+                                        };
+
+
+                                        // if action chosen is still false... means its a new turn
+                                        turnNum += 1;
+                                        if (turnNum >= 1) {//show move chosen by guest
+                                            hostActionLog.reverse();
+                                            document.getElementById("BattleLog").innerText = "";
+                                            if (hostActionLog.length > 5) {
+                                                hostActionLog.pop();
+                                            }
+                                            for (let i = 0; i < hostActionLog.length; i++) {
+                                                document.getElementById("BattleLog").innerText += hostActionLog[i] + "\n";
+                                            }
+                                            hostActionLog.reverse();
+
+                                        }
+                                        document.getElementById("TurnNumber").innerText = "Turn Number: " + turnNum;
+
+
+                                        const jsonBody = JSON.stringify(body);
+                                        const xhr = new XMLHttpRequest();
+                                        xhr.onreadystatechange = function () {
+                                            if (this.readyState == 4 && this.status == 200) {
+                                                const jsonResponse = JSON.parse(this.responseText);
+                                                if (jsonResponse.returnCode == 1) {
+                                                    document.getElementById("incomingMessage").innerText = "Damage Dealt Updating!";
+                                                } else if (jsonResponse.returnCode == '2')//battle done
+                                                {
+                                                    alert(jsonResponse.message);
+                                                    const bodyf = {
+                                                        UserID: ourNum,
+                                                        RoomID: hostRoomID
+                                                    };
+                                                    const jsonBodyf = JSON.stringify(bodyf);
+                                                    const ehr = new XMLHttpRequest();
+                                                    ehr.onreadystatechange = function () {
+                                                        if (this.readyState == 4 && this.status == 200) {
+                                                            window.location.replace("lobbies.php");
+                                                        }
+                                                    }
+                                                    ehr.open("POST", "battleOver.php");
+                                                    ehr.setRequestHeader("Content-Type", "application/json");
+                                                    ehr.send(jsonBodyf);
+                                                }
+                                            }
+                                        }
+                                        xhr.open("POST", "hostDealDamage.php");
+                                        xhr.setRequestHeader("Content-Type", "application/json");
+                                        xhr.send(jsonBody);
+
+                                    } else {
+                                        document.getElementById("Pokemon_One").innerHTML = `<p>No results found for move</p>`;
+                                        return;
+                                    }
+                                }
+                            }
+                            oppxhr.open("POST", "dmzMoveGetter.php");
+                            oppxhr.setRequestHeader("Content-Type", "application/json");
+                            oppxhr.send(oppJsonBody);
+                        }
+                        else
+                        {
+                            const body = {
+                                UserID: ourNum,
+                                OppID: oppNum,
+                                RoomID: hostRoomID,
+                                UniquePokemonID: userUniquePkmnID,
+                                OpponentUniquePokemonID: opponentUniquePkmnID,
+                                HostHP: newhostHP,
+                                OppHP: newoppHP
+                            };
+
+
+                            // if action chosen is still false... means its a new turn
+                            turnNum += 1;
+                            if (turnNum >= 1) {//show move chosen by guest
+                                hostActionLog.reverse();
+                                document.getElementById("BattleLog").innerText = "";
+                                if (hostActionLog.length > 5) {
+                                    hostActionLog.pop();
+                                }
+                                for (let i = 0; i < hostActionLog.length; i++) {
+                                    document.getElementById("BattleLog").innerText += hostActionLog[i] + "\n";
+                                }
+                                hostActionLog.reverse();
+
+                            }
+                            document.getElementById("TurnNumber").innerText = "Turn Number: " + turnNum;
+
+
+                            const jsonBody = JSON.stringify(body);
+                            const xhr = new XMLHttpRequest();
+                            xhr.onreadystatechange = function () {
+                                if (this.readyState == 4 && this.status == 200) {
+                                    const jsonResponse = JSON.parse(this.responseText);
+                                    if (jsonResponse.returnCode == 1) {
+                                        document.getElementById("incomingMessage").innerText = "Damage Dealt Updating!";
+                                    } else if (jsonResponse.returnCode == '2')//battle done
+                                    {
+                                        alert(jsonResponse.message);
+                                        const bodyf = {
+                                            UserID: ourNum,
+                                            RoomID: hostRoomID
+                                        };
+                                        const jsonBodyf = JSON.stringify(bodyf);
+                                        const ehr = new XMLHttpRequest();
+                                        ehr.onreadystatechange = function () {
+                                            if (this.readyState == 4 && this.status == 200) {
+                                                window.location.replace("lobbies.php");
+                                            }
+                                        }
+                                        ehr.open("POST", "battleOver.php");
+                                        ehr.setRequestHeader("Content-Type", "application/json");
+                                        ehr.send(jsonBodyf);
+                                    }
+                                }
+                            }
+                            xhr.open("POST", "hostDealDamage.php");
+                            xhr.setRequestHeader("Content-Type", "application/json");
+                            xhr.send(jsonBody);
+                        }
+                    }
+                    else {
                         document.getElementById("Pokemon_One").innerHTML = `<p>No results found for move</p>`;
                         return;
                     }
@@ -695,11 +859,8 @@ async function SendMove(moveval) {
             hostxhr.setRequestHeader("Content-Type", "application/json");
             hostxhr.send(hostJsonBody);
 
-
-            console.log("HostDamageDealt " + hostDamageToOpponent);
         }
-
-        if (opponentAction > 0 && opponentAction < 5) {
+        else if (opponentAction > 0 && opponentAction < 5) {
             let val = userArr[oppIndex].move[opponentAction - 1];
 
             const oppBody = {
@@ -719,15 +880,77 @@ async function SendMove(moveval) {
 
                         opponentDamageTohost = calculateDamage(opponentArr[oppIndex], userArr[hostIndex], finalMove3);
                         userArr[hostIndex].hp = userArr[hostIndex].hp - opponentDamageTohost;
-                        if (userArr[hostIndex].hp < 0) {
+                        if (userArr[hostIndex].hp < 0)
+                        {
                             newhostHP = 0;
                             if (firstAttacker != 1) {
                                 opponentArr[oppIndex].hp = oppPreBattleHP;
                                 newoppHP = oppPreBattleHP;
                             }
-                        } else {
+                        } else
+                        {
                             newhostHP = userArr[hostIndex].hp;
                         }
+
+                        const body = {
+                            UserID: ourNum,
+                            OppID: oppNum,
+                            RoomID: hostRoomID,
+                            UniquePokemonID: userUniquePkmnID,
+                            OpponentUniquePokemonID: opponentUniquePkmnID,
+                            HostHP: newhostHP,
+                            OppHP: newoppHP
+                        };
+
+
+                        // if action chosen is still false... means its a new turn
+                        turnNum += 1;
+                        if (turnNum >= 1) {//show move chosen by guest
+                            hostActionLog.reverse();
+                            document.getElementById("BattleLog").innerText = "";
+                            if (hostActionLog.length > 5) {
+                                hostActionLog.pop();
+                            }
+                            for (let i = 0; i < hostActionLog.length; i++) {
+                                document.getElementById("BattleLog").innerText += hostActionLog[i] + "\n";
+                            }
+                            hostActionLog.reverse();
+
+                        }
+                        document.getElementById("TurnNumber").innerText = "Turn Number: " + turnNum;
+
+
+                        const jsonBody = JSON.stringify(body);
+                        const xhr = new XMLHttpRequest();
+                        xhr.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                const jsonResponse = JSON.parse(this.responseText);
+                                if (jsonResponse.returnCode == 1) {
+                                    document.getElementById("incomingMessage").innerText = "Damage Dealt Updating!";
+                                } else if (jsonResponse.returnCode == '2')//battle done
+                                {
+                                    alert(jsonResponse.message);
+                                    const bodyf = {
+                                        UserID: ourNum,
+                                        RoomID: hostRoomID
+                                    };
+                                    const jsonBodyf = JSON.stringify(bodyf);
+                                    const ehr = new XMLHttpRequest();
+                                    ehr.onreadystatechange = function () {
+                                        if (this.readyState == 4 && this.status == 200) {
+                                            window.location.replace("lobbies.php");
+                                        }
+                                    }
+                                    ehr.open("POST", "battleOver.php");
+                                    ehr.setRequestHeader("Content-Type", "application/json");
+                                    ehr.send(jsonBodyf);
+                                }
+                            }
+                        }
+                        xhr.open("POST", "hostDealDamage.php");
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                        xhr.send(jsonBody);
+
                     } else {
                         document.getElementById("Pokemon_One").innerHTML = `<p>No results found for move</p>`;
                         return;
@@ -737,7 +960,9 @@ async function SendMove(moveval) {
             oppxhr.open("POST", "dmzMoveGetter.php");
             oppxhr.setRequestHeader("Content-Type", "application/json");
             oppxhr.send(oppJsonBody);
-
+        }
+        else
+        {
             const body = {
                 UserID: ourNum,
                 OppID: oppNum,
@@ -798,6 +1023,7 @@ async function SendMove(moveval) {
             xhr.send(jsonBody);
         }
 
+    }
         function calculateDamage(pokemon1, pokemon2, attack1) {
             let damage = ((2 * 50) / 5) + 2;
             let power = attack1['power'];
@@ -828,7 +1054,7 @@ async function SendMove(moveval) {
 
             return Math.ceil(damage);
         }
-    }
+
 
         async function UseMove1(val) {
             hostActionLog.push("You Used: " + document.getElementById("MoveOne").innerText);
