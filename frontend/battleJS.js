@@ -234,7 +234,7 @@ function  hostGameStateUpdate()
                                     hostActionLog.pop();
                                 }
                                 for (let i = 0; i < hostActionLog.length; i++) {
-                                    document.getElementById("BattleLog").innerText += hostActionLog[i] + "/n";
+                                    document.getElementById("BattleLog").innerText += hostActionLog[i] + "\n";
                                 }
                                 hostActionLog.reverse();
 
@@ -560,17 +560,17 @@ function preBattleStartCheck() {
 
 
         //called from setup
-        if (upid == opponentUniquePkmnID) {
-
-            await SetOpponentActivePokemon(upid);
-            return;
-        }
+  //      if (upid == opponentUniquePkmnID) {
+//
+    //        await SetOpponentActivePokemon(upid);
+      //      return;
+       // }
        
 
-        await displayPokemonData(pokemonItem);
-        if (upid == userUniquePkmnID) {
-            await SetActivePokemon(0);
-        }
+       // await displayPokemonData(pokemonItem);
+       // if (upid == userUniquePkmnID) {
+         //   await SetActivePokemon(0);
+       // }
     }
 
     //only run through gets

@@ -154,7 +154,7 @@ function clientGameStateCheck()
                                         guestMoveLog.pop();
                                     }
                                     for (let i = 0; i < guestMoveLog.length; i++) {
-                                        document.getElementById("BattleLog").innerText += guestMoveLog[i] + "/n";
+                                        document.getElementById("BattleLog").innerText += guestMoveLog[i] + "\n";
                                     }
                                     guestMoveLog.reverse();
 

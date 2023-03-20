@@ -114,6 +114,8 @@ nav {
 <script src="battleJS.js"></script>
 
     <h1>Battles page</h1>
+    <div id = "TurnNumber"></div>
+    <div id = "BattleLog"></div>
     <p id="incomingMessage">helloo</p>
     <main>
         <section>
