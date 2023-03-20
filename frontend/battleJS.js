@@ -595,41 +595,36 @@ async function SendMove(moveval) {
     }
 }
 
-    async function PerformMoves(hostAction, opponentAction)
-    {
+    async function PerformMoves(hostAction, opponentAction) {
         let hostDamageToOpponent = 0;
         let opponentDamageTohost = 0;
         let hostIndex = 0;
         let oppIndex = 0;
 
 
-        for (let k = 0; k < userArr.length; k++)
-        {
+        for (let k = 0; k < userArr.length; k++) {
             if (hostAction == 5)
                 console.log(userArr[k].hp + " Name User " + userArr[k].id + " Move Action " + userArr[k].move[3])
             else
                 console.log(userArr[k].hp + " Name User " + userArr[k].id + " Move Action " + userArr[k].move[opponentAction - 1])
         }
 
-        for (let m = 0; m < opponentArr.length; m++)
-        {
+        for (let m = 0; m < opponentArr.length; m++) {
             if (opponentAction == 5)
                 console.log(opponentArr[m].hp + " Name User " + opponentArr[m].id + " Move Action " + opponentArr[m].move[3]);
             else
                 console.log(opponentArr[m].hp + " Name User " + opponentArr[m].id + " Move Action " + opponentArr[m].move[opponentAction - 1]);
         }
 
-        for (let i = 0; i < userArr.length; i++)
-        {
-            if (userArr[i].UniquePokemonID == userUniquePkmnID){
+        for (let i = 0; i < userArr.length; i++) {
+            if (userArr[i].UniquePokemonID == userUniquePkmnID) {
                 hostIndex = i;
                 break;
             }
         }
 
-        for (let j = 0; j < opponentArr.length; j++)
-        {
-            if (opponentArr[j].UniquePokemonID == opponentUniquePkmnID){
+        for (let j = 0; j < opponentArr.length; j++) {
+            if (opponentArr[j].UniquePokemonID == opponentUniquePkmnID) {
                 oppIndex = j;
                 break;
             }
@@ -640,33 +635,29 @@ async function SendMove(moveval) {
         let oppPreBattleHP = newoppHP;
         let firstAttacker = Math.random();//host
 
-        if (opponentArr[oppIndex].speed > userArr[hostIndex].speed)
-        {
-                firstAttacker = 2;
-        }
-        else if (opponentArr[oppIndex].speed > userArr[hostIndex].speed) {
-            if (firstAttacker <= 0.5)
-            {
+        if (opponentArr[oppIndex].speed > userArr[hostIndex].speed) {
+            firstAttacker = 2;
+        } else if (opponentArr[oppIndex].speed > userArr[hostIndex].speed) {
+            if (firstAttacker <= 0.5) {
                 firstAttacker = 1;//host
+            } else {
+                firstAttacker = 2
             }
-            else { firstAttacker = 2 }
+        } else {
+            firstAttacker = 1
         }
-        else { firstAttacker = 1}
 
 
-console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
+        console.log("Curren Usr HP " + newhostHP + " Current OPP HP " + newoppHP);
 
-      
 
-        if (hostAction > 0 && hostAction < 5)
-        {
+        if (hostAction > 0 && hostAction < 5) {
             let val = userArr[hostIndex].move[hostAction - 1];
 
 
             const hostBody = {
                 Move: val
             };
-
 
 
             const hostJsonBody = JSON.stringify(hostBody);
@@ -679,24 +670,22 @@ console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
                     if (jsonResponse.code == '0') {
                         //let data = JSON.parse(jsonResponse.message);
 
-	
-			    let finalMove2 = JSON.parse(jsonResponse.message);			   			   			   
 
-		            hostDamageToOpponent = calculateDamage(userArr[hostIndex], opponentArr[oppIndex], finalMove2);
-               			 console.log("HostDamageDealt " + hostDamageToOpponent);
+                        let finalMove2 = JSON.parse(jsonResponse.message);
 
-           			 opponentArr[oppIndex].hp = opponentArr[oppIndex].hp - hostDamageToOpponent;
-		            if (opponentArr[oppIndex].hp < 0)
-		            {
-		                newoppHP = 0;
-		                if (firstAttacker != 2)
-		                {
-                		    opponentAction = 5;
-		                }
-		            }
-		            else {newoppHP = opponentArr[oppIndex].hp;}
-       			 }			                       
-                    else {
+                        hostDamageToOpponent = calculateDamage(userArr[hostIndex], opponentArr[oppIndex], finalMove2);
+                        console.log("HostDamageDealt after calculation " + hostDamageToOpponent);
+
+                        opponentArr[oppIndex].hp = opponentArr[oppIndex].hp - hostDamageToOpponent;
+                        if (opponentArr[oppIndex].hp < 0) {
+                            newoppHP = 0;
+                            if (firstAttacker != 2) {
+                                opponentAction = 5;
+                            }
+                        } else {
+                            newoppHP = opponentArr[oppIndex].hp;
+                        }
+                    } else {
                         document.getElementById("Pokemon_One").innerHTML = `<p>No results found for move</p>`;
                         return;
                     }
@@ -705,15 +694,12 @@ console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
             hostxhr.open("POST", "dmzMoveGetter.php");
             hostxhr.setRequestHeader("Content-Type", "application/json");
             hostxhr.send(hostJsonBody);
-        
 
 
-		console.log("HostDamageDealt " + hostDamageToOpponent);
-
+            console.log("HostDamageDealt " + hostDamageToOpponent);
         }
 
-        if (opponentAction > 0 && opponentAction < 5)
-        {
+        if (opponentAction > 0 && opponentAction < 5) {
             let val = userArr[oppIndex].move[opponentAction - 1];
 
             const oppBody = {
@@ -729,22 +715,20 @@ console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
                     const jsonResponse = JSON.parse(this.responseText);
 
                     if (jsonResponse.code == '0') {
-			         let finalMove3 = JSON.parse(jsonResponse.message);   
+                        let finalMove3 = JSON.parse(jsonResponse.message);
 
-opponentDamageTohost = calculateDamage(opponentArr[oppIndex], userArr[hostIndex], finalMove3);
-			    userArr[hostIndex].hp = userArr[hostIndex].hp - opponentDamageTohost;
-            if (userArr[hostIndex].hp < 0)
-            { newhostHP = 0;
-                if (firstAttacker != 1)
-                {
-                    opponentArr[oppIndex].hp = oppPreBattleHP;
-                    newoppHP = oppPreBattleHP;
-                }
-            }
-            else { newhostHP = userArr[hostIndex].hp; }
-
-                    }
-                    else {
+                        opponentDamageTohost = calculateDamage(opponentArr[oppIndex], userArr[hostIndex], finalMove3);
+                        userArr[hostIndex].hp = userArr[hostIndex].hp - opponentDamageTohost;
+                        if (userArr[hostIndex].hp < 0) {
+                            newhostHP = 0;
+                            if (firstAttacker != 1) {
+                                opponentArr[oppIndex].hp = oppPreBattleHP;
+                                newoppHP = oppPreBattleHP;
+                            }
+                        } else {
+                            newhostHP = userArr[hostIndex].hp;
+                        }
+                    } else {
                         document.getElementById("Pokemon_One").innerHTML = `<p>No results found for move</p>`;
                         return;
                     }
@@ -754,223 +738,191 @@ opponentDamageTohost = calculateDamage(opponentArr[oppIndex], userArr[hostIndex]
             oppxhr.setRequestHeader("Content-Type", "application/json");
             oppxhr.send(oppJsonBody);
 
-         //   const url = `https://pokeapi.co/api/v2/move/${val}`;
-
-            //const response = await fetch(url);
-
-          //  if (!response.ok) {
-              //  document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
-             //   return;
-           // }
-
-         //   const finalMove = await response.json();
-
-//            opponentDamageTohost = calculateDamage(opponentArr[oppIndex], userArr[hostIndex], finalMove);
-		console.log("opponentDamageDealthToHost " + opponentDamageTohost);
-
-   //         userArr[hostIndex].hp = userArr[hostIndex].hp - opponentDamageTohost;
-     //       if (userArr[hostIndex].hp < 0)
-       //     { newhostHP = 0;
-         //       if (firstAttacker != 1)
-           //     {
-             //       opponentArr[oppIndex].hp = oppPreBattleHP;
-               //     newoppHP = oppPreBattleHP;
-               // }
-           // }
-           // else { newhostHP = userArr[hostIndex].hp; }
-        }
-
-        const body = {
-            UserID: ourNum,
-            OppID: oppNum,
-            RoomID: hostRoomID,
-            UniquePokemonID: userUniquePkmnID,
-            OpponentUniquePokemonID: opponentUniquePkmnID,
-            HostHP: newhostHP,
-            OppHP: newoppHP
-        };
+            const body = {
+                UserID: ourNum,
+                OppID: oppNum,
+                RoomID: hostRoomID,
+                UniquePokemonID: userUniquePkmnID,
+                OpponentUniquePokemonID: opponentUniquePkmnID,
+                HostHP: newhostHP,
+                OppHP: newoppHP
+            };
 
 
             // if action chosen is still false... means its a new turn
-        turnNum += 1;
-        if (turnNum >= 1)
-        {//show move chosen by guest
-            hostActionLog.reverse();
-            document.getElementById("BattleLog").innerText = "";
-            if (hostActionLog.length > 5) {
+            turnNum += 1;
+            if (turnNum >= 1) {//show move chosen by guest
+                hostActionLog.reverse();
+                document.getElementById("BattleLog").innerText = "";
+                if (hostActionLog.length > 5) {
                     hostActionLog.pop();
-            }
-            for (let i = 0; i < hostActionLog.length; i++) {
-                document.getElementById("BattleLog").innerText += hostActionLog[i] + "\n";
-            }
-            hostActionLog.reverse();
-
-        }
-        document.getElementById("TurnNumber").innerText = "Turn Number: " + turnNum;
-
-
-        const jsonBody = JSON.stringify(body);
-        const xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function ()
-        {
-            if (this.readyState == 4 && this.status == 200)
-            {
-                const jsonResponse = JSON.parse(this.responseText);
-                if (jsonResponse.returnCode == 1)
-                {
-                    document.getElementById("incomingMessage").innerText = "Damage Dealt Updating!";
                 }
-                else if (jsonResponse.returnCode == '2')//battle done
-                {
-                    alert(jsonResponse.message);
-                    const bodyf = {
-                    UserID: ourNum,
-                    RoomID: hostRoomID
-                    };
-                const jsonBodyf = JSON.stringify(bodyf);
-                const ehr = new XMLHttpRequest();
-                ehr.onreadystatechange = function ()
-                {
-                    if (this.readyState == 4 && this.status == 200)
+                for (let i = 0; i < hostActionLog.length; i++) {
+                    document.getElementById("BattleLog").innerText += hostActionLog[i] + "\n";
+                }
+                hostActionLog.reverse();
+
+            }
+            document.getElementById("TurnNumber").innerText = "Turn Number: " + turnNum;
+
+
+            const jsonBody = JSON.stringify(body);
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    const jsonResponse = JSON.parse(this.responseText);
+                    if (jsonResponse.returnCode == 1) {
+                        document.getElementById("incomingMessage").innerText = "Damage Dealt Updating!";
+                    } else if (jsonResponse.returnCode == '2')//battle done
                     {
-                        window.location.replace("lobbies.php");
+                        alert(jsonResponse.message);
+                        const bodyf = {
+                            UserID: ourNum,
+                            RoomID: hostRoomID
+                        };
+                        const jsonBodyf = JSON.stringify(bodyf);
+                        const ehr = new XMLHttpRequest();
+                        ehr.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                window.location.replace("lobbies.php");
+                            }
+                        }
+                        ehr.open("POST", "battleOver.php");
+                        ehr.setRequestHeader("Content-Type", "application/json");
+                        ehr.send(jsonBodyf);
                     }
                 }
-                ehr.open("POST", "battleOver.php");
-                ehr.setRequestHeader("Content-Type", "application/json");
-                ehr.send(jsonBodyf);
+            }
+            xhr.open("POST", "hostDealDamage.php");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(jsonBody);
+        }
+
+        function calculateDamage(pokemon1, pokemon2, attack1) {
+            let damage = ((2 * 50) / 5) + 2;
+            let power = attack1['power'];
+
+
+            console.log("CURRENT DAMAGE " + damage + "power as well" + power);
+            if (attack1['damage_class'].name == "physical") {
+                damage = damage * power * pokemon1.attack / pokemon2.defense;
+            } else {
+                damage = damage * power * pokemon1.spattack / pokemon2.spdefense;
+            }
+            console.log("CURRENT DAMAGE" + damage);
+            damage = (damage / 50) + 2;
+            let stab = 1.0;
+            for (let i = 0; i < pokemon1.type.length; i++) {
+                if (attack1.type.name == pokemon1.type[i]) {
+                    stab = 1.5;
+                    break;
                 }
             }
-        }
-        xhr.open("POST", "hostDealDamage.php");
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(jsonBody);
-    }
 
-    function calculateDamage(pokemon1, pokemon2, attack1) {
-        let damage = ((2 * 50) / 5) + 2;
-        let power = attack1['power'];
+            damage = damage * stab * 1;
 
-
-	   console.log("CURRENT DAMAGE " + damage + "power as well" + power);
-        if (attack1['damage_class'].name == "physical") {
-            damage = damage * power * pokemon1.attack / pokemon2.defense;
-        } else {
-            damage = damage * power * pokemon1.spattack / pokemon2.spdefense;
-        }
-	console.log("CURRENT DAMAGE" + damage);
-        damage = (damage / 50) + 2;
-        let stab = 1.0;
-        for (let i = 0; i < pokemon1.type.length; i++) {
-            if (attack1.type.name == pokemon1.type[i]) {
-                stab = 1.5;
-                break;
+            if (pokemon2.type.length > 1) {
+                damage = damage * 1;
             }
+            console.log("CURRENT DAMAGE POST STAB" + damage);
+
+            return Math.ceil(damage);
+        }
+    }
+
+        async function UseMove1(val) {
+            hostActionLog.push("You Used: " + document.getElementById("MoveOne").innerText);
+            await SendMove(1);
         }
 
-        damage = damage * stab * 1;
-
-        if (pokemon2.type.length > 1) {
-            damage = damage * 1;
+        async function UseMove2(val) {
+            hostActionLog.push("You Used: " + document.getElementById("MoveTwo").innerText);
+            await SendMove(2);
         }
-	    console.log("CURRENT DAMAGE POST STAB" + damage);
 
-        return Math.ceil(damage);
-    }
+        async function UseMove3(val) {
+            hostActionLog.push("You Used: " + document.getElementById("MoveThree").innerText);
+            await SendMove(3);
+        }
+
+        async function UseMove4(val) {
+            hostActionLog.push("You Used: " + document.getElementById("MoveFour").innerText);
+            await SendMove(4);
+        }
+
+        const displayPokemonData = async (data) => {
+            const pokeContainer = document.createElement('div');
+            pokeContainer.setAttribute('class', 'card');
+            pokeContainer.id = data.UniquePokemonID;
+            const pokeDiv = document.createElement('div');
+            pokeDiv.setAttribute('class', 'cardDiv')
+            const name = document.createElement('h3');
+            name.setAttribute('class', 'card-title');
+            const img = document.createElement('img');
+            img.setAttribute('class', "card-image");
+            const hp = document.createElement('p');
+            const moves = document.createElement('p');
+
+            name.innerText = data.name;
+            img.src = data.image;
+            hp.innerText = `HP: ${data.hp}`;
+            hp.id = data.UniquePokemonID + 'hp';
+            moves.innerText = 'Moves:';
+
+            const container = document.querySelector('#Pokemon_One');
+
+            pokeContainer.appendChild(pokeDiv);
+            //pokeDiv.appendChild(name)
+            pokeDiv.appendChild(img);
+            pokeDiv.appendChild(hp);
+            //pokeDiv.appendChild(moves);
+
+            // Add randomly chosen moves right under 'Moves:'
+
+            for (let i = 0; i < 4; i++) {
+                const movesIndex = i;
+                const move = document.createElement('p');
+                const chosenMove = data.move[movesIndex];//chosemmove will be gotten from the db
+                //const url = `https://pokeapi.co/api/v2/move/${chosenMove.move.name}`;
+                const url = `https://pokeapi.co/api/v2/move/${chosenMove}`;
+                // const moveUrl = chosenMove.move.url;
+                //alert(url);
+
+                const movePowerPoints = await fetch(url);
+
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
+                    return;
+                }
+
+                const finalMove = await response.json();
 
 
-    async function UseMove1(val) {
-        hostActionLog.push("You Used: " + document.getElementById("MoveOne").innerText);
-        await SendMove(1);
-    }
-
-    async function UseMove2(val) {
-        hostActionLog.push("You Used: " + document.getElementById("MoveTwo").innerText);
-        await SendMove(2);
-    }
-
-    async function UseMove3(val) {
-        hostActionLog.push("You Used: " + document.getElementById("MoveThree").innerText);
-        await SendMove(3);
-    }
-
-    async function UseMove4(val) {
-        hostActionLog.push("You Used: " + document.getElementById("MoveFour").innerText);
-        await SendMove(4);
-    }
-
-    const displayPokemonData = async (data) => {
-        const pokeContainer = document.createElement('div');
-        pokeContainer.setAttribute('class', 'card');
-        pokeContainer.id = data.UniquePokemonID;
-        const pokeDiv = document.createElement('div');
-        pokeDiv.setAttribute('class', 'cardDiv')
-        const name = document.createElement('h3');
-        name.setAttribute('class', 'card-title');
-        const img = document.createElement('img');
-        img.setAttribute('class', "card-image");
-        const hp = document.createElement('p');
-        const moves = document.createElement('p');
-
-        name.innerText = data.name;
-        img.src = data.image;
-        hp.innerText = `HP: ${data.hp}`;
-        hp.id = data.UniquePokemonID + 'hp';
-        moves.innerText = 'Moves:';
-
-        const container = document.querySelector('#Pokemon_One');
-
-        pokeContainer.appendChild(pokeDiv);
-        //pokeDiv.appendChild(name)
-        pokeDiv.appendChild(img);
-        pokeDiv.appendChild(hp);
-        //pokeDiv.appendChild(moves);
-
-        // Add randomly chosen moves right under 'Moves:'
-
-        for (let i = 0; i < 4; i++) {
-            const movesIndex = i;
-            const move = document.createElement('p');
-            const chosenMove = data.move[movesIndex];//chosemmove will be gotten from the db
-            //const url = `https://pokeapi.co/api/v2/move/${chosenMove.move.name}`;
-            const url = `https://pokeapi.co/api/v2/move/${chosenMove}`;
-            // const moveUrl = chosenMove.move.url;
-            //alert(url);
-
-            const movePowerPoints = await fetch(url);
-
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
-                return;
+                move.innerText = `${finalMove.name} PP: ${finalMove.pp}`;
+                // pokeDiv.appendChild(move);
             }
 
-            const finalMove = await response.json();
+            pokeContainer.addEventListener('click', () => {
+                //pokeContainer.style.transform = 'scale(1.05)';
+                SwitchPokemon(pokeContainer.id);
+            })
 
+            pokeContainer.addEventListener('mouseover', () => {
+                pokeContainer.style.transform = 'scale(1.05)';
+            })
 
-            move.innerText = `${finalMove.name} PP: ${finalMove.pp}`;
-            // pokeDiv.appendChild(move);
+            img.addEventListener('mouseleave', () => {
+                img.style.transition = '.5s ease';
+            })
+
+            pokeContainer.addEventListener('mouseleave', () => {
+                pokeContainer.style.transform = 'scale(1)';
+            })
+
+            container.appendChild(pokeContainer);
         }
 
-        pokeContainer.addEventListener('click', () => {
-            //pokeContainer.style.transform = 'scale(1.05)';
-            SwitchPokemon(pokeContainer.id);
-        })
-
-        pokeContainer.addEventListener('mouseover', () => {
-            pokeContainer.style.transform = 'scale(1.05)';
-        })
-
-        img.addEventListener('mouseleave', () => {
-            img.style.transition = '.5s ease';
-        })
-
-        pokeContainer.addEventListener('mouseleave', () => {
-            pokeContainer.style.transform = 'scale(1)';
-        })
-
-        container.appendChild(pokeContainer);
-    }
 
 
