@@ -179,24 +179,50 @@ async function UpdateHostPokemonInfo()
 
     let id = HostPokemon.HostPID;
 
-    const url = 'https://pokeapi.co/api/v2/pokemon/'+id;
-    const response = await fetch(url);
+    const body = {
+        PokemonName: id
+    };
 
-    if (!response.ok) {
-        document.getElementById("opponentPokemon").innerText = "<p>No results found for" + id + "</p>";
-        return;
+    const jsonBody = JSON.stringify(body);
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = async function () {
+        if (this.readyState == 4 && this.status == 200) {
+
+            const jsonResponse = JSON.parse(this.responseText);
+
+            if (jsonResponse.code == '0') {
+
+                let data = JSON.parse(jsonResponse.message);
+                const imageH = data.sprites['front_default'];
+
+                opponentPokemon.innerHTML = '';
+                const htmlString = '<img src="' + imageH + '"/><h1>' + data.name + '</h1><p>HP: ' + HostPokemon.HostHP +'</p>';
+                opponentPokemon.innerHTML = htmlString;
+
+            }
+            else {
+                document.getElementById("opponentPokemon").innerText = "<p>No results found for" + id + "</p>";
+            }
+        }
     }
+    xhr.open("POST", "dmzBattleGetter.php");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(jsonBody);
 
 
-    const data = await response.json();
+//    const url = 'https://pokeapi.co/api/v2/pokemon/'+id;
+  //  const response = await fetch(url);
+
+    //if (!response.ok) {
+      //  document.getElementById("opponentPokemon").innerText = "<p>No results found for" + id + "</p>";
+        //return;
+    //}
+
+
+   // const data = await response.json();
 
     //sets current active opponentPokemon
-    const imageH = data.sprites['front_default'];
-    //await
 
-    opponentPokemon.innerHTML = '';
-    const htmlString = '<img src="' + imageH + '"/><h1>' + data.name + '</h1><p>HP: ' + HostPokemon.HostHP +'</p>';
-    opponentPokemon.innerHTML = htmlString;
 }
 
 function inItUser(user, team) {
@@ -305,14 +331,12 @@ async function addPokemonToUI(pokemonItem, attachedUser, upid) {
     const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = async function () {
         if (this.readyState == 4 && this.status == 200) {
-            alert(this.responseText);
 
             const jsonResponse = JSON.parse(this.responseText);
 
             if (jsonResponse.code == '0') {
 
                 let data = JSON.parse(jsonResponse.message);
-                alert(data);
 
                 pokemonItem['image'] = data.sprites['front_default'];
                 pokemonItem['hp'] = data.stats[0].base_stat;
@@ -337,34 +361,6 @@ async function addPokemonToUI(pokemonItem, attachedUser, upid) {
     xhr.open("POST", "dmzBattleGetter.php");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(jsonBody);
-
-   // const url = 'https://pokeapi.co/api/v2/pokemon/' + id;
-    //const response = await fetch(url);
-
-  //  if (!response.ok) {
-    //    document.getElementById("Pokemon_One").innerHTML = "<p>No results found for" + id + "</p>";
-    //    return;
- //   }
-
-
- //   const data = await response.json();
-
-  //  pokemonItem['image'] = data.sprites['front_default'];
-  //  pokemonItem['hp'] = data.stats[0].base_stat;
-  //  pokemonItem['attack'] = data.stats[1].base_stat;
-  //  pokemonItem['defense'] = data.stats[2].base_stat;
-  //  pokemonItem['spattack'] = data.stats[3].base_stat;
-  //  pokemonItem['spdefense'] = data.stats[4].base_stat;
-  //  pokemonItem['speed'] = data.stats[5].base_stat;
-  //  pokemonItem['type'] = data.types.map(type => type.type.name);
-
-
-    //called from setup
- //   await displayPokemonData(pokemonItem);
- //   if (upid == userUniquePkmnID) {
-    //    alert(upid);
-    ///    await SetActivePokemon(0);
-   // }
 }
 
 //only run through gets
@@ -435,13 +431,13 @@ const displayPokemonData = async (data) => {
     const img = document.createElement('img');
     img.setAttribute('class', "card-image");
     const hp = document.createElement('p');
-    const moves = document.createElement('p');
+  //  const moves = document.createElement('p');
 
     name.innerText = data.name;
     img.src = data.image;
     hp.innerText = `HP: ${data.hp}`;
     hp.setAttribute('id', data.UniquePokemonID + "hp");
-    moves.innerText = 'Moves:';
+    //moves.innerText = 'Moves:';
 
     const container = document.querySelector('#Pokemon_One');
 
@@ -453,30 +449,30 @@ const displayPokemonData = async (data) => {
 
     // Add randomly chosen moves right under 'Moves:'
 
-    for (let i = 0; i < 4; i++) {
-        const movesIndex = i;
-        const move = document.createElement('p');
-        const chosenMove = data.move[movesIndex];//chosemmove will be gotten from the db
+  //  for (let i = 0; i < 4; i++) {
+       // const movesIndex = i;
+      //  const move = document.createElement('p');
+        //const chosenMove = data.move[movesIndex];//chosemmove will be gotten from the db
         //const url = `https://pokeapi.co/api/v2/move/${chosenMove.move.name}`;
-        const url = `https://pokeapi.co/api/v2/move/${chosenMove}`;
+       // const url = `https://pokeapi.co/api/v2/move/${chosenMove}`;
         // const moveUrl = chosenMove.move.url;
         //alert(url);
 
-        const movePowerPoints = await fetch(url);
+        //const movePowerPoints = await fetch(url);
 
-        const response = await fetch(url);
+        //const response = await fetch(url);
 
-        if (!response.ok) {
-            document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
-            return;
-        }
+        //if (!response.ok) {
+          //  document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
+           // return;
+        //}
 
-        const finalMove = await response.json();
+        //const finalMove = await response.json();
 
 
-        move.innerText = `${finalMove.name} PP: ${finalMove.pp}`;
+        //move.innerText = `${finalMove.name} PP: ${finalMove.pp}`;
         // pokeDiv.appendChild(move);
-    }
+  //  }
 
     pokeContainer.addEventListener('click', () => {
         //pokeContainer.style.transform = 'scale(1.05)';
