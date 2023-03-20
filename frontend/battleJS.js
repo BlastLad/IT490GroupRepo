@@ -656,7 +656,7 @@ async function SendMove(moveval) {
 
 console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
 
-        let finalMove;
+      
 
         if (hostAction > 0 && hostAction < 5)
         {
@@ -679,8 +679,23 @@ console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
                     if (jsonResponse.code == '0') {
                         //let data = JSON.parse(jsonResponse.message);
 
-                        finalMove = JSON.parse(jsonResponse.message);
-                    }
+	
+			    let finalMove2 = JSON.parse(jsonResponse.message);			   			   			   
+
+		            hostDamageToOpponent = calculateDamage(userArr[hostIndex], opponentArr[oppIndex], finalMove2);
+               			 console.log("HostDamageDealt " + hostDamageToOpponent);
+
+           			 opponentArr[oppIndex].hp = opponentArr[oppIndex].hp - hostDamageToOpponent;
+		            if (opponentArr[oppIndex].hp < 0)
+		            {
+		                newoppHP = 0;
+		                if (firstAttacker != 2)
+		                {
+                		    opponentAction = 5;
+		                }
+		            }
+		            else {newoppHP = opponentArr[oppIndex].hp;}
+       			 }			                       
                     else {
                         document.getElementById("Pokemon_One").innerHTML = `<p>No results found for move</p>`;
                         return;
@@ -690,30 +705,11 @@ console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
             hostxhr.open("POST", "dmzMoveGetter.php");
             hostxhr.setRequestHeader("Content-Type", "application/json");
             hostxhr.send(hostJsonBody);
+        
 
-         //   const url = `https://pokeapi.co/api/v2/move/${val}`;
 
-          //  const response = await fetch(url);
-
-           // if (!response.ok) {
-
-          //  }
-
-            //const finalMove = await response.json();
-
-            hostDamageToOpponent = calculateDamage(userArr[hostIndex], opponentArr[oppIndex], finalMove);
 		console.log("HostDamageDealt " + hostDamageToOpponent);
 
-            opponentArr[oppIndex].hp = opponentArr[oppIndex].hp - hostDamageToOpponent;
-            if (opponentArr[oppIndex].hp < 0)
-            {
-                newoppHP = 0;
-                if (firstAttacker != 2)
-                {
-                    opponentAction = 5;
-                }
-            }
-            else {newoppHP = opponentArr[oppIndex].hp;}
         }
 
         if (opponentAction > 0 && opponentAction < 5)
@@ -733,8 +729,20 @@ console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
                     const jsonResponse = JSON.parse(this.responseText);
 
                     if (jsonResponse.code == '0') {
+			         let finalMove3 = JSON.parse(jsonResponse.message);   
 
-                        finalMove = JSON.parse(jsonResponse.message);
+opponentDamageTohost = calculateDamage(opponentArr[oppIndex], userArr[hostIndex], finalMove3);
+			    userArr[hostIndex].hp = userArr[hostIndex].hp - opponentDamageTohost;
+            if (userArr[hostIndex].hp < 0)
+            { newhostHP = 0;
+                if (firstAttacker != 1)
+                {
+                    opponentArr[oppIndex].hp = oppPreBattleHP;
+                    newoppHP = oppPreBattleHP;
+                }
+            }
+            else { newhostHP = userArr[hostIndex].hp; }
+
                     }
                     else {
                         document.getElementById("Pokemon_One").innerHTML = `<p>No results found for move</p>`;
@@ -757,19 +765,19 @@ console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
 
          //   const finalMove = await response.json();
 
-            opponentDamageTohost = calculateDamage(opponentArr[oppIndex], userArr[hostIndex], finalMove);
+//            opponentDamageTohost = calculateDamage(opponentArr[oppIndex], userArr[hostIndex], finalMove);
 		console.log("opponentDamageDealthToHost " + opponentDamageTohost);
 
-            userArr[hostIndex].hp = userArr[hostIndex].hp - opponentDamageTohost;
-            if (userArr[hostIndex].hp < 0)
-            { newhostHP = 0;
-                if (firstAttacker != 1)
-                {
-                    opponentArr[oppIndex].hp = oppPreBattleHP;
-                    newoppHP = oppPreBattleHP;
-                }
-            }
-            else { newhostHP = userArr[hostIndex].hp; }
+   //         userArr[hostIndex].hp = userArr[hostIndex].hp - opponentDamageTohost;
+     //       if (userArr[hostIndex].hp < 0)
+       //     { newhostHP = 0;
+         //       if (firstAttacker != 1)
+           //     {
+             //       opponentArr[oppIndex].hp = oppPreBattleHP;
+               //     newoppHP = oppPreBattleHP;
+               // }
+           // }
+           // else { newhostHP = userArr[hostIndex].hp; }
         }
 
         const body = {
@@ -841,9 +849,11 @@ console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
 
     function calculateDamage(pokemon1, pokemon2, attack1) {
         let damage = ((2 * 50) / 5) + 2;
-        let power = attack1.power;
+        let power = attack1['power'];
+
+
 	   console.log("CURRENT DAMAGE " + damage + "power as well" + power);
-        if (attack1.damage_class.name == "physical") {
+        if (attack1['damage_class'].name == "physical") {
             damage = damage * power * pokemon1.attack / pokemon2.defense;
         } else {
             damage = damage * power * pokemon1.spattack / pokemon2.spdefense;
