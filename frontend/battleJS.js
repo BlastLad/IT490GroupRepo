@@ -487,6 +487,7 @@ function preBattleStartCheck() {
 
                     pokemonItem['image'] = data.sprites['front_default'];
                     pokemonItem['hp'] = data.stats[0].base_stat;
+                    pokemonItem['maxHP'] = data.stats[0].base_stat;
                     pokemonItem['attack'] = data.stats[1].base_stat;
                     pokemonItem['defense'] = data.stats[2].base_stat;
                     pokemonItem['spattack'] = data.stats[3].base_stat;
@@ -673,7 +674,26 @@ async function SendMove(moveval) {
 
                         let finalMove2 = JSON.parse(jsonResponse.message);
 
-                        hostDamageToOpponent = calculateDamage(userArr[hostIndex], opponentArr[oppIndex], finalMove2);
+                        if (finalMove2['meta'].healing > 0) {
+                            let healPrcnt = finalMove2['meta'].healing;
+                            hostPreBattleHP += (healPrcnt * 0.01) * userArr[hostIndex].maxHP;
+                            if (hostPreBattleHP > userArr[hostIndex].maxHP){
+                                hostPreBattleHP = userArr[hostIndex].maxHP;
+                            }
+                        }
+
+                        if (finalMove2['damage_class'] != 'status') {
+                             hostDamageToOpponent = calculateDamage(userArr[hostIndex], opponentArr[oppIndex], finalMove2);
+                        }
+
+                        if (finalMove2['meta'].drain > 0) {
+                            let healPrcnt = finalMove2['meta'].drain;
+                            hostPreBattleHP += (hostDamageToOpponent * (healPrcnt * 0.01)) * userArr[hostIndex].maxHP;
+                            if (hostPreBattleHP > userArr[hostIndex].maxHP){
+                                hostPreBattleHP = userArr[hostIndex].maxHP;
+                            }
+                        }
+
                         console.log("HostDamageDealt after calculation " + hostDamageToOpponent);
 
                         opponentArr[oppIndex].hp = opponentArr[oppIndex].hp - hostDamageToOpponent;
@@ -688,6 +708,8 @@ async function SendMove(moveval) {
 
                         if (opponentAction > 0 && opponentAction < 5) {
                             let val = userArr[oppIndex].move[opponentAction - 1];
+
+                            hostActionLog.push("Opponent used: " + val);
 
                             const oppBody = {
                                 Move: val
@@ -704,7 +726,25 @@ async function SendMove(moveval) {
                                     if (jsonResponse.code == '0') {
                                         let finalMove3 = JSON.parse(jsonResponse.message);
 
+
+                                        if (finalMove3['meta'].healing > 0) {
+                                            let healPrcnt = finalMove3['meta'].healing;
+                                            oppPreBattleHP += (healPrcnt * 0.01) * opponentArr[oppIndex].maxHP;
+                                            if (oppPreBattleHP > opponentArr[oppIndex].maxHP){
+                                                oppPreBattleHP = opponentArr[oppIndex].maxHP;
+                                            }
+                                        }
+
                                         opponentDamageTohost = calculateDamage(opponentArr[oppIndex], userArr[hostIndex], finalMove3);
+
+                                        if (finalMove3['meta'].drain > 0) {
+                                            let healPrcnt = finalMove3['meta'].drain;
+                                            oppPreBattleHP += ((healPrcnt * 0.01) * opponentDamageTohost) * opponentArr[oppIndex].maxHP;
+                                            if (oppPreBattleHP > opponentArr[oppIndex].maxHP){
+                                                oppPreBattleHP = opponentArr[oppIndex].maxHP;
+                                            }
+                                        }
+
                                         userArr[hostIndex].hp = userArr[hostIndex].hp - opponentDamageTohost;
                                         if (userArr[hostIndex].hp < 0)
                                         {
@@ -867,6 +907,7 @@ async function SendMove(moveval) {
                 Move: val
             };
 
+            hostActionLog.push("Opponent used: " + val);
 
             const oppJsonBody = JSON.stringify(oppBody);
             const oppxhr = new XMLHttpRequest();
@@ -878,7 +919,25 @@ async function SendMove(moveval) {
                     if (jsonResponse.code == '0') {
                         let finalMove3 = JSON.parse(jsonResponse.message);
 
+
+                        if (finalMove3['meta'].healing > 0) {
+                            let healPrcnt = finalMove3['meta'].healing;
+                            oppPreBattleHP += (healPrcnt * 0.01) * opponentArr[oppIndex].maxHP;
+                            if (oppPreBattleHP > opponentArr[oppIndex].maxHP){
+                                oppPreBattleHP = opponentArr[oppIndex].maxHP;
+                            }
+                        }
+
                         opponentDamageTohost = calculateDamage(opponentArr[oppIndex], userArr[hostIndex], finalMove3);
+
+                        if (finalMove3['meta'].drain > 0) {
+                            let healPrcnt = finalMove3['meta'].drain;
+                            oppPreBattleHP += ((healPrcnt * 0.01) * opponentDamageTohost) * opponentArr[oppIndex].maxHP;
+                            if (oppPreBattleHP > opponentArr[oppIndex].maxHP){
+                                oppPreBattleHP = opponentArr[oppIndex].maxHP;
+                            }
+                        }
+
                         userArr[hostIndex].hp = userArr[hostIndex].hp - opponentDamageTohost;
                         if (userArr[hostIndex].hp < 0)
                         {
@@ -908,11 +967,13 @@ async function SendMove(moveval) {
                         if (turnNum >= 1) {//show move chosen by guest
                             hostActionLog.reverse();
                             document.getElementById("BattleLog").innerText = "";
-                            if (hostActionLog.length > 5) {
+                            while (hostActionLog.length > 6) {
                                 hostActionLog.pop();
                             }
-                            for (let i = 0; i < hostActionLog.length; i++) {
+                            for (let i = 0; i < hostActionLog.length; i++)
+                            {
                                 document.getElementById("BattleLog").innerText += hostActionLog[i] + "\n";
+
                             }
                             hostActionLog.reverse();
 
@@ -1074,21 +1135,25 @@ async function SendMove(moveval) {
 
         async function UseMove1(val) {
             hostActionLog.push("You Used: " + document.getElementById("MoveOne").innerText);
+            guestActionLog.push("Host used: " + document.getElementById("MoveOne").innerText);
             await SendMove(1);
         }
 
         async function UseMove2(val) {
             hostActionLog.push("You Used: " + document.getElementById("MoveTwo").innerText);
+            guestActionLog.push("Host used: " + document.getElementById("MoveTwo").innerText);
             await SendMove(2);
         }
 
         async function UseMove3(val) {
             hostActionLog.push("You Used: " + document.getElementById("MoveThree").innerText);
+            guestActionLog.push("Host used: " + document.getElementById("MoveThree").innerText);
             await SendMove(3);
         }
 
         async function UseMove4(val) {
             hostActionLog.push("You Used: " + document.getElementById("MoveFour").innerText);
+            guestActionLog.push("Host used: " + document.getElementById("MoveFour").innerText);
             await SendMove(4);
         }
 
