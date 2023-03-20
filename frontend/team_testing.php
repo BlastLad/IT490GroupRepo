@@ -38,15 +38,38 @@
 	</div>
 
 	<?php
-	if (isset($_GET['team'])) {
-		$selectedTeam = $_GET['team'];
-		if ($selectedTeam == "new") {
-			// create new team
-		} else {
-			// display team information
-		}
+	/*
+    if (isset($_GET['team'])) {
+        $selectedTeam = $_GET['team'];
+
+        require_once('path.inc');
+		require_once('get_host_info.inc');
+		require_once('rabbitMQLib.inc');
+		$client1 = new rabbitMQClient("testRabbitMQ.ini", "testServer");
+        $request = array();
+        $request['type'] = "getteam";
+
+
+        $request['UserID'] = $_SESSION['UserID'];
+        $request['TeamID'] = $selectedTeam;
+
+        $request['message'] = "hi";
+
+        $response = $client1->send_request($request);
+        if (isset($response['message'])) {
+            $team = json_decode($response['message'], true);
+            foreach ($team as $pokemon){
+                echo '<p>' .$pokemon['PokemonName'] . '</p>';
+            }
+        }
+
 	}
-	?>
+        else{
+            echo '<p> Team not set! </p>';
+        }
+	*/
+    ?>
+    
 </body>
 
 </html>
