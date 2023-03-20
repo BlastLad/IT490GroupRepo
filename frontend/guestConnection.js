@@ -249,7 +249,7 @@ function inItUser(user, team) {
                         });
                     }
                 });
-                if (jsonResponse.returnCode == '2')
+                if (jsonResponse.returnCode == '1')
                 {
                     //do the next connection
                     const xhrNext = new XMLHttpRequest();
