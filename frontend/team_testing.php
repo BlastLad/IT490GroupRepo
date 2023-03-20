@@ -38,20 +38,23 @@
 	</div>
 
 	<?php
-	/*
-    if (isset($_GET['team'])) {
-        $selectedTeam = $_GET['team'];
+	if (isset($_GET['team'])) {
+
 
         require_once('path.inc');
 		require_once('get_host_info.inc');
 		require_once('rabbitMQLib.inc');
 		$client1 = new rabbitMQClient("testRabbitMQ.ini", "testServer");
-        $request = array();
-        $request['type'] = "getteam";
+
+		$request = array();
+        
+		$request['type'] = "getteam";
 
 
         $request['UserID'] = $_SESSION['UserID'];
         $request['TeamID'] = $selectedTeam;
+		$selectedTeam = $_GET['team'];
+		//try to log request and the response to see what you're getting back
 
         $request['message'] = "hi";
 
@@ -67,7 +70,7 @@
         else{
             echo '<p> Team not set! </p>';
         }
-	*/
+	
     ?>
     
 </body>
