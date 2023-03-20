@@ -111,6 +111,7 @@ nav {
 	</ul>
 </nav>
 <body>
+<script src="typeArray.js"></script>
 <script src="battleJS.js"></script>
 
     <h1>Battles page</h1>

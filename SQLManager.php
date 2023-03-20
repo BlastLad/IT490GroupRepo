@@ -226,13 +226,14 @@ function registerUser($request)
             $Move_One = $request['Move_One'];
             $Move_Two = $request['Move_Two'];
             $Move_Three = $request['Move_Three'];
+            $VersionID = $request['VersionID'];
             $Move_Four = $request['Move_Four'];
 	    $AbilityID = $request['AbilityID'];
 	    $MaxHP = $request['MaxHP'];
 
             if ($TeamID == 0) {
                 echo "creating new team" . PHP_EOL;
-                $query = "INSERT INTO TeamInfo (UserID, TeamName, VersionID, Wins, Loses) VALUES ($UserID, '$TeamName', 1, 0, 0);";
+                $query = "INSERT INTO TeamInfo (UserID, TeamName, VersionID, Wins, Loses) VALUES ($UserID, '$TeamName', $VersionID, 0, 0);";
 
                 $response = $mydb->query($query);
 

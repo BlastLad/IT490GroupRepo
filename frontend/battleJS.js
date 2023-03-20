@@ -1032,9 +1032,10 @@ async function SendMove(moveval) {
             console.log("CURRENT DAMAGE " + damage + "power as well" + power);
             if (attack1['damage_class'].name == "physical") {
                 damage = damage * power * pokemon1.attack / pokemon2.defense;
-            } else {
+            } else if (attack1['damage_class'].name == "special"){
                 damage = damage * power * pokemon1.spattack / pokemon2.spdefense;
             }
+
             console.log("CURRENT DAMAGE" + damage);
             damage = (damage / 50) + 2;
             let stab = 1.0;
@@ -1047,9 +1048,24 @@ async function SendMove(moveval) {
 
             damage = damage * stab * 1;
 
-            if (pokemon2.type.length > 1) {
-                damage = damage * 1;
+            let typeEffectiveness = 1;
+
+            for (let tyi = 0; tyi < pokemon2.type.length; tyi++) {
+                let attackType = GetTypeToInt(attack1['type'].name);
+                let defenderType = GetTypeToInt(pokemon2.type[tyi]);
+
+                damage = damage * typeArray[attackType][defenderType];
+                typeEffectiveness = typeEffectiveness * typeArray[attackType][defenderType];
             }
+
+            if (typeEffectiveness > 1) {
+                hostActionLog.push("ITS SUPER EFFECTIVE!");
+            }
+            else if (typeEffectiveness < 1) {
+                hostActionLog.push("ITS NOT VERY EFFECTIVE!");
+            }
+            damage = damage * typeEffectiveness;
+
             console.log("CURRENT DAMAGE POST STAB" + damage);
 
             return Math.ceil(damage);
