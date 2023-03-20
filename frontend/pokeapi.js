@@ -13,7 +13,7 @@ addButton.addEventListener('submit', async (event) => {
     let pokemonNameUpdate = document.getElementById("pokemonName").innerText;
 	let hp = document.getElementById("hp").innerText;
 	let teamName = document.getElementById("teamName").value;
-	let versionID = document.getElementById("generation").value;
+	let versionID = document.getElementById("pokemonGeneration").value;
 
 	const body = {
 	AbilityID: abNum,

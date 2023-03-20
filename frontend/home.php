@@ -257,6 +257,7 @@
           //Display Pokemon stats and sprite
             echo "<p hidden='hidden' id='pokemonName'>$pokemon_name</p>";
             echo "<p hidden='hidden' id='pokemonNum'>$pokemon_num</p>";
+            echo "<p hidden='hidden' id='pokemonGeneration'>$generation</p>";
           echo "<h2>".$pokemon_name." (Generation ".$generation.")</h2>";
           echo "<img src='".$pokemon_sprite."'><br>";
           echo "<p><b>Stats:</b></p>";
