@@ -10,7 +10,7 @@ let oppNum = -2;
 let actionChosen = false;
 let hostRoomID = -1;
 let addedTurn = false;
-let turnNum = -1;
+let turnNum = 0;
 let guestActionLog = [];
 let hostActionLog = [];
 
@@ -222,26 +222,6 @@ function  hostGameStateUpdate()
                                 }
                             }
                         });
-                        if (actionChosen == false && addedTurn == false)
-                        {
-                            // if action chosen is still false... means its a new turn
-                            turnNum += 1;
-                            if (turnNum > 1)
-                            {//show move chosen by guest
-                                hostActionLog.reverse();
-                                document.getElementById("BattleLog").innerText = "";
-                                if (hostActionLog.length > 5) {
-                                    hostActionLog.pop();
-                                }
-                                for (let i = 0; i < hostActionLog.length; i++) {
-                                    document.getElementById("BattleLog").innerText += hostActionLog[i] + "\n";
-                                }
-                                hostActionLog.reverse();
-
-                            }
-                            document.getElementById("TurnNumber").innerText = "Turn Number: " + turnNum;
-                            addedTurn = true;
-                        }
                     }
                 });
                 if (jsonResponse.returnCode == 2)
@@ -676,20 +656,50 @@ async function SendMove(moveval) {
 
 console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
 
+        let finalMove;
+
         if (hostAction > 0 && hostAction < 5)
         {
             let val = userArr[hostIndex].move[hostAction - 1];
 
-            const url = `https://pokeapi.co/api/v2/move/${val}`;
 
-            const response = await fetch(url);
+            const hostBody = {
+                Move: val
+            };
 
-            if (!response.ok) {
-                document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
-                return;
+
+
+            const hostJsonBody = JSON.stringify(hostBody);
+            const hostxhr = new XMLHttpRequest();
+            hostxhr.onreadystatechange = async function () {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    const jsonResponse = JSON.parse(this.responseText);
+
+                    if (jsonResponse.code == '0') {
+                        //let data = JSON.parse(jsonResponse.message);
+
+                        finalMove = JSON.parse(jsonResponse.message);
+                    }
+                    else {
+                        document.getElementById("Pokemon_One").innerHTML = `<p>No results found for move</p>`;
+                        return;
+                    }
+                }
             }
+            hostxhr.open("POST", "dmzMoveGetter.php");
+            hostxhr.setRequestHeader("Content-Type", "application/json");
+            hostxhr.send(hostJsonBody);
 
-            const finalMove = await response.json();
+         //   const url = `https://pokeapi.co/api/v2/move/${val}`;
+
+          //  const response = await fetch(url);
+
+           // if (!response.ok) {
+
+          //  }
+
+            //const finalMove = await response.json();
 
             hostDamageToOpponent = calculateDamage(userArr[hostIndex], opponentArr[oppIndex], finalMove);
 		console.log("HostDamageDealt " + hostDamageToOpponent);
@@ -710,16 +720,42 @@ console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
         {
             let val = userArr[oppIndex].move[opponentAction - 1];
 
-            const url = `https://pokeapi.co/api/v2/move/${val}`;
+            const oppBody = {
+                Move: val
+            };
 
-            const response = await fetch(url);
 
-            if (!response.ok) {
-                document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
-                return;
+            const oppJsonBody = JSON.stringify(oppBody);
+            const oppxhr = new XMLHttpRequest();
+            oppxhr.onreadystatechange = async function () {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    const jsonResponse = JSON.parse(this.responseText);
+
+                    if (jsonResponse.code == '0') {
+
+                        finalMove = JSON.parse(jsonResponse.message);
+                    }
+                    else {
+                        document.getElementById("Pokemon_One").innerHTML = `<p>No results found for move</p>`;
+                        return;
+                    }
+                }
             }
+            oppxhr.open("POST", "dmzMoveGetter.php");
+            oppxhr.setRequestHeader("Content-Type", "application/json");
+            oppxhr.send(oppJsonBody);
 
-            const finalMove = await response.json();
+         //   const url = `https://pokeapi.co/api/v2/move/${val}`;
+
+            //const response = await fetch(url);
+
+          //  if (!response.ok) {
+              //  document.getElementById("Pokemon_One").innerHTML = `<p>No results found for .</p>`;
+             //   return;
+           // }
+
+         //   const finalMove = await response.json();
 
             opponentDamageTohost = calculateDamage(opponentArr[oppIndex], userArr[hostIndex], finalMove);
 		console.log("opponentDamageDealthToHost " + opponentDamageTohost);
@@ -745,6 +781,25 @@ console.log("Curren Usr HP " + newhostHP + " Current OPP HP " +newoppHP);
             HostHP: newhostHP,
             OppHP: newoppHP
         };
+
+
+            // if action chosen is still false... means its a new turn
+        turnNum += 1;
+        if (turnNum >= 1)
+        {//show move chosen by guest
+            hostActionLog.reverse();
+            document.getElementById("BattleLog").innerText = "";
+            if (hostActionLog.length > 5) {
+                    hostActionLog.pop();
+            }
+            for (let i = 0; i < hostActionLog.length; i++) {
+                document.getElementById("BattleLog").innerText += hostActionLog[i] + "\n";
+            }
+            hostActionLog.reverse();
+
+        }
+        document.getElementById("TurnNumber").innerText = "Turn Number: " + turnNum;
+
 
         const jsonBody = JSON.stringify(body);
         const xhr = new XMLHttpRequest();
