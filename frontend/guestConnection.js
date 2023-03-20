@@ -307,12 +307,11 @@ async function addPokemonToUI(pokemonItem, attachedUser, upid) {
         if (this.readyState == 4 && this.status == 200) {
             alert(this.responseText);
 
-            const jsonResponse = this.responseText['code'];
-            alert(jsonResponse);
+            const jsonResponse = JSON.parse(this.responseText);
 
-            if (jsonResponse == '0') {
+            if (jsonResponse.code == '0') {
 
-                let data = JSON.parse(this.responseText['message']);
+                let data = JSON.parse(jsonResponse.message);
                 alert(data);
 
                 pokemonItem['image'] = data.sprites['front_default'];
