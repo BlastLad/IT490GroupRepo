@@ -13,6 +13,7 @@ addButton.addEventListener('submit', async (event) => {
     let pokemonNameUpdate = document.getElementById("pokemonName").innerText;
 	let hp = document.getElementById("hp").innerText;
 	let teamName = document.getElementById("teamName").value;
+	let versionID = document.getElementById("generation").value;
 
 	const body = {
 	AbilityID: abNum,
@@ -20,7 +21,8 @@ addButton.addEventListener('submit', async (event) => {
         Move_Two: move2Nam,
         Move_Three: move3Nam,
         Move_Four: move4Nam,
-	TeamName: teamName, 
+	TeamName: teamName,
+		VersionID: versionID,
         PokemonID: pokemonNumUpdate,
         PokemonName: pokemonNameUpdate,
         TeamID: teamNum,
