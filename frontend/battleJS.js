@@ -707,7 +707,7 @@ async function SendMove(moveval) {
                         }
 
                         if (opponentAction > 0 && opponentAction < 5) {
-                            let val = userArr[oppIndex].move[opponentAction - 1];
+                            let val = opponentArr[oppIndex].move[opponentAction - 1];
 
                             hostActionLog.push("Opponent used: " + val);
 
@@ -901,7 +901,7 @@ async function SendMove(moveval) {
 
         }
         else if (opponentAction > 0 && opponentAction < 5) {
-            let val = userArr[oppIndex].move[opponentAction - 1];
+            let val = opponentArr[oppIndex].move[opponentAction - 1];
 
             const oppBody = {
                 Move: val

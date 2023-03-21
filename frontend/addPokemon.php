@@ -23,6 +23,7 @@ $request['PokemonID'] = $object['PokemonID'];
 $request['TeamName'] = $object['TeamName'];
 $request['PokemonName'] = $object['PokemonName'];//$storePost->"PokemonName";
 $request['AbilityID'] = $object['AbilityID'];
+$reuqest['VID'] = $object['VersionID'];
 $request['Move_One'] = $object['Move_One'] ;
 $request['Move_Two'] = $object['Move_Two'];
 $request['Move_Three'] = $object['Move_Three'];

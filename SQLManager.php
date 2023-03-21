@@ -226,7 +226,7 @@ function registerUser($request)
             $Move_One = $request['Move_One'];
             $Move_Two = $request['Move_Two'];
             $Move_Three = $request['Move_Three'];
-            $VersionID = $request['VersionID'];
+            $VersionID = $request['VID'];
             $Move_Four = $request['Move_Four'];
 	    $AbilityID = $request['AbilityID'];
 	    $MaxHP = $request['MaxHP'];
