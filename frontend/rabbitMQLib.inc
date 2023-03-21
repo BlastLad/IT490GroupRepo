@@ -75,7 +75,7 @@ class rabbitMQServer
       $conn_queue->setName($msg->getReplyTo());
       $randomVal1 = rand(10, 500);
       $randomVal2 = rand(10, 300);
-			$replykey = $this->routing_key.".$randomVal1.".response.".$randomVal2.";
+			$replykey = $this->routing_key.".respoonse";
 			$conn_queue->bind($exchange->getName(),$replykey);
 			$exchange->publish(json_encode($response),$replykey,AMQP_NOPARAM,array('correlation_id'=>$msg->getCorrelationId()));
 
@@ -213,9 +213,9 @@ class rabbitMQClient
       $exchange->setType($this->exchange_type);
 
       $callback_queue = new AMQPQueue($channel);
-      $callback_queue->setName($this->queue."_response");
+      $callback_queue->setName($this->queue."_respoonse");
       $callback_queue->declare();
-			$callback_queue->bind($exchange->getName(),$this->routing_key.".response");
+			$callback_queue->bind($exchange->getName(),$this->routing_key.".respoonse");
 
 			$this->conn_queue = new AMQPQueue($channel);
 			$this->conn_queue->setName($this->queue);
