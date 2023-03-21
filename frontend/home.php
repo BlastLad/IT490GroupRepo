@@ -382,7 +382,7 @@
      </form>
     </div>
   
-   <!--<script src="pokeapi.js"></script> -->
+   <script src="pokeapi.js"></script>
 </body>
 </html>
 
