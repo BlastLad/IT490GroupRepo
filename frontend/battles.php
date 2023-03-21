@@ -93,23 +93,8 @@ li a:hover:not(.active) {
 }
 </style>
 <style>
-@import url('https://fonts.cdnfonts.com/css/pokemon-solid');
-nav {
-        font-family: 'Pokemon Solid', sans-serif;
-        word-spacing: 5px;
-    }
-    </style>
-<nav>
-	<ul class="bar">
-		<li><a href="home.php">Home</a></li>
-        <li><a href="teams.php">Teams</a></li>
-        <li style class="active"><a href="lobbies.php">Battles</a></li>
-        <li><a href="tournament.php">Tournament</a></li>
+<?php require(__DIR__ . "/nav.php"); ?>
 
-		<li style="float:right"><a href="index.html">Login/Sign-Up</a></li>
-
-	</ul>
-</nav>
 <body>
 <script src="typeArray.js"></script>
 <script src="battleJS.js"></script>
