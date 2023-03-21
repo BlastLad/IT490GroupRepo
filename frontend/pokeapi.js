@@ -21,7 +21,7 @@ addButton.addEventListener('submit', async (event) => {
         Move_Three: move3Nam,
         Move_Four: move4Nam,
 	TeamName: teamName,
-	VersionID: vNum,
+	VID: vNum,
         PokemonID: pokemonNumUpdate,
         PokemonName: pokemonNameUpdate,
         TeamID: teamNum,
@@ -33,4 +33,5 @@ addButton.addEventListener('submit', async (event) => {
 	xhr.open("POST", "addPokemon.php");
 	xhr.setRequestHeader("Content-Type", "application/json");	
 	xhr.send(jsonBody);	
+	alert("Pokemon Added");
 });
