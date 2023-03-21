@@ -216,7 +216,18 @@ function registerUser($request)
                 print json_encode($rows);
                 return array("returnCode" => 1, 'message' => json_encode($rows));
 
-            break;
+		break;
+	case 'setTeam':
+		$TeamID = $request['TeamID'];
+		$UserID = $request['UserID'];
+		
+		$query = "UPDATE users SET activeTeamID = $TeamID WHERE userID = $UserID;";
+	 $response = $mydb->query($query);
+		if ($response) {
+			echo"SUCCESSTEAM SET".PHP_EOL;
+		}
+return array("returncode" => 1, "message" => "added successfully");
+
         case 'addpokemon':
 		$TeamID = $request['TeamID'];
 		$TeamName = $request['TeamName'];
@@ -329,10 +340,12 @@ function registerUser($request)
             $VersionID = '';
 
             if (mysqli_num_rows($response) > 0) {
-                echo "We correctly worked" . PHP_EOL;
+               
                 while ($row = mysqli_fetch_assoc($response)) {
-                    $VersionID = $row['VersionID'];
-                }
+			$VersionID = $row['VersionID'];
+			var_dump($row);
+		}
+		echo"$VersionID here is version".PHP_EOL;
                 $query = "SELECT * FROM TeamInfo WHERE VersionID = $VersionID AND UserID = 0 ORDER BY TeamID;";
                 $response = $mydb->query($query);
                 if (mysqli_num_rows($response) > 0) {

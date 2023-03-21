@@ -10,7 +10,11 @@
 <body>
 	<h1>Team Page</h1>
 	<script>
-		function setActiveTeam() {
+function setActiveTeam() {
+	const body = {
+	TeamID: 1
+};
+const jsonBody = JSON.stringify(body);
 			const xhr = new XMLHttpRequest();
 			xhr.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
@@ -18,7 +22,9 @@
 				}
 			}
 			xhr.open("POST", "setTeam.php");
-			//xhr.setRequestHeader();
+			xhr.setRequestHeader("Content-Type", "application/json");
+			xhr.send(jsonBody);
+			alert("CALLED");
 		}
 	</script>
 	<div>
