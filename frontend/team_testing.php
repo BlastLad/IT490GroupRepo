@@ -9,7 +9,18 @@
 
 <body>
 	<h1>Team Page</h1>
-
+	<script>
+		function setActiveTeam() {
+			const xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					alert("Team set");
+				}
+			}
+			xhr.open("POST", "setTeam.php");
+			//xhr.setRequestHeader();
+		}
+	</script>
 	<div>
 		<form method="get">
 			<select id="team" name="team">
@@ -30,7 +41,7 @@
 					$teams = json_decode($response['message'], true);
 					foreach($teams as $team1) {
 						echo '<option value="' . $team1['TeamID'] . '">' . $team1['TeamName'] . '</option>';
-					}
+					}/*
 					if (count($teams) > 0) {
 						foreach ($teams as $team) {
 							echo "<div>";
@@ -47,7 +58,7 @@
 							}
 							echo "</div>";
 						}
-					}
+					}*/
 				} else {
 					echo "<p>No teams found.</p>";
 				}
@@ -58,9 +69,10 @@
 	</div>
 
 	<?php
-	/*
+	
 	if (isset($_GET['team'])) {
 		$selectedTeam = $_GET['team'];
+		$_SESSION['ActiveTeam'] = $selectedTeam;
         require_once('path.inc');
 		require_once('get_host_info.inc');
 		require_once('rabbitMQLib.inc');
@@ -77,13 +89,14 @@
             foreach ($team as $pokemon){
                 echo '<p>' .$pokemon['PokemonName'] . '</p>';
             }
+			echo "<button value='$selectedTeam' id='setActive' onclick=setActiveTeam()>Set as Active Team</button>";
         }
 
-	}
+	}/*
     else{
         echo '<p> Team not set! </p>';
-    }
-	*/
+    }*/
+	
     ?>
     
 </body>
