@@ -213,9 +213,14 @@ class rabbitMQClient
       $exchange->setType($this->exchange_type);
 
       $callback_queue = new AMQPQueue($channel);
-      $callback_queue->setName($this->queue."_respoonse");
+      $randomVal1 = rand(10, 500);
+      $randomVal2 = rand(10, 600);
+      $keyName = $this->queue."_respoonnse";
+      $keyName .= "$randomVal1";
+      $keyName .= "$randomVal2";
+      $callback_queue->setName($keyName);
       $callback_queue->declare();
-			$callback_queue->bind($exchange->getName(),$this->routing_key.".respoonse");
+			$callback_queue->bind($exchange->getName(),$keyName);
 
 			$this->conn_queue = new AMQPQueue($channel);
 			$this->conn_queue->setName($this->queue);
