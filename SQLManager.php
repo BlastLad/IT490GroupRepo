@@ -49,7 +49,7 @@ function AddStarterTeam($request, $mydb, $UserID) {
 
         $array = array(
                 array(1, "bulbasaur", 'cut', 'vine-whip', 'headbutt', 'tackle', 'overgrow',45),
-                array(2, "ivyasaur", 'cut', 'vine-whip', 'headbutt', 'tackle', 'overgrow',60),
+                array(2, "ivysaur", 'cut', 'vine-whip', 'headbutt', 'tackle', 'overgrow',60),
                 array(3, "venusaur", 'cut', 'vine-whip', 'headbutt', 'tackle', 'overgrow',80),
                 array(4, "charmander", 'cut', 'ember', 'scratch', 'bite', 'blaze', 39),
                 array(5, "charmeleon", 'cut', 'ember', 'scratch', 'bite', 'blaze', 58),
