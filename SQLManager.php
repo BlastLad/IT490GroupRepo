@@ -226,13 +226,14 @@ function registerUser($request)
             $Move_One = $request['Move_One'];
             $Move_Two = $request['Move_Two'];
             $Move_Three = $request['Move_Three'];
+            $VersionID = $request['VID'];
             $Move_Four = $request['Move_Four'];
 	    $AbilityID = $request['AbilityID'];
 	    $MaxHP = $request['MaxHP'];
 
             if ($TeamID == 0) {
                 echo "creating new team" . PHP_EOL;
-                $query = "INSERT INTO TeamInfo (UserID, TeamName, VersionID, Wins, Loses) VALUES ($UserID, '$TeamName', 1, 0, 0);";
+                $query = "INSERT INTO TeamInfo (UserID, TeamName, VersionID, Wins, Loses) VALUES ($UserID, '$TeamName', $VersionID, 0, 0);";
 
                 $response = $mydb->query($query);
 
@@ -658,7 +659,7 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
             $RoomID = '';
             $PokemonID = '';
             $CurrentHP = '';
-
+		echo "before select query".PHP_EOL;
             $query = "SELECT RoomID, Full FROM BattleRooms WHERE (Player_One = $UserID OR Player_Two = $UserID);";
             $response = $mydb->query($query);//we now have a RoomID and the Full status for the Room that player is bounded to
 
@@ -666,7 +667,7 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
                 $RoomID = $roomIDRow['RoomID'];
                 break;
             }
-
+		echo "$RoomID set".PHP_EOL;
             $query = "SELECT GameState.UniquePokemonID, PokemonID, GameState.UserID, GameState.MaxHP FROM GameState JOIN PokemonInfo 
     ON PokemonInfo.UniquePokemonID = GameState.UniquePokemonID WHERE RoomID = $RoomID AND GameState.UserID != $UserID AND Active = 1;";
             $response = $mydb->query($query);
@@ -676,7 +677,7 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
                 echo 'n' . $row['PokemonID'] . 'n';
                 $rows[] = $row;
             }
-            echo 'n getting stuff done'.PHP_EOL;
+            echo "n getting stuff done $RoomID".PHP_EOL;
             print json_encode($rows);
             return array("returnCode" => $RoomID, 'message' => json_encode($rows));
         case "inItBattler":
@@ -731,8 +732,9 @@ ON GameState.UniquePokemonID = PokemonInfo.UniquePokemonID WHERE RoomID =$RoomID
                 }
 
                 print json_encode($rows);
-                return array("returnCode" => $isHost, 'message' => json_encode($rows));
-            }
+                return array("returnCode" => 1, 'message' => json_encode($rows));
+	    }
+	    	print ("ERROE ADDING INIT");
                 return array("returnCode" => 0, 'message' => "Failed to InItBattler");
         case "LeaveBattleRoom":
             $RoomID = $request['RoomID'];

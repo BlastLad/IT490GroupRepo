@@ -56,10 +56,10 @@ nav {
     </style>
 <nav>
 	<ul class="bar">
-		<li><a href="home.html">Home</a></li>
-        <li><a href="teams.html">Teams</a></li>
-        <li style class="active"><a href="battles.html">Battles</a></li>
-        <li><a href="tournament.html">Tournament</a></li>
+		<li><a href="home.php">Home</a></li>
+        <li><a href="teams.php">Teams</a></li>
+        <li style class="active"><a href="lobbies.php">Battles</a></li>
+        <li><a href="tournament.php">Tournament</a></li>
 
 		<li style="float:right"><a href="index.html">Login/Sign-Up</a></li>
 
@@ -91,6 +91,7 @@ nav {
 	    <div>
 		Lobby Name: <input id="roomName" type="text" value ="New Lobby">
 		<button id="New_Lobby_Button" onclick="CreateLobby()">Create Lobby</button>
+		<button id="refreshButton" onclick="GetListOfLobbies()">Refresh Lobbies</button>
 		</form>
             </div>
         </aside>

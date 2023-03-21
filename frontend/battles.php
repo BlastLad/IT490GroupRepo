@@ -101,19 +101,22 @@ nav {
     </style>
 <nav>
 	<ul class="bar">
-		<li><a href="home.html">Home</a></li>
-        <li><a href="teams.html">Teams</a></li>
+		<li><a href="home.php">Home</a></li>
+        <li><a href="teams.php">Teams</a></li>
         <li style class="active"><a href="lobbies.php">Battles</a></li>
-        <li><a href="tournament.html">Tournament</a></li>
+        <li><a href="tournament.php">Tournament</a></li>
 
 		<li style="float:right"><a href="index.html">Login/Sign-Up</a></li>
 
 	</ul>
 </nav>
 <body>
+<script src="typeArray.js"></script>
 <script src="battleJS.js"></script>
 
     <h1>Battles page</h1>
+    <div id = "TurnNumber"></div>
+    <div id = "BattleLog"></div>
     <p id="incomingMessage">helloo</p>
     <main>
         <section>
