@@ -8,7 +8,23 @@
 
 <body>
 
+<?php
+  $poke1 = file_get_contents("https://pokeapi.co/api/v2/pokemon/pikachu");
+  $poke2 = file_get_contents("https://pokeapi.co/api/v2/pokemon/piplup");
+  $poke3 = file_get_contents("https://pokeapi.co/api/v2/pokemon/skitty");
+  $poke4 = file_get_contents("https://pokeapi.co/api/v2/pokemon/mew");
+  $poke5 = file_get_contents("https://pokeapi.co/api/v2/pokemon/lucario");
+  $poke6 = file_get_contents("https://pokeapi.co/api/v2/pokemon/bidoof");
+  $pikachu = json_decode($poke1, true);
+  $piplup = json_decode($poke2, true);
+  $skitty = json_decode($poke3, true);
+  $mew = json_decode($poke4, true);
+  $lucario = json_decode($poke5, true);
+  $bidoof = json_decode($poke6, true);
+?>
+
   <button class="collapsible">Team 1</button>
+  
   <div class="content">
   
     <div class="card-container">
@@ -16,18 +32,18 @@
   <div class = "row">    
   <div class="column">
     <div class="card">
-    <img src="https://openseauserdata.com/files/2e13196558094f62d09598e7025575c0.png" style="width:50%">
-    <h2>Poke 1</h2>
+    <img src=<?php echo '"'.$pikachu['sprites']['front_default'].'"';?> style="width:50%">
+    <h2><?php echo ucfirst($pikachu["name"]);?></h2>
     <div class="card-details">
-      <p>Hey ! we're still in progress</p>
+      <p>Hey ! This should print the pokemon's type deficits or whatever</p>
     </div>
     </div>
     </div>
     
     <div class="column">
       <div class="card">
-      <img src="https://www.iliketowastemytime.com/sites/default/files/imagecache/blog_image/space-wallpapers-1920x1200.jpg" style="width: 50%">
-      <h2>Poke 2</h2>
+      <img src=<?php echo '"'.$piplup['sprites']['front_default'].'"';?> style="width: 50%">
+      <h2><?php echo ucfirst($piplup['name']);?></h2>
       <div class="card-details">
         <p>Hey ! we're still in progress</p>
       </div>
@@ -36,8 +52,8 @@
 
       <div class="column">
         <div class="card">
-        <img src="https://www.iliketowastemytime.com/sites/default/files/imagecache/blog_image/space-wallpapers-1920x1200.jpg" style="width: 50%">
-        <h2>Poke 3</h2>
+        <img src=<?php echo '"'.$skitty['sprites']['front_default'].'"';?> style="width: 50%">
+        <h2><?php echo ucfirst($skitty['name']);?></h2>
         <div class="card-details">
           <p>Hey ! we're still in progress</p>
         </div>
@@ -48,8 +64,8 @@
       <div class = "row">    
         <div class="column">
           <div class="card">
-          <img src="https://www.iliketowastemytime.com/sites/default/files/imagecache/blog_image/space-wallpapers-1920x1200.jpg" style="width:50%">
-          <h2>Poke 4</h2>
+          <img src=<?php echo '"'.$mew['sprites']['front_default'].'"';?> style="width:50%">
+          <h2><?php echo ucfirst($mew['name']);?></h2>
           <div class="card-details">
             <p>Hey ! we're still in progress</p>
           </div>
@@ -58,8 +74,8 @@
           
           <div class="column">
             <div class="card">
-            <img src="https://www.iliketowastemytime.com/sites/default/files/imagecache/blog_image/space-wallpapers-1920x1200.jpg" style="width: 50%">
-            <h2>Poke 5</h2>
+            <img src=<?php echo '"'.$lucario['sprites']['front_default'].'"';?> style="width: 50%">
+            <h2><?php echo ucfirst($lucario['name']);?></h2>
             <div class="card-details">
               <p>Hey ! we're still in progress</p>
             </div>
@@ -68,8 +84,8 @@
       
             <div class="column">
               <div class="card">
-              <img src="https://www.iliketowastemytime.com/sites/default/files/imagecache/blog_image/space-wallpapers-1920x1200.jpg" style="width: 50%">
-              <h2>Poke 6</h2>
+              <img src=<?php echo '"'.$bidoof['sprites']['front_default'].'"';?> style="width: 50%">
+              <h2><?php echo ucfirst($bidoof['name']);?></h2>
               <div class="card-details">
                 <p>Hey ! we're still in progress</p>
               </div>
