@@ -93,7 +93,19 @@ const jsonBody = JSON.stringify(body);
         if (isset($response['message'])) {
             $team = json_decode($response['message'], true);
             foreach ($team as $pokemon){
-                echo '<p>' .$pokemon['PokemonName'] . '</p>';
+				require_once('path.inc');
+				require_once('get_host_info.inc');
+				require_once('rabbitMQLib.inc');
+				$client2 = new rabbitMQClient("testRabbitMQ.ini", "dmzServer");
+				$request = array();
+				$request['type'] = 'pokemon';
+				$request['name'] = $pokemon['PokemonID'];
+				$response = $client2->send_request($request);
+				$json = $response['message'];
+				$poke = json_decode($json, true);
+				//echo "<p>" . $poke['name'] . "</p>";
+				echo "<img src='" . $poke['sprites']['front_default'] . "'>";
+                echo '<p>' . ucfirst($pokemon['PokemonName']) . '</p>';
             }
 			echo "<button value='$selectedTeam' id='setActive' onclick=setActiveTeam()>Set as Active Team</button>";
         }
