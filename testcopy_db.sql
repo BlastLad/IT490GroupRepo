@@ -1,5 +1,5 @@
 
-CREATE DATEBASE testdb;
+CREATE DATABASE testdb;
 use testdb;
 
 CREATE TABLE IF NOT EXISTS BattleRooms (
