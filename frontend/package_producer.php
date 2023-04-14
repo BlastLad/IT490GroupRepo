@@ -7,7 +7,7 @@ require_once('rabbitMQLib.inc');
 $packageNumber = 1; // initialize package number to 1
 
 echo "Package Producer START".PHP_EOL;
-$packageDir = '/home/branit490/workspace/IT490GroupRepo/packages'; // directory to save packages
+$packageDir = '/home/branit490/workspace/packages'; // directory to save packages
 
 do {
     $input = readline("Ready to send package? (y/n): ");
