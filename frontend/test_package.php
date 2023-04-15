@@ -1,36 +1,5 @@
 #!/usr/bin/php
 <?php
-/*
-require_once('path.inc');
-require_once('get_host_info.inc');
-require_once('rabbitMQLib.inc');
-
-$packageNumber = 1; // initialize package number to 1
-
-echo "Package Producer START".PHP_EOL;
-$packageDir = '/home/branit490/workspace/packages'; // directory to save packages
-
-do {
-    $input = readline("Ready to send package? (y/n): ");
-} while ($input !== 'y' && $input !== 'n');
-
-if ($input === 'y') {
-    // create new package folder
-    $packagePath = "$packageDir/package$packageNumber";
-    mkdir($packagePath);
-
-    // copy all files from IT490GroupRepo to package folder
-    $cmd = "cp -R /home/branit490/workspace/IT490GroupRepo/* $packagePath";
-    shell_exec($cmd);
-
-    echo "Package saved in $packagePath".PHP_EOL;
-
-    // increment package number
-    $packageNumber++;
-}
-
-exit();
-*/
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
@@ -62,9 +31,22 @@ if ($input === 'y') {
     // update the package number and zip count files
     file_put_contents($packageNumberFile, $packageNumber);
     file_put_contents($zipCountFile, $zipCount);
+    $newPackageNumber = intval(file_get_contents($packageNumberFile));
+
+    $packagePath = "/home/branit490/workspace/packages/package" .$newPackageNumber. ".zip";
 
     echo "Package saved as $zipFilePath".PHP_EOL;
     echo "Total number of zip files created: $zipCount".PHP_EOL;
-}
 
+    // send package path to consumer
+    $request = array();
+    $request['type'] = "package_path";
+    $request['path'] = $packagePath;
+
+    $client = new rabbitMQClient("testRabbitMQ.ini", "logger");
+    echo "before sending request";
+    $response = $client->send_request($request);
+    echo "sent request";
+}
 exit();
+
