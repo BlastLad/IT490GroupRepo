@@ -1,17 +1,18 @@
 #!/usr/bin/php
 <?php
+//UPDATED VERSION - USES SCP
 
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 
-$packageNumberFile = '/home/branit490/workspace/packages/last_package_number.txt';
-$zipCountFile = '/home/branit490/workspace/packages/zip_count.txt';
+//$packageNumberFile = '/home/branit490/workspace/packages/last_package_number.txt';
+//$zipCountFile = '/home/branit490/workspace/packages/zip_count.txt';
 $packageDir = '/home/branit490/workspace/packages';
 
 // get the last package number and zip count from the files
-$packageNumber = intval(file_get_contents($packageNumberFile));
-$zipCount = intval(file_get_contents($zipCountFile));
+//$packageNumber = intval(file_get_contents($packageNumberFile));
+//$zipCount = intval(file_get_contents($zipCountFile));
 
 echo "Package Producer START".PHP_EOL;
 
@@ -20,8 +21,11 @@ do {
 } while ($input !== 'y' && $input !== 'n');
 
 if ($input === 'y') {
-    // create zip file with package number
-    $zipFilePath = "$packageDir/package$packageNumber.zip";
+    // prompt the user for the package name
+    $packageName = readline("Enter the package name: ");
+
+    // create zip file with package name
+    $zipFilePath = "$packageDir/$packageName.zip";
     $cmd = "cd /home/branit490/workspace/IT490GroupRepo && zip -r $zipFilePath *";
     shell_exec($cmd);
 
@@ -30,22 +34,17 @@ if ($input === 'y') {
     } while ($input !== 'y' && $input !== 'n');
 
     if ($input === 'y') {
-        // send the package to the consumer
-        $remoteHost = '192.168.192.247';
-        $remotePort = '5672';
+        // send the package to the consumer using scp
+        $destination = 'benbandila@192.168.192.247:/home/benbandila/';
+        $cmd = "scp $zipFilePath $destination";
+        shell_exec($cmd);
         
-
-        $client = new rabbitMQClient("testRabbitMQ.ini", "logger");
-        $zipFileData = (file_get_contents($zipFilePath));
-        $request = array(
-            'type' => 'package',
-            'zipFile' => $zipFileData,
-            'destination_path' => '/home/benbandila/test_packages'
-        );
-        $response = $client->send_request($request);
-
+        //TODO ADD RABBITMQ DEPLOYEMENT CHECKER!
+        echo "Package sent!";
+        
+/*
         // check if the package was saved successfully
-        if ($response == "Package saved") {
+        if (file_exists("$destination/$packageName.zip")) {
             // increment package number and zip count
             $packageNumber++;
             $zipCount++;
@@ -59,7 +58,9 @@ if ($input === 'y') {
         } else {
             echo "Failed to save package".PHP_EOL;
         }
+        */
     }
+    
 }
 
 exit();
