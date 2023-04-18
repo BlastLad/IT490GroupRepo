@@ -6,7 +6,7 @@ require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 
 // establish connection to RabbitMQ server
-$server = new rabbitMQServer("testRabbitMQ.ini", "logger");
+$server = new rabbitMQServer("testRabbitMQ.ini", "deployment");
 echo "Deployment Consumer START".PHP_EOL;
 $server->process_requests("insert_package_name");
 // include database connection information

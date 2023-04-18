@@ -33,7 +33,7 @@ if ($input === 'y') {
         shell_exec($cmd);
 
         // establish connection to RabbitMQ server
-        $server = new rabbitMQClient("testRabbitMQ.ini", "logger");
+        $server = new rabbitMQClient("testRabbitMQ.ini", "deployment");
 
         // create message to send to consumer
         $msg = array(
