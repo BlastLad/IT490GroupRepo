@@ -19,7 +19,7 @@ if ($input === 'y') {
 
     // create zip file with package name
     $zipFilePath = "$packageDir/$packageName.zip";
-    $cmd = "cd /home/branit490/workspace/IT490GroupRepo && zip -r $zipFilePath *";
+    $cmd = "cd /home/branit490/workspace/IT490GroupRepo/frontend && zip -r $zipFilePath *";
     shell_exec($cmd);
 
     do {
