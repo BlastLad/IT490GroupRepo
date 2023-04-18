@@ -40,10 +40,10 @@ function requestProcessor($request)
                 return array("val" => '1');
             }
     }
-    return array("returnCode" => '0', 'message'=>"Server received request and processed");
+    //return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
 
-$server = new rabbitMQServer("testRabbitMQ.ini","testServer");
+$server = new rabbitMQServer("testRabbitMQ.ini","logger"); //change to deployment queue
 
 echo "testRabbitMQServer BEGIN".PHP_EOL;
 $server->process_requests('requestProcessor');
