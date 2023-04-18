@@ -20,8 +20,6 @@ if ($input === 'y') {
 
     // TODO change this to select the existing zip file
     $zipFilePath = "$packageDir/$packageName.zip";
-    //$cmd = "cd /home/benbandila/IT490GroupRepo && zip -r $zipFilePath *"; //unnecessary?
-    //shell_exec($cmd);
 
     do {
         $input = readline("Package selected. Send package to prod or dev? (p/d): ");
@@ -34,7 +32,7 @@ if ($input === 'y') {
         //shell_exec($cmd);
         
         //TODO ADD RABBITMQ DEPLOYEMENT CHECKER!
-        $client = new rabbitMQClient("testRabbitMQ.ini", "deployment"); //change logger to new deployment queue
+        $client = new rabbitMQClient("testRabbitMQ.ini", "deployment");
         $request = array();
         $request['type'] = "prod";
         $request['name'] = $packageName;
@@ -50,10 +48,9 @@ if ($input === 'y') {
         // send the package to the consumer using scp
         $destination = 'branit490@192.168.192.165:/home/branit490/workspace/failed_packages/'; //change to Brandon's info
         $cmd = "scp $zipFilePath $destination";
-        //shell_exec($cmd);
         
         //TODO ADD RABBITMQ DEPLOYEMENT CHECKER!
-        $client = new rabbitMQClient("testRabbitMQ.ini", "deployment"); //change logger to deployment queue
+        $client = new rabbitMQClient("testRabbitMQ.ini", "deployment");
         $request = array();
         $request['type'] = "dev";
         $request['name'] = $packageName;
