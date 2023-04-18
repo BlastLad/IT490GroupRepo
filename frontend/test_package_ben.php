@@ -34,7 +34,7 @@ if ($input === 'y') {
         //shell_exec($cmd);
         
         //TODO ADD RABBITMQ DEPLOYEMENT CHECKER!
-        $client = new rabbitMQClient("testRabbitMQ.ini", "logger"); //change logger to new deployment queue
+        $client = new rabbitMQClient("testRabbitMQ.ini", "deployment"); //change logger to new deployment queue
         $request = array();
         $request['type'] = "prod";
         $request['name'] = $packageName;
@@ -53,7 +53,7 @@ if ($input === 'y') {
         //shell_exec($cmd);
         
         //TODO ADD RABBITMQ DEPLOYEMENT CHECKER!
-        $client = new rabbitMQClient("testRabbitMQ.ini", "logger"); //change logger to deployment queue
+        $client = new rabbitMQClient("testRabbitMQ.ini", "deployment"); //change logger to deployment queue
         $request = array();
         $request['type'] = "dev";
         $request['name'] = $packageName;
