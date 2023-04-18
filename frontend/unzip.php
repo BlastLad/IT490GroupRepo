@@ -10,6 +10,7 @@ shell_exec($cmd);
 $cmd1 = "cd $destination && cd frontend/";
 shell_exec($cmd1);
 shell_exec("sh ben_copy.sh");
+shell_exec("sudo service apache2 restart");
 exit();
 ?>
 

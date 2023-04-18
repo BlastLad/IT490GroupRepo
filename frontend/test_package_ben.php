@@ -6,7 +6,7 @@ require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 
-$packageDir = '/home/benbandila/test_packages';
+$packageDir = '/home/benbandila';
 
 echo "Package Producer START".PHP_EOL;
 
@@ -48,7 +48,7 @@ if ($input === 'y') {
         }
     } elseif ($input === 'd') {
         // send the package to the consumer using scp
-        $destination = 'branit490@192.168.192.165:/home/branit490/workspace/'; //change to Brandon's info
+        $destination = 'branit490@192.168.192.165:/home/branit490/workspace/failed_packages/'; //change to Brandon's info
         $cmd = "scp $zipFilePath $destination";
         //shell_exec($cmd);
         
