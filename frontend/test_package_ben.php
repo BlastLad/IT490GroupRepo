@@ -6,13 +6,7 @@ require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 
-//$packageNumberFile = '/home/branit490/workspace/packages/last_package_number.txt';
-//$zipCountFile = '/home/branit490/workspace/packages/zip_count.txt';
-$packageDir = '/home/benbandila/packages';
-
-// get the last package number and zip count from the files
-//$packageNumber = intval(file_get_contents($packageNumberFile));
-//$zipCount = intval(file_get_contents($zipCountFile));
+$packageDir = '/home/benbandila/test_packages';
 
 echo "Package Producer START".PHP_EOL;
 
@@ -22,13 +16,12 @@ do {
 
 if ($input === 'y') {
     // prompt the user for the package name
-    $packageName = readline("Select the package to send: ");
+    $packageName = readline("Enter package name: ");
 
     // TODO change this to select the existing zip file
-    // create zip file with package name
     $zipFilePath = "$packageDir/$packageName.zip";
-    $cmd = "cd /home/benbandila/IT490GroupRepo && zip -r $zipFilePath *"; //unnecessary?
-    shell_exec($cmd);
+    //$cmd = "cd /home/benbandila/IT490GroupRepo && zip -r $zipFilePath *"; //unnecessary?
+    //shell_exec($cmd);
 
     do {
         $input = readline("Package selected. Send package to prod or dev? (p/d): ");
@@ -51,28 +44,11 @@ if ($input === 'y') {
             echo "Package sent to prod!";
         } else {
             echo "Something went wrong. Try again";
+            exit();
         }
-        
-/*
-        // check if the package was saved successfully
-        if (file_exists("$destination/$packageName.zip")) {
-            // increment package number and zip count
-            $packageNumber++;
-            $zipCount++;
-
-            // update the package number and zip count files
-            file_put_contents($packageNumberFile, $packageNumber);
-            file_put_contents($zipCountFile, $zipCount);
-
-            echo "Package saved as $zipFilePath".PHP_EOL;
-            echo "Total number of zip files created: $zipCount".PHP_EOL;
-        } else {
-            echo "Failed to save package".PHP_EOL;
-        }
-        */
     } elseif ($input === 'd') {
         // send the package to the consumer using scp
-        $destination = 'branit490@192.168.192.165:/home/benbandila/'; //change to Brandon's info
+        $destination = 'branit490@192.168.192.165:/home/branit490/workspace/'; //change to Brandon's info
         $cmd = "scp $zipFilePath $destination";
         //shell_exec($cmd);
         
@@ -87,6 +63,7 @@ if ($input === 'y') {
             echo "Package sent back to dev!";
         } else {
             echo "Something went wrong. Try again";
+            exit();
         }
     }
     

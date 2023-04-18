@@ -4,14 +4,6 @@ require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 
-function doLogin($username,$password)
-{
-    // lookup username in databas
-    // check password
-    return true;
-    //return false if not valid
-}
-
 function requestProcessor($request)
 {
     $mydb = new mysqli('127.0.0.1', 'testuser', '12345', 'deploy');
@@ -40,7 +32,6 @@ function requestProcessor($request)
                 return array("val" => '1');
             }
     }
-    //return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
 
 $server = new rabbitMQServer("testRabbitMQ.ini","logger"); //change to deployment queue
