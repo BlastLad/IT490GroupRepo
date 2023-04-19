@@ -6,7 +6,7 @@ require_once('rabbitMQLib.inc');
 
 function directMessage(array $body, string $queueToUse) {
 
-	$client = new rabbitMQClient("testRabbitMQ.ini", $queueToUse);
+	$client = new rabbitMQClient("ini/testRabbitMQ.ini", $queueToUse);
 	$response = $client->send_request($body);
 	return $response;
 }

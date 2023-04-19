@@ -3,7 +3,7 @@
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
-$server = new rabbitMQServer("testRabbitMQ.ini","dmzServer"); //change second parameter to name of dmz queue
+$server = new rabbitMQServer("ini/testRabbitMQ.ini","dmzServer"); //change second parameter to name of dmz queue
 
 echo "testRabbitMQServer BEGIN".PHP_EOL;
 $server->process_requests('apiCalls');

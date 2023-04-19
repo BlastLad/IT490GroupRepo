@@ -14,7 +14,7 @@ if (!isset($_POST))
 $storePost = $_POST;
 $username = $storePost["username"];
 $password = $storePost["password"];
-$client = new rabbitMQClient("testRabbitMQ.ini","testServer");
+$client = new rabbitMQClient("ini/testRabbitMQ.ini","testServer");
 $request = array();
 $request['type'] = "validate";
 $request['username'] = $username;

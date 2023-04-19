@@ -82,7 +82,7 @@ const jsonBody = JSON.stringify(body);
         require_once('path.inc');
 		require_once('get_host_info.inc');
 		require_once('rabbitMQLib.inc');
-		$client1 = new rabbitMQClient("testRabbitMQ.ini", "testServer");
+		$client1 = new rabbitMQClient("ini/testRabbitMQ.ini", "testServer");
 		$request = array();
 		$request['type'] = "getteam";
         $request['UserID'] = $_SESSION['UserID'];
