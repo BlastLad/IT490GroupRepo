@@ -27,7 +27,7 @@ if ($input === 'y') {
 
     if ($input === 'p') {
         // send the package to the consumer using scp
-        $destination = 'benbandila@192.168.192.247:/home/benbandila/'; //change to Sean's info
+        $destination = 'blastlad@192.168.192.238:/home/blastlad/test_packages/'; //change to Sean's info
         $cmd = "scp $zipFilePath $destination";
         //shell_exec($cmd);
         
